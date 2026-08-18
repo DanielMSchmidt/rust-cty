@@ -1,0 +1,30 @@
+[workspace]
+# Own workspace: this repo is independent of the terraform-rewrite workbench it sits inside.
+
+[package]
+name = "cty"
+version = "0.1.0"
+description = "A Rust implementation of go-cty's value and type system"
+edition = "2024"
+rust-version = "1.85"
+license = "MIT"
+repository = "https://github.com/DanielMSchmidt/rust-cty"
+# Not published. Consumers depend on this by git URL; see docs/repo-layout.md in the
+# terraform-rewrite workbench.
+publish = false
+
+[dependencies]
+
+[dev-dependencies]
+
+[lints.rust]
+missing_docs = "warn"
+unsafe_code = "deny"
+
+[lints.clippy]
+all = { level = "warn", priority = -1 }
+todo = "allow"
+unimplemented = "allow"
+
+[profile.bench]
+debug = true
