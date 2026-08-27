@@ -470,8 +470,18 @@ fn convert_capsule_type() {
 
     // (From, To, Want, WantErr)
     let tests: Vec<(Value, Type, Option<Value>, Option<&str>)> = vec![
-        (cap_val("hello"), Type::string(), Some(Value::string("hello")), None),
-        (Value::string("hello"), cap_ty.clone(), Some(cap_val("hello")), None),
+        (
+            cap_val("hello"),
+            Type::string(),
+            Some(Value::string("hello")),
+            None,
+        ),
+        (
+            Value::string("hello"),
+            cap_ty.clone(),
+            Some(cap_val("hello")),
+            None,
+        ),
         (
             Value::bool(true),
             cap_ty.clone(),
@@ -528,8 +538,9 @@ fn convert_capsule_type() {
 
         match want_err {
             None => {
-                let got = result
-                    .unwrap_or_else(|err| panic!("case {i}: wrong error\nwant: <no error>\ngot:  {err}"));
+                let got = result.unwrap_or_else(|err| {
+                    panic!("case {i}: wrong error\nwant: <no error>\ngot:  {err}")
+                });
                 let want = want.as_ref().unwrap();
                 assert!(
                     want.raw_equals(&got),
@@ -541,11 +552,7 @@ fn convert_capsule_type() {
                     Ok(_) => panic!("case {i}: wrong error\nwant: {want_err}\ngot:  <no error>"),
                     Err(err) => err,
                 };
-                assert_eq!(
-                    err.to_string(),
-                    *want_err,
-                    "case {i}: wrong error message"
-                );
+                assert_eq!(err.to_string(), *want_err, "case {i}: wrong error message");
             }
         }
     }
