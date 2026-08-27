@@ -29,7 +29,12 @@ fn format_test() {
             Some(Value::string("100% successful")),
             "",
         ),
-        (Value::string("100%%"), vec![], Some(Value::string("100%")), ""),
+        (
+            Value::string("100%%"),
+            vec![],
+            Some(Value::string("100%")),
+            "",
+        ),
         // Default formats
         (
             Value::string("string %v"),
@@ -650,7 +655,9 @@ fn format_test() {
             );
         } else {
             let err = match result {
-                Ok(got) => panic!("case {i} ({format_val:?}): unexpected success {got:?}; want error"),
+                Ok(got) => {
+                    panic!("case {i} ({format_val:?}): unexpected success {got:?}; want error")
+                }
                 Err(err) => err,
             };
             let err_str = err.to_string();
@@ -715,8 +722,14 @@ fn format_list_test() {
         // 6:
         (
             Value::string("%s"),
-            vec![Value::list([Value::string("hello"), Value::string("world")])],
-            Some(Value::list([Value::string("hello"), Value::string("world")])),
+            vec![Value::list([
+                Value::string("hello"),
+                Value::string("world"),
+            ])],
+            Some(Value::list([
+                Value::string("hello"),
+                Value::string("world"),
+            ])),
             "",
         ),
         // 7:
@@ -802,7 +815,9 @@ fn format_list_test() {
         (
             Value::string("%v"),
             vec![Value::unknown(Type::string())],
-            Some(Value::list([Value::unknown(Type::string()).refine_not_null()])),
+            Some(Value::list([
+                Value::unknown(Type::string()).refine_not_null()
+            ])),
             "",
         ),
         // 16:
@@ -933,7 +948,9 @@ fn format_list_test() {
             );
         } else {
             let err = match result {
-                Ok(got) => panic!("case {i} ({format_val:?}): unexpected success {got:?}; want error"),
+                Ok(got) => {
+                    panic!("case {i} ({format_val:?}): unexpected success {got:?}; want error")
+                }
                 Err(err) => err,
             };
             let err_str = err.to_string();
