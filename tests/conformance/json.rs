@@ -13,7 +13,8 @@
 use cty::json::{SimpleValue, implied_type, marshal, marshal_type, unmarshal, unmarshal_type};
 use cty::{Type, Value};
 
-// upstream: cty/json_test.go TestTypeJSONable
+// Ported from TestTypeJSONable:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/json_test.go#L8
 #[test]
 fn type_jsonable() {
     let tests: Vec<(Type, &str)> = vec![
@@ -64,7 +65,8 @@ fn type_jsonable() {
     }
 }
 
-// upstream: cty/json/simple_test.go TestSimpleJSONValue
+// Ported from TestSimpleJSONValue:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/json/simple_test.go#L10
 #[test]
 fn simple_json_value() {
     let tests: Vec<(Value, &str, Value)> = vec![
@@ -130,7 +132,8 @@ fn simple_json_value() {
     }
 }
 
-// upstream: cty/json/value_test.go TestValueJSONable
+// Ported from TestValueJSONable:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/json/value_test.go#L11
 #[test]
 fn value_jsonable() {
     let bytes_type = Type::capsule::<Vec<u8>>("bytes");
@@ -394,7 +397,8 @@ fn value_jsonable() {
     }
 }
 
-// upstream: cty/json/type_implied_test.go TestImpliedType
+// Ported from TestImpliedType:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/json/type_implied_test.go#L9
 #[test]
 fn implied_type_test() {
     let tests: Vec<(&str, Type)> = vec![
@@ -465,7 +469,8 @@ fn implied_type_test() {
 // the go1.27+ variant is `object member name must be a string`.
 const TRUE_AS_PROPERTY_NAME_ERROR: &str = "invalid character 't'";
 
-// upstream: cty/json/type_implied_test.go TestImpliedTypeErrors
+// Ported from TestImpliedTypeErrors:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/json/type_implied_test.go#L120
 #[test]
 fn implied_type_errors() {
     let tests: Vec<(&str, &str)> = vec![

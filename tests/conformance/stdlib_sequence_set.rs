@@ -11,7 +11,8 @@ use cty::function::stdlib::{
 };
 use cty::{Type, Value, ValueMarks};
 
-// upstream: cty/function/stdlib/sequence_test.go TestConcat
+// Ported from TestConcat:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/sequence_test.go#L10
 #[test]
 fn concat_test() {
     let tests: Vec<(Vec<Value>, Value)> = vec![
@@ -181,7 +182,8 @@ fn concat_test() {
     }
 }
 
-// upstream: cty/function/stdlib/sequence_test.go TestRange
+// Ported from TestRange:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/sequence_test.go#L259
 #[test]
 fn range_test() {
     let tests: Vec<(Vec<Value>, Value)> = vec![
@@ -348,7 +350,8 @@ fn range_test() {
     }
 }
 
-// upstream: cty/function/stdlib/set_test.go TestSetUnion
+// Ported from TestSetUnion:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/set_test.go#L10
 #[test]
 fn set_union_test() {
     let tests: Vec<(Vec<Value>, Value)> = vec![
@@ -432,7 +435,8 @@ fn set_union_test() {
     }
 }
 
-// upstream: cty/function/stdlib/set_test.go TestSetIntersection
+// Ported from TestSetIntersection:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/set_test.go#L110
 #[test]
 fn set_intersection_test() {
     let tests: Vec<(Vec<Value>, Value)> = vec![
@@ -516,7 +520,8 @@ fn set_intersection_test() {
     }
 }
 
-// upstream: cty/function/stdlib/set_test.go TestSetSubtract
+// Ported from TestSetSubtract:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/set_test.go#L207
 #[test]
 fn set_subtract_test() {
     let tests: Vec<(Value, Value, Value)> = vec![
@@ -576,7 +581,8 @@ fn set_subtract_test() {
     }
 }
 
-// upstream: cty/function/stdlib/set_test.go TestSetSymmetricDifference
+// Ported from TestSetSymmetricDifference:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/set_test.go#L284
 #[test]
 fn set_symmetric_difference_test() {
     let tests: Vec<(Value, Value, Value)> = vec![

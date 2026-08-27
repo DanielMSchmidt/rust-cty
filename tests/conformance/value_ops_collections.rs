@@ -7,7 +7,8 @@
 
 use cty::{Type, Value};
 
-// upstream: cty/value_ops_test.go TestValueGetAttr
+// Ported from TestValueGetAttr:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_ops_test.go#L2445
 #[test]
 fn value_get_attr() {
     let tests: Vec<(Value, &str, Value)> = vec![
@@ -43,7 +44,8 @@ fn value_get_attr() {
     }
 }
 
-// upstream: cty/value_ops_test.go TestValueIndex
+// Ported from TestValueIndex:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_ops_test.go#L2496
 #[test]
 fn value_index() {
     let tests: Vec<(Value, Value, Value)> = vec![
@@ -165,7 +167,8 @@ fn value_index() {
     }
 }
 
-// upstream: cty/value_ops_test.go TestValueHasIndex
+// Ported from TestValueHasIndex:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_ops_test.go#L2629
 #[test]
 fn value_has_index() {
     let tests: Vec<(Value, Value, Value)> = vec![
@@ -355,7 +358,8 @@ fn value_has_index() {
     }
 }
 
-// upstream: cty/value_ops_test.go TestValueForEachElement
+// Ported from TestValueForEachElement:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_ops_test.go#L2822
 #[test]
 fn value_for_each_element() {
     // Upstream's `type call struct { Key, Element Value }`.
@@ -490,7 +494,8 @@ fn value_for_each_element() {
     }
 }
 
-// upstream: cty/value_ops_test.go TestHasElement
+// Ported from TestHasElement:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_ops_test.go#L3908
 #[test]
 fn has_element() {
     let tests: Vec<(Value, Value, Value)> = vec![
@@ -596,7 +601,8 @@ fn has_element() {
     }
 }
 
-// upstream: cty/value_ops_test.go TestElements
+// Ported from TestElements:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_ops_test.go#L4048
 // NOTE(port): upstream `Elements()` is a Go 1.23 iter.Seq2 range function; the
 // Rust analogue is the std Iterator returned by `element_iterator()`.
 #[test]

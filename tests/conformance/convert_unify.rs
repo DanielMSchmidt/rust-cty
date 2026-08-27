@@ -8,7 +8,8 @@
 use cty::Type;
 use cty::convert;
 
-// upstream: cty/convert/unify_test.go TestUnify
+// Ported from TestUnify:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/convert/unify_test.go#L11
 //
 // Upstream returns `(cty.NilType, nil)` when no unification is possible;
 // here that maps to `unify` returning `None`. A `Some` expectation carries

@@ -8,7 +8,8 @@
 use cty::function::stdlib;
 use cty::{Type, Value};
 
-// upstream: cty/function/stdlib/number_test.go TestAbsolute
+// Ported from TestAbsolute:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/number_test.go#L12
 #[test]
 fn absolute() {
     let tests: Vec<(Value, Value)> = vec![
@@ -34,7 +35,8 @@ fn absolute() {
     }
 }
 
-// upstream: cty/function/stdlib/number_test.go TestAdd
+// Ported from TestAdd:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/number_test.go#L62
 #[test]
 fn add() {
     let tests: Vec<(Value, Value, Value)> = vec![
@@ -72,7 +74,8 @@ fn add() {
     }
 }
 
-// upstream: cty/function/stdlib/number_test.go TestSubtract
+// Ported from TestSubtract:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/number_test.go#L110
 #[test]
 fn subtract() {
     let tests: Vec<(Value, Value, Value)> = vec![
@@ -110,7 +113,8 @@ fn subtract() {
     }
 }
 
-// upstream: cty/function/stdlib/number_test.go TestMultiply
+// Ported from TestMultiply:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/number_test.go#L158
 #[test]
 fn multiply() {
     let tests: Vec<(Value, Value, Value)> = vec![
@@ -148,7 +152,8 @@ fn multiply() {
     }
 }
 
-// upstream: cty/function/stdlib/number_test.go TestDivide
+// Ported from TestDivide:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/number_test.go#L206
 #[test]
 fn divide() {
     let tests: Vec<(Value, Value, Value)> = vec![
@@ -206,7 +211,8 @@ fn divide() {
     }
 }
 
-// upstream: cty/function/stdlib/number_test.go TestModulo
+// Ported from TestModulo:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/number_test.go#L274
 #[test]
 fn modulo() {
     let tests: Vec<(Value, Value, Value)> = vec![
@@ -264,7 +270,8 @@ fn modulo() {
     }
 }
 
-// upstream: cty/function/stdlib/number_test.go TestNegate
+// Ported from TestNegate:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/number_test.go#L342
 #[test]
 fn negate() {
     let tests: Vec<(Value, Value)> = vec![
@@ -286,7 +293,8 @@ fn negate() {
     }
 }
 
-// upstream: cty/function/stdlib/number_test.go TestLessThan
+// Ported from TestLessThan:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/number_test.go#L376
 #[test]
 fn less_than() {
     let tests: Vec<(Value, Value, Value)> = vec![
@@ -342,7 +350,8 @@ fn less_than() {
     }
 }
 
-// upstream: cty/function/stdlib/number_test.go TestLessThanOrEqualTo
+// Ported from TestLessThanOrEqualTo:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/number_test.go#L439
 #[test]
 fn less_than_or_equal_to() {
     let tests: Vec<(Value, Value, Value)> = vec![
@@ -390,7 +399,8 @@ fn less_than_or_equal_to() {
     }
 }
 
-// upstream: cty/function/stdlib/number_test.go TestGreaterThan
+// Ported from TestGreaterThan:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/number_test.go#L497
 #[test]
 fn greater_than() {
     let tests: Vec<(Value, Value, Value)> = vec![
@@ -438,7 +448,8 @@ fn greater_than() {
     }
 }
 
-// upstream: cty/function/stdlib/number_test.go TestGreaterThanOrEqualTo
+// Ported from TestGreaterThanOrEqualTo:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/number_test.go#L555
 #[test]
 fn greater_than_or_equal_to() {
     let tests: Vec<(Value, Value, Value)> = vec![
@@ -486,7 +497,8 @@ fn greater_than_or_equal_to() {
     }
 }
 
-// upstream: cty/function/stdlib/number_test.go TestMin
+// Ported from TestMin:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/number_test.go#L613
 #[test]
 fn min() {
     let tests: Vec<(Vec<Value>, Value)> = vec![
@@ -531,7 +543,8 @@ fn min() {
     }
 }
 
-// upstream: cty/function/stdlib/number_test.go TestMax
+// Ported from TestMax:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/number_test.go#L675
 #[test]
 fn max() {
     let tests: Vec<(Vec<Value>, Value)> = vec![
@@ -572,7 +585,8 @@ fn max() {
     }
 }
 
-// upstream: cty/function/stdlib/number_test.go TestInt
+// Ported from TestInt:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/number_test.go#L733
 #[test]
 fn int() {
     // NOTE(port): upstream builds the two big-precision cases with
@@ -607,7 +621,8 @@ fn int() {
     }
 }
 
-// upstream: cty/function/stdlib/number_test.go TestCeil
+// Ported from TestCeil:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/number_test.go#L799
 #[test]
 fn ceil() {
     let tests: Vec<(Value, Value, bool)> = vec![
@@ -648,7 +663,8 @@ fn ceil() {
     }
 }
 
-// upstream: cty/function/stdlib/number_test.go TestFloor
+// Ported from TestFloor:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/number_test.go#L857
 #[test]
 fn floor() {
     let tests: Vec<(Value, Value, bool)> = vec![
@@ -689,7 +705,8 @@ fn floor() {
     }
 }
 
-// upstream: cty/function/stdlib/number_test.go TestLog
+// Ported from TestLog:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/number_test.go#L915
 #[test]
 fn log() {
     let tests: Vec<(Value, Value, Value, bool)> = vec![
@@ -733,7 +750,8 @@ fn log() {
     }
 }
 
-// upstream: cty/function/stdlib/number_test.go TestPow
+// Ported from TestPow:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/number_test.go#L969
 #[test]
 fn pow() {
     let tests: Vec<(Value, Value, Value, bool)> = vec![
@@ -798,7 +816,8 @@ fn pow() {
     }
 }
 
-// upstream: cty/function/stdlib/number_test.go TestSignum
+// Ported from TestSignum:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/number_test.go#L1047
 #[test]
 #[allow(clippy::approx_constant)] // upstream's literal really is 3.14
 fn signum() {
@@ -842,7 +861,8 @@ fn signum() {
     }
 }
 
-// upstream: cty/function/stdlib/number_test.go TestParseInt
+// Ported from TestParseInt:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/number_test.go#L1125
 #[test]
 fn parse_int() {
     let tests: Vec<(Value, Value, Value, bool)> = vec![

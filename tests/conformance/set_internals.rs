@@ -7,7 +7,8 @@
 
 use cty::{CapsuleOps, Type, Value, ValueMarks, internals};
 
-// upstream: cty/set_internals_test.go TestSetHashBytes
+// Ported from TestSetHashBytes:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/set_internals_test.go#L12
 #[test]
 fn set_hash_bytes() {
     #[derive(Debug)]
@@ -158,7 +159,8 @@ fn set_hash_bytes() {
     }
 }
 
-// upstream: cty/set_internals_test.go TestSetOrder
+// Ported from TestSetOrder:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/set_internals_test.go#L209
 #[test]
 fn set_order() {
     let tests: Vec<(Value, Value, bool)> = vec![
@@ -243,7 +245,8 @@ fn set_order() {
     }
 }
 
-// upstream: cty/set_internals_test.go TestSetRulesSameRules
+// Ported from TestSetRulesSameRules:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/set_internals_test.go#L334
 #[test]
 fn set_rules_same_rules() {
     let tests: Vec<(Type, Type, bool)> = vec![

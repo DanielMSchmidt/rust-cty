@@ -7,7 +7,8 @@
 
 use cty::{Type, Value};
 
-// upstream: cty/value_ops_test.go TestValueRawEquals
+// Ported from TestValueRawEquals:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_ops_test.go#L904
 #[test]
 fn value_raw_equals() {
     // Mirrors the capsule test types declared in upstream cty/capsule_test.go.

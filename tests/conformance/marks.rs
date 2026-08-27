@@ -7,7 +7,8 @@
 
 use cty::{Path, PathStep, PathValueMarks, Type, Value, ValueMarks};
 
-// upstream: cty/marks_test.go TestContainsMarked
+// Ported from TestContainsMarked:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/marks_test.go#L11
 #[test]
 fn contains_marked() {
     let test_cases: Vec<(Value, bool)> = vec![
@@ -66,7 +67,8 @@ fn contains_marked() {
     }
 }
 
-// upstream: cty/marks_test.go TestIsMarked
+// Ported from TestIsMarked:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/marks_test.go#L72
 #[test]
 fn is_marked() {
     let test_cases: Vec<(Value, bool)> = vec![
@@ -95,7 +97,8 @@ fn is_marked() {
     }
 }
 
-// upstream: cty/marks_test.go TestValueMarks
+// Ported from TestValueMarks:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/marks_test.go#L106
 #[test]
 fn value_marks() {
     let v = Value::bool(true);
@@ -173,7 +176,8 @@ fn value_marks() {
     assert_eq!(marked_with_no_paths, Value::bool(false), "wrong result");
 }
 
-// upstream: cty/marks_test.go TestValueMarksInsert
+// Ported from TestValueMarksInsert:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/marks_test.go#L179
 #[test]
 fn value_marks_insert() {
     let mut marks = ValueMarks::from_marks([0i64]);
@@ -189,7 +193,8 @@ fn value_marks_insert() {
     );
 }
 
-// upstream: cty/marks_test.go TestPathValueMarksEqual
+// Ported from TestPathValueMarksEqual:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/marks_test.go#L196
 #[test]
 fn path_value_marks_equal() {
     let tests: Vec<(PathValueMarks, PathValueMarks, bool)> = vec![
@@ -259,7 +264,8 @@ fn path_value_marks_equal() {
     }
 }
 
-// upstream: cty/marks_test.go TestMarks
+// Ported from TestMarks:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/marks_test.go#L238
 #[test]
 fn marks() {
     fn want_marks(marks: &ValueMarks, expected: &[&str]) {
@@ -291,7 +297,8 @@ fn marks() {
     want_marks(&marks, &["a", "b"]);
 }
 
-// upstream: cty/marks_test.go TestUnmarkDeep
+// Ported from TestUnmarkDeep:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/marks_test.go#L278
 #[test]
 fn unmark_deep() {
     let test_cases: Vec<(&str, Value, Value, ValueMarks)> = vec![
@@ -393,7 +400,8 @@ fn unmark_deep() {
     }
 }
 
-// upstream: cty/marks_test.go TestPathValueMarks
+// Ported from TestPathValueMarks:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/marks_test.go#L363
 #[test]
 fn path_value_marks() {
     let test_cases: Vec<(&str, Value, Value, Vec<PathValueMarks>)> = vec![
@@ -632,7 +640,8 @@ fn path_value_marks() {
     }
 }
 
-// upstream: cty/marks_test.go TestReapplyMarks
+// Ported from TestReapplyMarks:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/marks_test.go#L513
 #[test]
 fn reapply_marks() {
     // Re-applying the same marks to an object value should not change the result.
@@ -655,7 +664,8 @@ fn reapply_marks() {
     );
 }
 
-// upstream: cty/marks_test.go TestHasMarkDeep
+// Ported from TestHasMarkDeep:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/marks_test.go#L531
 #[test]
 fn has_mark_deep() {
     let obj = Value::object([(
@@ -665,7 +675,8 @@ fn has_mark_deep() {
     assert!(obj.has_mark_deep("boop"), "did not find nested mark");
 }
 
-// upstream: cty/marks_test.go TestValueMarksOfType
+// Ported from TestValueMarksOfType:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/marks_test.go#L542
 #[test]
 fn value_marks_of_type() {
     // shallow
@@ -696,7 +707,8 @@ fn value_marks_of_type() {
     }
 }
 
-// upstream: cty/marks_test.go TestValueMarksOfTypeDeep
+// Ported from TestValueMarksOfTypeDeep:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/marks_test.go#L571
 #[test]
 fn value_marks_of_type_deep() {
     let obj = Value::object([(

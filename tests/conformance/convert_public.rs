@@ -8,7 +8,8 @@
 use cty::convert::convert;
 use cty::{Type, Value, ValueMarks};
 
-// upstream: cty/convert/public_test.go TestConvert
+// Ported from TestConvert:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/convert/public_test.go#L12
 //
 // Each case is (input value, target type, expectation): `Ok(want)` ports an
 // upstream `Want` value (asserted with `==`, i.e. RawEquals), `Err(msg)`

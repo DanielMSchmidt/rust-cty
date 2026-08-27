@@ -7,7 +7,8 @@
 
 use cty::{Value, ValueMarks};
 
-// upstream: cty/value_init_test.go TestSetVal
+// Ported from TestSetVal:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_init_test.go#L8
 #[test]
 fn set_val() {
     let plain = Value::set([Value::bool(true)]);
@@ -45,7 +46,8 @@ fn set_val() {
     }
 }
 
-// upstream: cty/value_init_test.go TestSetVal_nestedStructures
+// Ported from TestSetVal_nestedStructures:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_init_test.go#L34
 #[test]
 fn set_val_nested_structures() {
     let test_cases: Vec<(&str, Vec<Value>)> = vec![
@@ -81,7 +83,8 @@ fn set_val_nested_structures() {
     }
 }
 
-// upstream: cty/value_init_test.go TestCanListVal
+// Ported from TestCanListVal:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_init_test.go#L120
 #[test]
 fn can_list_val() {
     let test_cases: Vec<(Vec<Value>, bool)> = vec![
@@ -157,7 +160,8 @@ fn can_list_val() {
     }
 }
 
-// upstream: cty/value_init_test.go TestCanSetVal
+// Ported from TestCanSetVal:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_init_test.go#L224
 #[test]
 fn can_set_val() {
     let test_cases: Vec<(Vec<Value>, bool)> = vec![
@@ -240,7 +244,8 @@ fn can_set_val() {
     }
 }
 
-// upstream: cty/value_init_test.go TestCanMapVal
+// Ported from TestCanMapVal:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_init_test.go#L332
 #[test]
 fn can_map_val() {
     fn entries<const N: usize>(pairs: [(&str, Value); N]) -> Vec<(String, Value)> {

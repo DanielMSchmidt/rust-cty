@@ -8,7 +8,8 @@
 use cty::function::stdlib;
 use cty::{Type, Value, ValueMarks};
 
-// upstream: cty/function/stdlib/collection_test.go TestHasIndex
+// Ported from TestHasIndex:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/collection_test.go#L11
 #[test]
 fn has_index() {
     let tests: Vec<(Value, Value, Value)> = vec![
@@ -81,7 +82,8 @@ fn has_index() {
     }
 }
 
-// upstream: cty/function/stdlib/collection_test.go TestChunklist
+// Ported from TestChunklist:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/collection_test.go#L94
 #[test]
 fn chunklist() {
     // NOTE(port): upstream's `Want` field is `cty.NilVal` in the error cases;
@@ -232,7 +234,8 @@ fn chunklist() {
     }
 }
 
-// upstream: cty/function/stdlib/collection_test.go TestContains
+// Ported from TestContains:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/collection_test.go#L321
 #[test]
 fn contains() {
     let list_of_strings = Value::list([
@@ -372,7 +375,8 @@ fn contains() {
     }
 }
 
-// upstream: cty/function/stdlib/collection_test.go TestMerge
+// Ported from TestMerge:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/collection_test.go#L474
 #[test]
 fn merge() {
     // NOTE(port): upstream's `Want` field is `cty.NilVal` in the error cases;
@@ -679,7 +683,8 @@ fn merge() {
     }
 }
 
-// upstream: cty/function/stdlib/collection_test.go TestIndex
+// Ported from TestIndex:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/collection_test.go#L897
 #[test]
 fn index() {
     let tests: Vec<(Value, Value, Value)> = vec![
@@ -734,7 +739,8 @@ fn index() {
     }
 }
 
-// upstream: cty/function/stdlib/collection_test.go TestLength
+// Ported from TestLength:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/collection_test.go#L970
 #[test]
 fn length() {
     let tests: Vec<(Value, Value)> = vec![
@@ -816,7 +822,8 @@ fn length() {
     }
 }
 
-// upstream: cty/function/stdlib/collection_test.go TestLookup
+// Ported from TestLookup:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/collection_test.go#L1064
 #[test]
 fn lookup() {
     let tests: Vec<(Value, Value, Value, Value)> = vec![
@@ -906,7 +913,8 @@ fn lookup() {
     }
 }
 
-// upstream: cty/function/stdlib/collection_test.go TestElement
+// Ported from TestElement:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/collection_test.go#L1163
 #[test]
 fn element() {
     let list_of_strings = Value::list([
@@ -1163,7 +1171,8 @@ fn element() {
     }
 }
 
-// upstream: cty/function/stdlib/collection_test.go TestCoalesceList
+// Ported from TestCoalesceList:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/collection_test.go#L1423
 #[test]
 fn coalesce_list() {
     // NOTE(port): upstream's `Want` field is `cty.NilVal` in the error cases;
@@ -1268,7 +1277,8 @@ fn coalesce_list() {
     }
 }
 
-// upstream: cty/function/stdlib/collection_test.go TestValues
+// Ported from TestValues:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/collection_test.go#L1556
 #[test]
 fn values() {
     // NOTE(port): upstream's `Want` field is `cty.NilVal` in the error cases;
@@ -1387,7 +1397,8 @@ fn values() {
     }
 }
 
-// upstream: cty/function/stdlib/collection_test.go TestZipMap
+// Ported from TestZipMap:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/collection_test.go#L1671
 #[test]
 fn zipmap() {
     // NOTE(port): upstream's `Want` field is `cty.NilVal` in the error cases;
@@ -1597,7 +1608,8 @@ fn zipmap() {
     }
 }
 
-// upstream: cty/function/stdlib/collection_test.go TestKeys
+// Ported from TestKeys:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/collection_test.go#L1900
 #[test]
 fn keys() {
     // NOTE(port): upstream's `Want` field is `cty.NilVal` in the error cases;
@@ -1711,7 +1723,8 @@ fn keys() {
     }
 }
 
-// upstream: cty/function/stdlib/collection_test.go TestFlatten
+// Ported from TestFlatten:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/collection_test.go#L2010
 #[test]
 fn flatten() {
     let tests: Vec<(Value, Value, &'static str)> = vec![
@@ -1949,7 +1962,8 @@ fn flatten() {
     }
 }
 
-// upstream: cty/function/stdlib/collection_test.go TestSetproduct
+// Ported from TestSetproduct:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/collection_test.go#L2383
 #[test]
 fn setproduct() {
     // NOTE(port): upstream's `Want` field is `cty.NilVal` in the error case;
@@ -2421,7 +2435,8 @@ fn setproduct() {
     }
 }
 
-// upstream: cty/function/stdlib/collection_test.go TestReverseList
+// Ported from TestReverseList:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/collection_test.go#L2808
 #[test]
 fn reverse_list() {
     // NOTE(port): upstream's first case passes `cty.NilVal` as the input and
@@ -2520,7 +2535,8 @@ fn reverse_list() {
     }
 }
 
-// upstream: cty/function/stdlib/collection_test.go TestSlice
+// Ported from TestSlice:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/collection_test.go#L2911
 #[test]
 fn slice() {
     struct Case {
@@ -2576,7 +2592,8 @@ fn slice() {
     }
 }
 
-// upstream: cty/function/stdlib/collection_test.go TestDistinct
+// Ported from TestDistinct:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/collection_test.go#L2985
 #[test]
 fn distinct() {
     // NOTE(port): upstream's `Want` field is `cty.NilVal` in the error case;

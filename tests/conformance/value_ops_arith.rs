@@ -14,7 +14,8 @@
 
 use cty::{Type, Value, ValueMarks};
 
-// upstream: cty/value_ops_test.go TestValueAdd
+// Ported from TestValueAdd:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_ops_test.go#L1768
 #[test]
 fn value_add() {
     let tests: Vec<(Value, Value, Value)> = vec![
@@ -144,7 +145,8 @@ fn value_add() {
     }
 }
 
-// upstream: cty/value_ops_test.go TestValueSubtract
+// Ported from TestValueSubtract:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_ops_test.go#L1896
 #[test]
 fn value_subtract() {
     let tests: Vec<(Value, Value, Value)> = vec![
@@ -271,7 +273,8 @@ fn value_subtract() {
     }
 }
 
-// upstream: cty/value_ops_test.go TestValueNegate
+// Ported from TestValueNegate:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_ops_test.go#L2021
 #[test]
 fn value_negate() {
     let tests: Vec<(Value, Value)> = vec![
@@ -297,7 +300,8 @@ fn value_negate() {
     }
 }
 
-// upstream: cty/value_ops_test.go TestValueMultiply
+// Ported from TestValueMultiply:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_ops_test.go#L2058
 #[test]
 fn value_multiply() {
     let tests: Vec<(Value, Value, Value)> = vec![
@@ -444,7 +448,8 @@ fn value_multiply() {
     }
 }
 
-// upstream: cty/value_ops_test.go TestValueDivide
+// Ported from TestValueDivide:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_ops_test.go#L2211
 #[test]
 fn value_divide() {
     let tests: Vec<(Value, Value, Value)> = vec![
@@ -519,7 +524,8 @@ fn value_divide() {
     }
 }
 
-// upstream: cty/value_ops_test.go TestValueModulo
+// Ported from TestValueModulo:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_ops_test.go#L2289
 #[test]
 fn value_modulo() {
     let tests: Vec<(Value, Value, Value)> = vec![
@@ -619,7 +625,8 @@ fn value_modulo() {
     }
 }
 
-// upstream: cty/value_ops_test.go TestValueAbsolute
+// Ported from TestValueAbsolute:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_ops_test.go#L2392
 #[test]
 fn value_absolute() {
     let tests: Vec<(Value, Value)> = vec![

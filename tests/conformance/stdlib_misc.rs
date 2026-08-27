@@ -15,10 +15,11 @@ use cty::function::stdlib;
 use cty::{Type, Value};
 
 // ---------------------------------------------------------------------------
-// upstream: cty/function/stdlib/bool_test.go
+// Ported from https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/bool_test.go
 // ---------------------------------------------------------------------------
 
-// upstream: cty/function/stdlib/bool_test.go TestNot
+// Ported from TestNot:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/bool_test.go#L10
 #[test]
 fn not() {
     let tests: Vec<(Value, Value)> = vec![
@@ -42,7 +43,8 @@ fn not() {
     }
 }
 
-// upstream: cty/function/stdlib/bool_test.go TestAnd
+// Ported from TestAnd:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/bool_test.go#L52
 #[test]
 fn and() {
     let tests: Vec<(Value, Value, Value)> = vec![
@@ -79,7 +81,8 @@ fn and() {
     }
 }
 
-// upstream: cty/function/stdlib/bool_test.go TestOr
+// Ported from TestOr:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/bool_test.go#L115
 #[test]
 fn or() {
     let tests: Vec<(Value, Value, Value)> = vec![
@@ -117,10 +120,11 @@ fn or() {
 }
 
 // ---------------------------------------------------------------------------
-// upstream: cty/function/stdlib/bytes_test.go
+// Ported from https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/bytes_test.go
 // ---------------------------------------------------------------------------
 
-// upstream: cty/function/stdlib/bytes_test.go TestBytesLen
+// Ported from TestBytesLen:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/bytes_test.go#L10
 #[test]
 fn bytes_len() {
     let tests: Vec<(Value, Value)> = vec![
@@ -135,7 +139,8 @@ fn bytes_len() {
     }
 }
 
-// upstream: cty/function/stdlib/bytes_test.go TestBytesSlice
+// Ported from TestBytesSlice:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/bytes_test.go#L47
 #[test]
 fn bytes_slice() {
     let tests: Vec<(Value, Value, Value, Value)> = vec![
@@ -191,7 +196,7 @@ fn bytes_slice() {
 }
 
 // ---------------------------------------------------------------------------
-// upstream: cty/function/stdlib/csv_test.go
+// Ported from https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/csv_test.go
 // ---------------------------------------------------------------------------
 
 const CSV_TEST: &str = r#""name","size","type"
@@ -200,7 +205,8 @@ const CSV_TEST: &str = r#""name","size","type"
 "baz","50","weedy"
 "#;
 
-// upstream: cty/function/stdlib/csv_test.go TestCSVDecode
+// Ported from TestCSVDecode:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/csv_test.go#L10
 #[test]
 fn csv_decode() {
     let tests: Vec<(Value, Value, &str)> = vec![
@@ -285,10 +291,11 @@ fn csv_decode() {
 }
 
 // ---------------------------------------------------------------------------
-// upstream: cty/function/stdlib/conversion_test.go
+// Ported from https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/conversion_test.go
 // ---------------------------------------------------------------------------
 
-// upstream: cty/function/stdlib/conversion_test.go TestTo
+// Ported from TestTo:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/conversion_test.go#L10
 #[test]
 fn to() {
     let tests: Vec<(Value, Type, Value, &str)> = vec![
@@ -406,10 +413,11 @@ fn to() {
 }
 
 // ---------------------------------------------------------------------------
-// upstream: cty/function/stdlib/datetime_test.go
+// Ported from https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/datetime_test.go
 // ---------------------------------------------------------------------------
 
-// upstream: cty/function/stdlib/datetime_test.go TestFormatDate (format table)
+// Ported from TestFormatDate (format table):
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/datetime_test.go#L11
 #[test]
 fn format_date() {
     // NOTE(port): upstream uses cty.NilVal as the (unused) Want in the error
@@ -528,7 +536,8 @@ fn format_date() {
     }
 }
 
-// upstream: cty/function/stdlib/datetime_test.go TestFormatDate (parse error tests)
+// Ported from TestFormatDate (parse error tests):
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/datetime_test.go#L11
 #[test]
 fn format_date_parse_errors() {
     let parse_err_tests: Vec<(Value, &str)> = vec![
@@ -629,7 +638,8 @@ fn format_date_parse_errors() {
     }
 }
 
-// upstream: cty/function/stdlib/datetime_test.go TestFormatDate (parse success tests)
+// Ported from TestFormatDate (parse success tests):
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/datetime_test.go#L11
 #[test]
 fn format_date_parse_success() {
     let parse_success_tests: Vec<(&str, &str, &str)> = vec![
@@ -685,10 +695,11 @@ fn format_date_parse_success() {
 }
 
 // ---------------------------------------------------------------------------
-// upstream: cty/function/stdlib/general_test.go
+// Ported from https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/general_test.go
 // ---------------------------------------------------------------------------
 
-// upstream: cty/function/stdlib/general_test.go TestEqual
+// Ported from TestEqual:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/general_test.go#L10
 #[test]
 fn equal() {
     let tests: Vec<(Value, Value, Value)> = vec![
@@ -741,7 +752,8 @@ fn equal() {
     }
 }
 
-// upstream: cty/function/stdlib/general_test.go TestCoalesce
+// Ported from TestCoalesce:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/general_test.go#L73
 #[test]
 fn coalesce() {
     let tests: Vec<(Vec<Value>, Value)> = vec![
@@ -789,10 +801,11 @@ fn coalesce() {
 }
 
 // ---------------------------------------------------------------------------
-// upstream: cty/function/stdlib/json_test.go
+// Ported from https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/json_test.go
 // ---------------------------------------------------------------------------
 
-// upstream: cty/function/stdlib/json_test.go TestJSONEncode
+// Ported from TestJSONEncode:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/json_test.go#L10
 #[test]
 fn json_encode() {
     let tests: Vec<(Value, Value)> = vec![
@@ -869,7 +882,8 @@ fn json_encode() {
     }
 }
 
-// upstream: cty/function/stdlib/json_test.go TestJSONDecode
+// Ported from TestJSONDecode:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/json_test.go#L96
 #[test]
 fn json_decode() {
     let tests: Vec<(Value, Value)> = vec![

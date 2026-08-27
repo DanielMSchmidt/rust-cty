@@ -9,7 +9,8 @@
 use cty::msgpack::{implied_type, marshal, unmarshal};
 use cty::{Type, Value, convert};
 
-// upstream: cty/msgpack/roundtrip_test.go TestRoundTrip
+// Ported from TestRoundTrip:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/msgpack/roundtrip_test.go#L12
 #[test]
 fn round_trip() {
     let big_number_val = Value::parse_number(
@@ -269,7 +270,8 @@ fn round_trip() {
     }
 }
 
-// upstream: cty/msgpack/roundtrip_test.go TestRoundTrip_fromString
+// Ported from TestRoundTrip_fromString:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/msgpack/roundtrip_test.go#L371
 #[test]
 fn round_trip_from_string() {
     let tests: Vec<(&str, Type)> = vec![
@@ -330,7 +332,8 @@ fn round_trip_from_string() {
     }
 }
 
-// upstream: cty/msgpack/roundtrip_test.go TestRoundTrip_truncatesStringPrefixRefinement
+// Ported from TestRoundTrip_truncatesStringPrefixRefinement:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/msgpack/roundtrip_test.go#L487
 //
 // Unknown values with very long string prefix refinements do not round-trip
 // losslessly. If the prefix is longer than 256 bytes it will be truncated to
@@ -399,7 +402,8 @@ fn round_trip_truncates_string_prefix_refinement() {
     }
 }
 
-// upstream: cty/msgpack/type_implied_test.go TestImpliedType
+// Ported from TestImpliedType:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/msgpack/type_implied_test.go#L10
 #[test]
 fn implied_type_test() {
     let tests: Vec<(&[u8], Type)> = vec![

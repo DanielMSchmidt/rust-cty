@@ -10,7 +10,8 @@ use std::rc::Rc;
 
 use cty::set::{Rules, Set};
 
-// upstream: cty/set/rules_test.go testRules
+// Ported from testRules:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/set/rules_test.go#L7
 //
 // TestRules is a rules implementation that is used for testing. It only
 // accepts ints as values, and it has a hash function that just returns the
@@ -18,7 +19,8 @@ use cty::set::{Rules, Set};
 // situation where two non-equivalent values have the same hash value.
 struct TestRules;
 
-// upstream: cty/set/rules_test.go newTestRules
+// Ported from newTestRules:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/set/rules_test.go#L9
 fn new_test_rules() -> Rc<dyn Rules<i64>> {
     Rc::new(TestRules)
 }
@@ -50,7 +52,8 @@ fn sorted_values(s: &Set<i64>) -> Vec<i64> {
     vals
 }
 
-// upstream: cty/set/ops_test.go TestBasicSetOps
+// Ported from TestBasicSetOps:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/set/ops_test.go#L13
 //
 // TestBasicSetOps tests the fundamental operations, whose implementations
 // operate directly on the underlying data structure. The remaining operations
@@ -136,7 +139,8 @@ fn basic_set_ops() {
     );
 }
 
-// upstream: cty/set/ops_test.go TestUnion
+// Ported from TestUnion:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/set/ops_test.go#L96
 #[test]
 fn union() {
     let tests: Vec<(Set<i64>, Set<i64>, Vec<i64>)> = vec![
@@ -188,7 +192,8 @@ fn union() {
     }
 }
 
-// upstream: cty/set/ops_test.go TestIntersection
+// Ported from TestIntersection:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/set/ops_test.go#L158
 #[test]
 fn intersection() {
     let tests: Vec<(Set<i64>, Set<i64>, Vec<i64>)> = vec![
@@ -250,7 +255,8 @@ fn intersection() {
     }
 }
 
-// upstream: cty/set/ops_test.go TestSubtract
+// Ported from TestSubtract:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/set/ops_test.go#L230
 #[test]
 fn subtract() {
     let tests: Vec<(Set<i64>, Set<i64>, Vec<i64>)> = vec![
@@ -312,7 +318,8 @@ fn subtract() {
     }
 }
 
-// upstream: cty/set/ops_test.go TestSymmetricDifference
+// Ported from TestSymmetricDifference:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/set/ops_test.go#L302
 #[test]
 fn symmetric_difference() {
     let tests: Vec<(Set<i64>, Set<i64>, Vec<i64>)> = vec![

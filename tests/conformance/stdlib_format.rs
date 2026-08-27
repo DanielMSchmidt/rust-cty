@@ -8,7 +8,8 @@
 use cty::function::stdlib::{format, format_list};
 use cty::{Type, Value, ValueMarks};
 
-// upstream: cty/function/stdlib/format_test.go TestFormat
+// Ported from TestFormat:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/format_test.go#L10
 //
 // NOTE(port): upstream's `Want: cty.NilVal` (no expected value because an
 // error is expected) is represented as `None`; as upstream, the `want` value
@@ -669,7 +670,8 @@ fn format_test() {
     }
 }
 
-// upstream: cty/function/stdlib/format_test.go TestFormatList
+// Ported from TestFormatList:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/format_test.go#L657
 //
 // NOTE(port): upstream's `Want: cty.NilVal` (no expected value because an
 // error is expected) is represented as `None`; as upstream, the `want` value

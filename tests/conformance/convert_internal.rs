@@ -15,7 +15,8 @@ use cty::capsule::{CapsuleConversionFromFn, CapsuleConversionToFn};
 use cty::convert::{self, internals};
 use cty::{CapsuleOps, Path, Type, Value};
 
-// upstream: cty/convert/compare_types_test.go TestCompareTypes
+// Ported from TestCompareTypes:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/convert/compare_types_test.go#L10
 #[test]
 fn compare_types() {
     let tests: Vec<(Type, Type, Ordering)> = vec![
@@ -215,7 +216,8 @@ fn compare_types() {
     }
 }
 
-// upstream: cty/convert/sort_types_test.go TestSortTypes
+// Ported from TestSortTypes:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/convert/sort_types_test.go#L10
 #[test]
 fn sort_types() {
     let tests: Vec<(Vec<Type>, Vec<Type>)> = vec![
@@ -298,7 +300,8 @@ fn sort_types() {
     }
 }
 
-// upstream: cty/convert/mismatch_msg_test.go TestMismatchMessage
+// Ported from TestMismatchMessage:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/convert/mismatch_msg_test.go#L10
 #[test]
 fn mismatch_message() {
     let tests: Vec<(Type, Type, &str)> = vec![
@@ -402,7 +405,8 @@ fn mismatch_message() {
     }
 }
 
-// upstream: cty/convert/conversion_capsule_test.go TestConvertCapsuleType
+// Ported from TestConvertCapsuleType:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/convert/conversion_capsule_test.go#L11
 #[test]
 fn convert_capsule_type() {
     // Upstream encapsulates a Go *string (reflect.TypeOf("")); the Rust

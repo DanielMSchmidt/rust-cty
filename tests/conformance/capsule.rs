@@ -17,7 +17,8 @@ use cty::{CapsuleOps, Type, Value};
 // files), since capsule types compare by identity and each conformance test
 // binary constructs its own.
 
-// upstream: cty/capsule_test.go TestCapsuleWithOps
+// Ported from TestCapsuleWithOps:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/capsule_test.go#L29
 #[test]
 fn capsule_with_ops() {
     let i = 0_i64;
@@ -115,6 +116,8 @@ fn capsule_with_ops() {
 // expectations translated into this crate's constructor syntax, pinning
 // `Display`. The hooks provided are the `display`/`type_display` analogues of
 // upstream's `GoString`/`TypeGoString` hooks; Go's `int` translates to `i64`.
+// Display twin of TestCapsuleWithOps:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/capsule_test.go#L29
 #[test]
 fn capsule_with_ops_display() {
     let i = 0_i64;
@@ -169,7 +172,8 @@ fn capsule_with_ops_display() {
     }
 }
 
-// upstream: cty/capsule_test.go TestCapsuleExtensionData
+// Ported from TestCapsuleExtensionData:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/capsule_test.go#L101
 #[test]
 fn capsule_extension_data() {
     let ty = Type::capsule_with_ops::<i64>(

@@ -57,7 +57,8 @@ struct Case {
     want_err: Option<&'static str>,
 }
 
-// upstream: cty/marks_wrangle_test.go TestValueWrangleMarksDeep
+// Ported from TestValueWrangleMarksDeep:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/marks_wrangle_test.go#L11
 #[test]
 fn value_wrangle_marks_deep() {
     let mut tests: Vec<Case> = vec![

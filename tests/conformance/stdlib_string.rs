@@ -10,7 +10,8 @@
 use cty::function::stdlib;
 use cty::{Type, Value, ValueMarks};
 
-// upstream: cty/function/stdlib/string_test.go TestUpper
+// Ported from TestUpper:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/string_test.go#L10
 #[test]
 fn upper() {
     let tests: Vec<(Value, Value)> = vec![
@@ -56,7 +57,8 @@ fn upper() {
     }
 }
 
-// upstream: cty/function/stdlib/string_test.go TestLower
+// Ported from TestLower:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/string_test.go#L80
 #[test]
 fn lower() {
     let tests: Vec<(Value, Value)> = vec![
@@ -85,7 +87,8 @@ fn lower() {
     }
 }
 
-// upstream: cty/function/stdlib/string_test.go TestReverse
+// Ported from TestReverse:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/string_test.go#L130
 #[test]
 fn reverse() {
     let tests: Vec<(Value, Value)> = vec![
@@ -142,7 +145,8 @@ fn reverse() {
     }
 }
 
-// upstream: cty/function/stdlib/string_test.go TestStrlen
+// Ported from TestStrlen:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/string_test.go#L201
 #[test]
 fn strlen() {
     let tests: Vec<(Value, Value)> = vec![
@@ -215,7 +219,8 @@ fn strlen() {
     }
 }
 
-// upstream: cty/function/stdlib/string_test.go TestSubstr
+// Ported from TestSubstr:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/string_test.go#L276
 #[test]
 fn substr() {
     let tests: Vec<(Value, Value, Value, Value)> = vec![
@@ -330,7 +335,8 @@ fn substr() {
     }
 }
 
-// upstream: cty/function/stdlib/string_test.go TestJoin
+// Ported from TestJoin:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/string_test.go#L402
 #[test]
 fn join() {
     let tests: Vec<(&str, Value, Vec<Value>, Value)> = vec![
@@ -406,7 +412,8 @@ fn join() {
     }
 }
 
-// upstream: cty/function/stdlib/string_test.go TestSort
+// Ported from TestSort:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/string_test.go#L482
 #[test]
 fn sort() {
     let tests: Vec<(Value, Value, &str)> = vec![
@@ -483,7 +490,8 @@ fn sort() {
     }
 }
 
-// upstream: cty/function/stdlib/string_replace_test.go TestReplace
+// Ported from TestReplace:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/string_replace_test.go#L9
 #[test]
 fn replace() {
     let tests: Vec<(Value, Value, Value, Value)> = vec![
@@ -523,7 +531,8 @@ fn replace() {
     }
 }
 
-// upstream: cty/function/stdlib/string_replace_test.go TestRegexReplace
+// Ported from TestRegexReplace:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/string_replace_test.go#L61
 #[test]
 fn regex_replace() {
     let tests: Vec<(Value, Value, Value, Value)> = vec![
@@ -548,14 +557,16 @@ fn regex_replace() {
     }
 }
 
-// upstream: cty/function/stdlib/string_replace_test.go TestRegexReplaceInvalidRegex
+// Ported from TestRegexReplaceInvalidRegex:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/string_replace_test.go#L96
 #[test]
 fn regex_replace_invalid_regex() {
     let result = stdlib::regex_replace(&Value::string(""), &Value::string("("), &Value::string(""));
     assert!(result.is_err(), "expected an error");
 }
 
-// upstream: cty/function/stdlib/regexp_test.go TestRegex
+// Ported from TestRegex:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/regexp_test.go#L10
 #[test]
 fn regex() {
     let tests: Vec<(Value, Value, Value)> = vec![
@@ -620,7 +631,8 @@ fn regex() {
     }
 }
 
-// upstream: cty/function/stdlib/regexp_test.go TestRegexAll
+// Ported from TestRegexAll:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/regexp_test.go#L90
 #[test]
 fn regex_all() {
     let tests: Vec<(Value, Value, Value)> = vec![

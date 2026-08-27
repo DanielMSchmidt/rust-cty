@@ -7,7 +7,8 @@
 
 use cty::{Type, Value};
 
-// upstream: cty/value_ops_test.go TestValueGoString
+// Ported from TestValueGoString:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_ops_test.go#L3667
 #[test]
 fn value_go_string() {
     let tests: Vec<(Value, &str)> = vec![
@@ -150,6 +151,8 @@ fn value_go_string() {
 
 // Rust-syntax twin of value_go_string: the same table with the expectations
 // translated into this crate's constructor syntax, pinning `Display`.
+// Display twin of TestValueGoString:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_ops_test.go#L3667
 #[test]
 fn value_display() {
     let tests: Vec<(Value, &str)> = vec![
@@ -287,7 +290,8 @@ fn value_display() {
     }
 }
 
-// upstream: cty/value_ops_test.go TestHasWhollyKnownType
+// Ported from TestHasWhollyKnownType:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_ops_test.go#L3833
 #[test]
 fn has_wholly_known_type() {
     let tests: Vec<(Value, bool)> = vec![
@@ -328,7 +332,9 @@ fn has_wholly_known_type() {
     }
 }
 
-// NOTE(port): upstream TestFloatCopy (cty/value_ops_test.go) pins that
+// NOTE(port): upstream TestFloatCopy
+// (https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_ops_test.go#L4128)
+// pins that
 // mutating the *big.Float returned by `Value.AsBigFloat()` (via
 // `SetInt64(1)`) does not alias the number stored inside the cty.Value.
 // This crate's numeric accessor is `as_f64()`, which returns an owned

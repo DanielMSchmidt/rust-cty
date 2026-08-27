@@ -11,7 +11,8 @@
 
 use cty::{CapsuleOps, Type, Value};
 
-// upstream: cty/primitive_type_test.go TestTypeIsPrimitiveType
+// Ported from TestTypeIsPrimitiveType:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/primitive_type_test.go#L8
 #[test]
 fn type_is_primitive_type() {
     let tests: Vec<(Type, bool)> = vec![
@@ -34,7 +35,8 @@ fn type_is_primitive_type() {
     }
 }
 
-// upstream: cty/type_test.go TestHasDynamicTypes
+// Ported from TestHasDynamicTypes:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/type_test.go#L8
 #[test]
 fn has_dynamic_types() {
     let tests: Vec<(Type, bool)> = vec![
@@ -67,7 +69,8 @@ fn has_dynamic_types() {
     }
 }
 
-// upstream: cty/type_test.go TestWithoutOptionalAttributesDeep
+// Ported from TestWithoutOptionalAttributesDeep:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/type_test.go#L58
 #[test]
 fn without_optional_attributes_deep() {
     let tests: Vec<(Type, Type)> = vec![
@@ -142,11 +145,14 @@ fn without_optional_attributes_deep() {
     }
 }
 
-// NOTE(port): upstream TestNilTypeEquals (cty/type_test.go) pins the behavior
+// NOTE(port): upstream TestNilTypeEquals
+// (https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/type_test.go#L157)
+// pins the behavior
 // of Go's zero-value `cty.NilType`, which has no Rust analogue — absence of a
 // type is `Option<Type>` here. Deliberately omitted; see docs/api-mapping.md.
 
-// upstream: cty/type_test.go TestTypeGoString
+// Ported from TestTypeGoString:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/type_test.go#L164
 #[test]
 fn type_go_string() {
     let tests: Vec<(Type, &str)> = vec![
@@ -201,6 +207,8 @@ fn type_go_string() {
 
 // Rust-syntax twin of type_go_string: the same table with the expectations
 // translated into this crate's constructor syntax, pinning `Display`.
+// Display twin of TestTypeGoString:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/type_test.go#L164
 #[test]
 fn type_display() {
     let tests: Vec<(Type, &str)> = vec![
@@ -250,7 +258,8 @@ fn type_display() {
     }
 }
 
-// upstream: cty/object_type_test.go TestObjectTypeEquals
+// Ported from TestObjectTypeEquals:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/object_type_test.go#L8
 #[test]
 fn object_type_equals() {
     let tests: Vec<(Type, Type, bool)> = vec![
@@ -329,7 +338,8 @@ fn object_type_equals() {
     }
 }
 
-// upstream: cty/tuple_type_test.go TestTupleTypeEquals
+// Ported from TestTupleTypeEquals:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/tuple_type_test.go#L8
 #[test]
 fn tuple_type_equals() {
     let tests: Vec<(Type, Type, bool)> = vec![
@@ -372,7 +382,8 @@ fn tuple_type_equals() {
     }
 }
 
-// upstream: cty/set_type_test.go TestSetOperations
+// Ported from TestSetOperations:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/set_type_test.go#L11
 #[test]
 fn set_operations() {
     // This test is for the mechanisms that allow a calling application to
@@ -400,7 +411,8 @@ fn set_operations() {
     }
 }
 
-// upstream: cty/set_type_test.go TestSetOfCapsuleType
+// Ported from TestSetOfCapsuleType:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/set_type_test.go#L45
 #[test]
 fn set_of_capsule_type() {
     #[derive(Debug)]

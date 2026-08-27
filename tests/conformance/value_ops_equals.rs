@@ -30,7 +30,8 @@ fn capsule_test_type_2() -> Type {
     Type::capsule::<CapsuleTestType2Native>("capsule test type 2")
 }
 
-// upstream: cty/value_ops_test.go TestValueEquals
+// Ported from TestValueEquals:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_ops_test.go#L11
 #[test]
 fn value_equals() {
     // NOTE(port): upstream constructs each capsule value once and reuses the

@@ -8,7 +8,8 @@
 
 use cty::{Path, PathSet, PathStep, Type, Value};
 
-// upstream: cty/path_test.go TestPathApply
+// Ported from TestPathApply:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/path_test.go#L10
 #[test]
 fn path_apply() {
     // NOTE(port): upstream's `Want` field is `cty.NilVal` in every case where
@@ -256,7 +257,8 @@ fn path_apply() {
     }
 }
 
-// upstream: cty/path_test.go TestPathEquals
+// Ported from TestPathEquals:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/path_test.go#L260
 #[test]
 fn path_equals() {
     struct Case {
@@ -461,7 +463,8 @@ fn path_equals() {
     }
 }
 
-// upstream: cty/path_set_test.go TestPathSet
+// Ported from TestPathSet:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/path_set_test.go#L8
 #[test]
 fn path_set() {
     // Upstream slices the path value (`helloWorld[:1]`); the analogue here is

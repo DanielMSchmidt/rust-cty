@@ -69,7 +69,8 @@ fn assert_walk_calls(
     }
 }
 
-// upstream: cty/walk_test.go TestWalk
+// Ported from TestWalk:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/walk_test.go#L8
 #[test]
 fn walk_and_deep_values() {
     let val = walk_test_value();
@@ -191,6 +192,8 @@ fn walk_and_deep_values() {
 // Rust-syntax twin of walk_and_deep_values: the same table with the path
 // expectations translated into this crate's constructor syntax, pinning
 // `Path`'s `Display`.
+// Display twin of TestWalk:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/walk_test.go#L8
 #[test]
 fn walk_and_deep_values_display() {
     let val = walk_test_value();
@@ -312,7 +315,8 @@ fn transform_with_transformer_test_value() -> Value {
     ])
 }
 
-// upstream: cty/walk_test.go pathTransformer
+// Ported from pathTransformer:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/walk_test.go#L118
 struct PathTransformer;
 
 impl Transformer for PathTransformer {
@@ -328,7 +332,8 @@ impl Transformer for PathTransformer {
     }
 }
 
-// upstream: cty/walk_test.go TestTransformWithTransformer
+// Ported from TestTransformWithTransformer:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/walk_test.go#L131
 #[test]
 fn transform_with_transformer_paths() {
     let val = transform_with_transformer_test_value();
@@ -470,6 +475,8 @@ impl Transformer for DisplayPathTransformer {
 // Rust-syntax twin of transform_with_transformer_paths: the same table with
 // the path expectations translated into this crate's constructor syntax,
 // pinning `Path`'s `Display`.
+// Display twin of TestTransformWithTransformer:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/walk_test.go#L131
 #[test]
 fn transform_with_transformer_paths_display() {
     let val = transform_with_transformer_test_value();
@@ -568,7 +575,8 @@ fn transform_with_transformer_paths_display() {
     assert_eq!(got_val, want_val, "wrong result");
 }
 
-// upstream: cty/walk_test.go errorTransformer
+// Ported from errorTransformer:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/walk_test.go#L209
 struct ErrorTransformer;
 
 impl Transformer for ErrorTransformer {
@@ -585,7 +593,8 @@ impl Transformer for ErrorTransformer {
     }
 }
 
-// upstream: cty/walk_test.go TestTransformWithTransformer_error
+// Ported from TestTransformWithTransformer_error:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/walk_test.go#L223
 #[test]
 fn transform_with_transformer_error() {
     let val = Value::object([
@@ -613,7 +622,8 @@ fn transform_with_transformer_error() {
     );
 }
 
-// upstream: cty/walk_test.go TestTransform
+// Ported from TestTransform:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/walk_test.go#L249
 #[test]
 fn transform_values() {
     let val = Value::object([
@@ -670,7 +680,8 @@ fn transform_values() {
     assert_eq!(got_val, want_val, "wrong value");
 }
 
-// upstream: cty/walk_test.go TestTransformMarked
+// Ported from TestTransformMarked:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/walk_test.go#L283
 #[test]
 fn transform_marked() {
     let val = Value::object([
@@ -706,7 +717,8 @@ fn transform_marked() {
     assert_eq!(got_val, val, "wrong value");
 }
 
-// upstream: cty/unknown_as_null_test.go TestUnknownAsNull
+// Ported from TestUnknownAsNull:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/unknown_as_null_test.go#L7
 #[test]
 fn unknown_as_null_conformance() {
     let tests: Vec<(Value, Value)> = vec![

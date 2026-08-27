@@ -23,7 +23,8 @@ fn stub_impl() -> ImplFunc {
     Box::new(|_args, _ret_type| Err(Error::new("should not be called")))
 }
 
-// upstream: cty/function/function_test.go TestReturnTypeForValues
+// Ported from TestReturnTypeForValues:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/function_test.go#L10
 #[test]
 fn return_type_for_values() {
     struct TestCase {
@@ -253,7 +254,8 @@ fn return_type_for_values() {
     }
 }
 
-// upstream: cty/function/function_test.go TestFunctionWithNewDescriptions ("no params")
+// Ported from TestFunctionWithNewDescriptions ("no params"):
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/function_test.go#L209
 #[test]
 fn function_with_new_descriptions_no_params() {
     let f1 = Function::new(Spec {
@@ -278,7 +280,8 @@ fn function_with_new_descriptions_no_params() {
     );
 }
 
-// upstream: cty/function/function_test.go TestFunctionWithNewDescriptions ("one pos param")
+// Ported from TestFunctionWithNewDescriptions ("one pos param"):
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/function_test.go#L209
 #[test]
 fn function_with_new_descriptions_one_pos_param() {
     let f1 = Function::new(Spec {
@@ -320,7 +323,8 @@ fn function_with_new_descriptions_one_pos_param() {
     );
 }
 
-// upstream: cty/function/function_test.go TestFunctionWithNewDescriptions ("two pos params")
+// Ported from TestFunctionWithNewDescriptions ("two pos params"):
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/function_test.go#L209
 #[test]
 fn function_with_new_descriptions_two_pos_params() {
     let f1 = Function::new(Spec {
@@ -379,7 +383,8 @@ fn function_with_new_descriptions_two_pos_params() {
     );
 }
 
-// upstream: cty/function/function_test.go TestFunctionWithNewDescriptions ("varparam overridden")
+// Ported from TestFunctionWithNewDescriptions ("varparam overridden"):
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/function_test.go#L209
 #[test]
 fn function_with_new_descriptions_varparam_overridden() {
     let f1 = Function::new(Spec {
@@ -435,7 +440,8 @@ fn function_with_new_descriptions_varparam_overridden() {
     );
 }
 
-// upstream: cty/function/function_test.go TestFunctionWithNewDescriptions ("varparam not overridden")
+// Ported from TestFunctionWithNewDescriptions ("varparam not overridden"):
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/function_test.go#L209
 #[test]
 fn function_with_new_descriptions_varparam_not_overridden() {
     let f1 = Function::new(Spec {
@@ -496,7 +502,8 @@ fn function_with_new_descriptions_varparam_not_overridden() {
     );
 }
 
-// upstream: cty/function/function_test.go TestFunctionWithNewDescriptions ("solo varparam overridden")
+// Ported from TestFunctionWithNewDescriptions ("solo varparam overridden"):
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/function_test.go#L209
 #[test]
 fn function_with_new_descriptions_solo_varparam_overridden() {
     let f1 = Function::new(Spec {
@@ -538,7 +545,8 @@ fn function_with_new_descriptions_solo_varparam_overridden() {
     );
 }
 
-// upstream: cty/function/function_test.go TestFunctionWithNewDescriptions ("solo varparam not overridden")
+// Ported from TestFunctionWithNewDescriptions ("solo varparam not overridden"):
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/function_test.go#L209
 #[test]
 fn function_with_new_descriptions_solo_varparam_not_overridden() {
     let f1 = Function::new(Spec {
@@ -585,7 +593,8 @@ fn function_with_new_descriptions_solo_varparam_not_overridden() {
     );
 }
 
-// upstream: cty/function/function_test.go TestFunctionCallWithUnknownVals ("params")
+// Ported from TestFunctionCallWithUnknownVals ("params"):
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/function_test.go#L497
 #[test]
 fn function_call_with_unknown_vals_params() {
     let f = Function::new(Spec {
@@ -622,7 +631,8 @@ fn function_call_with_unknown_vals_params() {
     );
 }
 
-// upstream: cty/function/function_test.go TestFunctionCallWithUnknownVals ("params-partial-marks")
+// Ported from TestFunctionCallWithUnknownVals ("params-partial-marks"):
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/function_test.go#L497
 #[test]
 fn function_call_with_unknown_vals_params_partial_marks() {
     let f = Function::new(Spec {
@@ -662,7 +672,8 @@ fn function_call_with_unknown_vals_params_partial_marks() {
     );
 }
 
-// upstream: cty/function/function_test.go TestFunctionCallWithUnknownVals ("varparam")
+// Ported from TestFunctionCallWithUnknownVals ("varparam"):
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/function_test.go#L497
 #[test]
 fn function_call_with_unknown_vals_varparam() {
     let f = Function::new(Spec {
@@ -691,7 +702,8 @@ fn function_call_with_unknown_vals_varparam() {
     );
 }
 
-// upstream: cty/function/function_test.go TestFunctionCallWithUnknownVals ("refined-marked")
+// Ported from TestFunctionCallWithUnknownVals ("refined-marked"):
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/function_test.go#L497
 #[test]
 fn function_call_with_unknown_vals_refined_marked() {
     let f = Function::new(Spec {
@@ -729,7 +741,8 @@ fn function_call_with_unknown_vals_refined_marked() {
     assert_eq!(got, expected, "expected {expected:?}\ngot: {got:?}");
 }
 
-// upstream: cty/function/function_test.go TestFunctionCallWithUnknownVals ("marked-dynamic-not-refined")
+// Ported from TestFunctionCallWithUnknownVals ("marked-dynamic-not-refined"):
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/function_test.go#L497
 #[test]
 fn function_call_with_unknown_vals_marked_dynamic_not_refined() {
     let f = Function::new(Spec {
@@ -769,7 +782,8 @@ fn function_call_with_unknown_vals_marked_dynamic_not_refined() {
     assert_eq!(got, expected, "expected {expected:?}\ngot: {got:?}");
 }
 
-// upstream: cty/function/unpredictable_test.go TestUnpredictable
+// Ported from TestUnpredictable:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/unpredictable_test.go#L9
 #[test]
 fn unpredictable() {
     let f = Function::new(Spec {

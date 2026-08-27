@@ -48,7 +48,8 @@ fn assert_implied<T: CtyTyped>(case: &str, want: Type) {
     assert!(got.equals(&want), "{case}: got {got:?}, want {want:?}");
 }
 
-// upstream: cty/gocty/in_test.go TestIn
+// Ported from TestIn:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/gocty/in_test.go#L13
 #[test]
 fn gocty_in() {
     // Bool
@@ -362,7 +363,8 @@ fn gocty_in() {
     );
 }
 
-// upstream: cty/gocty/out_test.go TestOut
+// Ported from TestOut:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/gocty/out_test.go#L12
 #[test]
 fn gocty_out() {
     // NOTE(port): upstream also decodes into Go defined types (aliases):
@@ -567,7 +569,8 @@ fn gocty_out() {
     );
 }
 
-// upstream: cty/gocty/type_implied_test.go TestImpliedType
+// Ported from TestImpliedType:
+// https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/gocty/type_implied_test.go#L10
 #[test]
 fn gocty_implied_type() {
     // Primitive types
