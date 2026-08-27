@@ -57,6 +57,10 @@ pub struct CapsuleOps {
     /// (go-cty: `CapsuleOps.TypeGoString`).
     pub type_go_string: Option<CapsuleTypeStringFn>,
 
+    /// Rust-syntax `Display` implementation for the capsule type itself — the
+    /// Rust analogue of `type_go_string`, used by `Type`'s `Display`.
+    pub type_display: Option<CapsuleTypeStringFn>,
+
     /// Implementation of the `Equals` operation for known, non-null values;
     /// must return a bool value (go-cty: `CapsuleOps.Equals`).
     pub equals: Option<CapsuleEqualsFn>,
