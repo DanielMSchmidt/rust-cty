@@ -20,6 +20,9 @@ publish = false
 [lints.rust]
 missing_docs = "warn"
 unsafe_code = "deny"
+# Stub phase: every fn body is todo!(), so parameters go unused. Remove once
+# implementations land.
+unused_variables = "allow"
 
 [lints.clippy]
 all = { level = "warn", priority = -1 }
@@ -28,3 +31,129 @@ unimplemented = "allow"
 
 [profile.bench]
 debug = true
+
+# Conformance test targets: one per upstream go-cty test area, declared
+# explicitly so each compiles independently (cargo auto-discovers only tests/*.rs).
+[[test]]
+name = "conformance_types"
+path = "tests/conformance/types.rs"
+
+[[test]]
+name = "conformance_type_conform"
+path = "tests/conformance/type_conform.rs"
+
+[[test]]
+name = "conformance_capsule"
+path = "tests/conformance/capsule.rs"
+
+[[test]]
+name = "conformance_value_init"
+path = "tests/conformance/value_init.rs"
+
+[[test]]
+name = "conformance_value_ops_equals"
+path = "tests/conformance/value_ops_equals.rs"
+
+[[test]]
+name = "conformance_value_ops_raw_equals"
+path = "tests/conformance/value_ops_raw_equals.rs"
+
+[[test]]
+name = "conformance_value_ops_arith"
+path = "tests/conformance/value_ops_arith.rs"
+
+[[test]]
+name = "conformance_value_ops_collections"
+path = "tests/conformance/value_ops_collections.rs"
+
+[[test]]
+name = "conformance_value_ops_logic_cmp"
+path = "tests/conformance/value_ops_logic_cmp.rs"
+
+[[test]]
+name = "conformance_value_ops_misc"
+path = "tests/conformance/value_ops_misc.rs"
+
+[[test]]
+name = "conformance_path"
+path = "tests/conformance/path.rs"
+
+[[test]]
+name = "conformance_marks"
+path = "tests/conformance/marks.rs"
+
+[[test]]
+name = "conformance_marks_wrangle"
+path = "tests/conformance/marks_wrangle.rs"
+
+[[test]]
+name = "conformance_walk"
+path = "tests/conformance/walk.rs"
+
+[[test]]
+name = "conformance_unknown"
+path = "tests/conformance/unknown.rs"
+
+[[test]]
+name = "conformance_set_internals"
+path = "tests/conformance/set_internals.rs"
+
+[[test]]
+name = "conformance_set"
+path = "tests/conformance/set.rs"
+
+[[test]]
+name = "conformance_strings"
+path = "tests/conformance/strings.rs"
+
+[[test]]
+name = "conformance_json"
+path = "tests/conformance/json.rs"
+
+[[test]]
+name = "conformance_msgpack"
+path = "tests/conformance/msgpack.rs"
+
+[[test]]
+name = "conformance_convert_public"
+path = "tests/conformance/convert_public.rs"
+
+[[test]]
+name = "conformance_convert_unify"
+path = "tests/conformance/convert_unify.rs"
+
+[[test]]
+name = "conformance_convert_internal"
+path = "tests/conformance/convert_internal.rs"
+
+[[test]]
+name = "conformance_function"
+path = "tests/conformance/function.rs"
+
+[[test]]
+name = "conformance_interop"
+path = "tests/conformance/interop.rs"
+
+[[test]]
+name = "conformance_stdlib_collection"
+path = "tests/conformance/stdlib_collection.rs"
+
+[[test]]
+name = "conformance_stdlib_number"
+path = "tests/conformance/stdlib_number.rs"
+
+[[test]]
+name = "conformance_stdlib_format"
+path = "tests/conformance/stdlib_format.rs"
+
+[[test]]
+name = "conformance_stdlib_string"
+path = "tests/conformance/stdlib_string.rs"
+
+[[test]]
+name = "conformance_stdlib_sequence_set"
+path = "tests/conformance/stdlib_sequence_set.rs"
+
+[[test]]
+name = "conformance_stdlib_misc"
+path = "tests/conformance/stdlib_misc.rs"
