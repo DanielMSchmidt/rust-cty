@@ -176,3 +176,11 @@ impl FromCty for Value {
         todo!()
     }
 }
+
+/// The implied cty type of a `Value` target is dynamic, as in gocty's
+/// reflection over `cty.Value` (go-cty: `gocty.ImpliedType`).
+impl CtyTyped for Value {
+    fn implied_type() -> Result<Type, Error> {
+        todo!()
+    }
+}
