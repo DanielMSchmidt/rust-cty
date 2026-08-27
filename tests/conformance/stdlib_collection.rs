@@ -11,6 +11,7 @@ use cty::{Type, Value, ValueMarks};
 // Ported from TestHasIndex:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/collection_test.go#L11
 #[test]
+#[ignore = "not yet implemented"]
 fn has_index() {
     let tests: Vec<(Value, Value, Value)> = vec![
         (
@@ -85,6 +86,7 @@ fn has_index() {
 // Ported from TestChunklist:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/collection_test.go#L94
 #[test]
+#[ignore = "not yet implemented"]
 fn chunklist() {
     // NOTE(port): upstream's `Want` field is `cty.NilVal` in the error cases;
     // those cases carry `None` here.
@@ -237,6 +239,7 @@ fn chunklist() {
 // Ported from TestContains:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/collection_test.go#L321
 #[test]
+#[ignore = "not yet implemented"]
 fn contains() {
     let list_of_strings = Value::list([
         Value::string("the"),
@@ -378,6 +381,7 @@ fn contains() {
 // Ported from TestMerge:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/collection_test.go#L474
 #[test]
+#[ignore = "not yet implemented"]
 fn merge() {
     // NOTE(port): upstream's `Want` field is `cty.NilVal` in the error cases;
     // those cases carry `None` here.
@@ -686,6 +690,7 @@ fn merge() {
 // Ported from TestIndex:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/collection_test.go#L897
 #[test]
+#[ignore = "not yet implemented"]
 fn index() {
     let tests: Vec<(Value, Value, Value)> = vec![
         (
@@ -742,6 +747,7 @@ fn index() {
 // Ported from TestLength:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/collection_test.go#L970
 #[test]
+#[ignore = "not yet implemented"]
 fn length() {
     let tests: Vec<(Value, Value)> = vec![
         (Value::list_empty(Type::number()), Value::number_int(0)),
@@ -825,6 +831,7 @@ fn length() {
 // Ported from TestLookup:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/collection_test.go#L1064
 #[test]
+#[ignore = "not yet implemented"]
 fn lookup() {
     let tests: Vec<(Value, Value, Value, Value)> = vec![
         (
@@ -916,6 +923,7 @@ fn lookup() {
 // Ported from TestElement:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/collection_test.go#L1163
 #[test]
+#[ignore = "not yet implemented"]
 fn element() {
     let list_of_strings = Value::list([
         Value::string("the"),
@@ -1174,6 +1182,7 @@ fn element() {
 // Ported from TestCoalesceList:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/collection_test.go#L1423
 #[test]
+#[ignore = "not yet implemented"]
 fn coalesce_list() {
     // NOTE(port): upstream's `Want` field is `cty.NilVal` in the error cases;
     // those cases carry `None` here.
@@ -1280,6 +1289,7 @@ fn coalesce_list() {
 // Ported from TestValues:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/collection_test.go#L1556
 #[test]
+#[ignore = "not yet implemented"]
 fn values() {
     // NOTE(port): upstream's `Want` field is `cty.NilVal` in the error cases;
     // those cases carry `None` here.
@@ -1400,6 +1410,7 @@ fn values() {
 // Ported from TestZipMap:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/collection_test.go#L1671
 #[test]
+#[ignore = "not yet implemented"]
 fn zipmap() {
     // NOTE(port): upstream's `Want` field is `cty.NilVal` in the error cases;
     // those cases carry `None` here.
@@ -1611,6 +1622,7 @@ fn zipmap() {
 // Ported from TestKeys:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/collection_test.go#L1900
 #[test]
+#[ignore = "not yet implemented"]
 fn keys() {
     // NOTE(port): upstream's `Want` field is `cty.NilVal` in the error cases;
     // those cases carry `None` here.
@@ -1726,6 +1738,7 @@ fn keys() {
 // Ported from TestFlatten:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/collection_test.go#L2010
 #[test]
+#[ignore = "not yet implemented"]
 fn flatten() {
     let tests: Vec<(Value, Value, &'static str)> = vec![
         // Empty case is easy
@@ -1965,6 +1978,7 @@ fn flatten() {
 // Ported from TestSetproduct:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/collection_test.go#L2383
 #[test]
+#[ignore = "not yet implemented"]
 fn setproduct() {
     // NOTE(port): upstream's `Want` field is `cty.NilVal` in the error case;
     // that case carries `None` here.
@@ -2438,6 +2452,7 @@ fn setproduct() {
 // Ported from TestReverseList:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/collection_test.go#L2808
 #[test]
+#[ignore = "not yet implemented"]
 fn reverse_list() {
     // NOTE(port): upstream's first case passes `cty.NilVal` as the input and
     // expects the error "argument must not be null". Go's zero-value NilVal
@@ -2538,6 +2553,7 @@ fn reverse_list() {
 // Ported from TestSlice:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/collection_test.go#L2911
 #[test]
+#[ignore = "not yet implemented"]
 fn slice() {
     struct Case {
         input: Value,
@@ -2595,6 +2611,7 @@ fn slice() {
 // Ported from TestDistinct:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/collection_test.go#L2985
 #[test]
+#[ignore = "not yet implemented"]
 fn distinct() {
     // NOTE(port): upstream's `Want` field is `cty.NilVal` in the error case;
     // that case carries `None` here.

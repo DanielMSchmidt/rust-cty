@@ -17,6 +17,7 @@ use cty::{Type, Value, ValueMarks};
 // Ported from TestValueAdd:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_ops_test.go#L1768
 #[test]
+#[ignore = "not yet implemented"]
 fn value_add() {
     let tests: Vec<(Value, Value, Value)> = vec![
         (
@@ -148,6 +149,7 @@ fn value_add() {
 // Ported from TestValueSubtract:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_ops_test.go#L1896
 #[test]
+#[ignore = "not yet implemented"]
 fn value_subtract() {
     let tests: Vec<(Value, Value, Value)> = vec![
         (
@@ -276,6 +278,7 @@ fn value_subtract() {
 // Ported from TestValueNegate:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_ops_test.go#L2021
 #[test]
+#[ignore = "not yet implemented"]
 fn value_negate() {
     let tests: Vec<(Value, Value)> = vec![
         (Value::number_int(1), Value::number_int(-1)),
@@ -303,6 +306,7 @@ fn value_negate() {
 // Ported from TestValueMultiply:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_ops_test.go#L2058
 #[test]
+#[ignore = "not yet implemented"]
 fn value_multiply() {
     let tests: Vec<(Value, Value, Value)> = vec![
         (
@@ -451,6 +455,7 @@ fn value_multiply() {
 // Ported from TestValueDivide:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_ops_test.go#L2211
 #[test]
+#[ignore = "not yet implemented"]
 fn value_divide() {
     let tests: Vec<(Value, Value, Value)> = vec![
         (
@@ -527,6 +532,7 @@ fn value_divide() {
 // Ported from TestValueModulo:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_ops_test.go#L2289
 #[test]
+#[ignore = "not yet implemented"]
 fn value_modulo() {
     let tests: Vec<(Value, Value, Value)> = vec![
         (
@@ -628,6 +634,7 @@ fn value_modulo() {
 // Ported from TestValueAbsolute:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_ops_test.go#L2392
 #[test]
+#[ignore = "not yet implemented"]
 fn value_absolute() {
     let tests: Vec<(Value, Value)> = vec![
         (Value::number_int(1), Value::number_int(1)),

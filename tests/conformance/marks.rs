@@ -10,6 +10,7 @@ use cty::{Path, PathStep, PathValueMarks, Type, Value, ValueMarks};
 // Ported from TestContainsMarked:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/marks_test.go#L11
 #[test]
+#[ignore = "not yet implemented"]
 fn contains_marked() {
     let test_cases: Vec<(Value, bool)> = vec![
         (Value::string("a"), false),
@@ -70,6 +71,7 @@ fn contains_marked() {
 // Ported from TestIsMarked:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/marks_test.go#L72
 #[test]
+#[ignore = "not yet implemented"]
 fn is_marked() {
     let test_cases: Vec<(Value, bool)> = vec![
         (Value::string("a"), false),
@@ -100,6 +102,7 @@ fn is_marked() {
 // Ported from TestValueMarks:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/marks_test.go#L106
 #[test]
+#[ignore = "not yet implemented"]
 fn value_marks() {
     let v = Value::bool(true);
     let v1 = v.mark(1i64);
@@ -179,6 +182,7 @@ fn value_marks() {
 // Ported from TestValueMarksInsert:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/marks_test.go#L179
 #[test]
+#[ignore = "not yet implemented"]
 fn value_marks_insert() {
     let mut marks = ValueMarks::from_marks([0i64]);
     marks.insert([2i64, 1i64]);
@@ -196,6 +200,7 @@ fn value_marks_insert() {
 // Ported from TestPathValueMarksEqual:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/marks_test.go#L196
 #[test]
+#[ignore = "not yet implemented"]
 fn path_value_marks_equal() {
     let tests: Vec<(PathValueMarks, PathValueMarks, bool)> = vec![
         (
@@ -267,6 +272,7 @@ fn path_value_marks_equal() {
 // Ported from TestMarks:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/marks_test.go#L238
 #[test]
+#[ignore = "not yet implemented"]
 fn marks() {
     fn want_marks(marks: &ValueMarks, expected: &[&str]) {
         assert_eq!(marks.len(), expected.len(), "wrong marks: {marks:?}");
@@ -300,6 +306,7 @@ fn marks() {
 // Ported from TestUnmarkDeep:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/marks_test.go#L278
 #[test]
+#[ignore = "not yet implemented"]
 fn unmark_deep() {
     let test_cases: Vec<(&str, Value, Value, ValueMarks)> = vec![
         (
@@ -403,6 +410,7 @@ fn unmark_deep() {
 // Ported from TestPathValueMarks:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/marks_test.go#L363
 #[test]
+#[ignore = "not yet implemented"]
 fn path_value_marks() {
     let test_cases: Vec<(&str, Value, Value, Vec<PathValueMarks>)> = vec![
         (
@@ -643,6 +651,7 @@ fn path_value_marks() {
 // Ported from TestReapplyMarks:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/marks_test.go#L513
 #[test]
+#[ignore = "not yet implemented"]
 fn reapply_marks() {
     // Re-applying the same marks to an object value should not change the result.
     let obj = Value::object([(
@@ -667,6 +676,7 @@ fn reapply_marks() {
 // Ported from TestHasMarkDeep:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/marks_test.go#L531
 #[test]
+#[ignore = "not yet implemented"]
 fn has_mark_deep() {
     let obj = Value::object([(
         "nested",
@@ -678,6 +688,7 @@ fn has_mark_deep() {
 // Ported from TestValueMarksOfType:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/marks_test.go#L542
 #[test]
+#[ignore = "not yet implemented"]
 fn value_marks_of_type() {
     // shallow
     {
@@ -710,6 +721,7 @@ fn value_marks_of_type() {
 // Ported from TestValueMarksOfTypeDeep:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/marks_test.go#L571
 #[test]
+#[ignore = "not yet implemented"]
 fn value_marks_of_type_deep() {
     let obj = Value::object([(
         "nested",

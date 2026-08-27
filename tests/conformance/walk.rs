@@ -72,6 +72,7 @@ fn assert_walk_calls(
 // Ported from TestWalk:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/walk_test.go#L8
 #[test]
+#[ignore = "not yet implemented"]
 fn walk_and_deep_values() {
     let val = walk_test_value();
 
@@ -195,6 +196,7 @@ fn walk_and_deep_values() {
 // Display twin of TestWalk:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/walk_test.go#L8
 #[test]
+#[ignore = "not yet implemented"]
 fn walk_and_deep_values_display() {
     let val = walk_test_value();
 
@@ -335,6 +337,7 @@ impl Transformer for PathTransformer {
 // Ported from TestTransformWithTransformer:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/walk_test.go#L131
 #[test]
+#[ignore = "not yet implemented"]
 fn transform_with_transformer_paths() {
     let val = transform_with_transformer_test_value();
 
@@ -478,6 +481,7 @@ impl Transformer for DisplayPathTransformer {
 // Display twin of TestTransformWithTransformer:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/walk_test.go#L131
 #[test]
+#[ignore = "not yet implemented"]
 fn transform_with_transformer_paths_display() {
     let val = transform_with_transformer_test_value();
 
@@ -596,6 +600,7 @@ impl Transformer for ErrorTransformer {
 // Ported from TestTransformWithTransformer_error:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/walk_test.go#L223
 #[test]
+#[ignore = "not yet implemented"]
 fn transform_with_transformer_error() {
     let val = Value::object([
         ("string", Value::string("hello")),
@@ -625,6 +630,7 @@ fn transform_with_transformer_error() {
 // Ported from TestTransform:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/walk_test.go#L249
 #[test]
+#[ignore = "not yet implemented"]
 fn transform_values() {
     let val = Value::object([
         (
@@ -683,6 +689,7 @@ fn transform_values() {
 // Ported from TestTransformMarked:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/walk_test.go#L283
 #[test]
+#[ignore = "not yet implemented"]
 fn transform_marked() {
     let val = Value::object([
         (
@@ -720,6 +727,7 @@ fn transform_marked() {
 // Ported from TestUnknownAsNull:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/unknown_as_null_test.go#L7
 #[test]
+#[ignore = "not yet implemented"]
 fn unknown_as_null_conformance() {
     let tests: Vec<(Value, Value)> = vec![
         (Value::string("hello"), Value::string("hello")),

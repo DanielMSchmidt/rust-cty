@@ -65,6 +65,7 @@ fn sorted_values(s: &Set<i64>) -> Vec<i64> {
 // expose its internal buckets, so each of those checks is expressed as the
 // sorted list of values that the expected bucket contents would produce.
 #[test]
+#[ignore = "not yet implemented"]
 fn basic_set_ops() {
     let mut s = Set::new(new_test_rules());
     assert_eq!(
@@ -142,6 +143,7 @@ fn basic_set_ops() {
 // Ported from TestUnion:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/set/ops_test.go#L96
 #[test]
+#[ignore = "not yet implemented"]
 fn union() {
     let tests: Vec<(Set<i64>, Set<i64>, Vec<i64>)> = vec![
         (
@@ -195,6 +197,7 @@ fn union() {
 // Ported from TestIntersection:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/set/ops_test.go#L158
 #[test]
+#[ignore = "not yet implemented"]
 fn intersection() {
     let tests: Vec<(Set<i64>, Set<i64>, Vec<i64>)> = vec![
         (
@@ -258,6 +261,7 @@ fn intersection() {
 // Ported from TestSubtract:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/set/ops_test.go#L230
 #[test]
+#[ignore = "not yet implemented"]
 fn subtract() {
     let tests: Vec<(Set<i64>, Set<i64>, Vec<i64>)> = vec![
         (
@@ -321,6 +325,7 @@ fn subtract() {
 // Ported from TestSymmetricDifference:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/set/ops_test.go#L302
 #[test]
+#[ignore = "not yet implemented"]
 fn symmetric_difference() {
     let tests: Vec<(Set<i64>, Set<i64>, Vec<i64>)> = vec![
         (

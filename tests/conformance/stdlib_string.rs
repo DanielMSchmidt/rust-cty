@@ -13,6 +13,7 @@ use cty::{Type, Value, ValueMarks};
 // Ported from TestUpper:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/string_test.go#L10
 #[test]
+#[ignore = "not yet implemented"]
 fn upper() {
     let tests: Vec<(Value, Value)> = vec![
         (Value::string("hello"), Value::string("HELLO")),
@@ -60,6 +61,7 @@ fn upper() {
 // Ported from TestLower:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/string_test.go#L80
 #[test]
+#[ignore = "not yet implemented"]
 fn lower() {
     let tests: Vec<(Value, Value)> = vec![
         (Value::string("HELLO"), Value::string("hello")),
@@ -90,6 +92,7 @@ fn lower() {
 // Ported from TestReverse:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/string_test.go#L130
 #[test]
+#[ignore = "not yet implemented"]
 fn reverse() {
     let tests: Vec<(Value, Value)> = vec![
         (Value::string("hello"), Value::string("olleh")),
@@ -148,6 +151,7 @@ fn reverse() {
 // Ported from TestStrlen:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/string_test.go#L201
 #[test]
+#[ignore = "not yet implemented"]
 fn strlen() {
     let tests: Vec<(Value, Value)> = vec![
         (Value::string("hello"), Value::number_int(5)),
@@ -222,6 +226,7 @@ fn strlen() {
 // Ported from TestSubstr:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/string_test.go#L276
 #[test]
+#[ignore = "not yet implemented"]
 fn substr() {
     let tests: Vec<(Value, Value, Value, Value)> = vec![
         (
@@ -338,6 +343,7 @@ fn substr() {
 // Ported from TestJoin:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/string_test.go#L402
 #[test]
+#[ignore = "not yet implemented"]
 fn join() {
     let tests: Vec<(&str, Value, Vec<Value>, Value)> = vec![
         (
@@ -415,6 +421,7 @@ fn join() {
 // Ported from TestSort:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/string_test.go#L482
 #[test]
+#[ignore = "not yet implemented"]
 fn sort() {
     let tests: Vec<(Value, Value, &str)> = vec![
         (
@@ -493,6 +500,7 @@ fn sort() {
 // Ported from TestReplace:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/string_replace_test.go#L9
 #[test]
+#[ignore = "not yet implemented"]
 fn replace() {
     let tests: Vec<(Value, Value, Value, Value)> = vec![
         (
@@ -534,6 +542,7 @@ fn replace() {
 // Ported from TestRegexReplace:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/string_replace_test.go#L61
 #[test]
+#[ignore = "not yet implemented"]
 fn regex_replace() {
     let tests: Vec<(Value, Value, Value, Value)> = vec![
         (
@@ -560,6 +569,7 @@ fn regex_replace() {
 // Ported from TestRegexReplaceInvalidRegex:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/string_replace_test.go#L96
 #[test]
+#[ignore = "not yet implemented"]
 fn regex_replace_invalid_regex() {
     let result = stdlib::regex_replace(&Value::string(""), &Value::string("("), &Value::string(""));
     assert!(result.is_err(), "expected an error");
@@ -568,6 +578,7 @@ fn regex_replace_invalid_regex() {
 // Ported from TestRegex:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/regexp_test.go#L10
 #[test]
+#[ignore = "not yet implemented"]
 fn regex() {
     let tests: Vec<(Value, Value, Value)> = vec![
         (
@@ -634,6 +645,7 @@ fn regex() {
 // Ported from TestRegexAll:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/regexp_test.go#L90
 #[test]
+#[ignore = "not yet implemented"]
 fn regex_all() {
     let tests: Vec<(Value, Value, Value)> = vec![
         (

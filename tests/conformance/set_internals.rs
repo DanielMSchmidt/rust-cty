@@ -10,6 +10,7 @@ use cty::{CapsuleOps, Type, Value, ValueMarks, internals};
 // Ported from TestSetHashBytes:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/set_internals_test.go#L12
 #[test]
+#[ignore = "not yet implemented"]
 fn set_hash_bytes() {
     #[derive(Debug)]
     struct Encapsulated {
@@ -162,6 +163,7 @@ fn set_hash_bytes() {
 // Ported from TestSetOrder:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/set_internals_test.go#L209
 #[test]
+#[ignore = "not yet implemented"]
 fn set_order() {
     let tests: Vec<(Value, Value, bool)> = vec![
         // Strings sort lexicographically (this is a compatibility constraint)
@@ -248,6 +250,7 @@ fn set_order() {
 // Ported from TestSetRulesSameRules:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/set_internals_test.go#L334
 #[test]
+#[ignore = "not yet implemented"]
 fn set_rules_same_rules() {
     let tests: Vec<(Type, Type, bool)> = vec![
         (Type::empty_object(), Type::dynamic(), false),

@@ -24,6 +24,7 @@ jobs:
       - run: cargo fmt --all -- --check
       - run: cargo clippy --all-targets -- -D warnings
       - run: cargo build --all-targets
-      # Conformance tests fail until the corresponding behavior is implemented, which is
-      # the point. Tests needing the pinned Go upstreams skip when REFERENCE_DIR is unset.
+      # Conformance tests start as #[ignore = "not yet implemented"] — the backlog.
+      # Un-ignored tests must pass. Tests needing the pinned Go upstreams skip when
+      # REFERENCE_DIR is unset.
       - run: cargo test

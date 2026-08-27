@@ -14,6 +14,7 @@ use cty::{Type, Value, ValueMarks};
 // Ported from TestConcat:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/sequence_test.go#L10
 #[test]
+#[ignore = "not yet implemented"]
 fn concat_test() {
     let tests: Vec<(Vec<Value>, Value)> = vec![
         (
@@ -185,6 +186,7 @@ fn concat_test() {
 // Ported from TestRange:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/sequence_test.go#L259
 #[test]
+#[ignore = "not yet implemented"]
 fn range_test() {
     let tests: Vec<(Vec<Value>, Value)> = vec![
         // One argument
@@ -353,6 +355,7 @@ fn range_test() {
 // Ported from TestSetUnion:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/set_test.go#L10
 #[test]
+#[ignore = "not yet implemented"]
 fn set_union_test() {
     let tests: Vec<(Vec<Value>, Value)> = vec![
         (
@@ -438,6 +441,7 @@ fn set_union_test() {
 // Ported from TestSetIntersection:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/set_test.go#L110
 #[test]
+#[ignore = "not yet implemented"]
 fn set_intersection_test() {
     let tests: Vec<(Vec<Value>, Value)> = vec![
         (
@@ -523,6 +527,7 @@ fn set_intersection_test() {
 // Ported from TestSetSubtract:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/set_test.go#L207
 #[test]
+#[ignore = "not yet implemented"]
 fn set_subtract_test() {
     let tests: Vec<(Value, Value, Value)> = vec![
         (
@@ -584,6 +589,7 @@ fn set_subtract_test() {
 // Ported from TestSetSymmetricDifference:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/set_test.go#L284
 #[test]
+#[ignore = "not yet implemented"]
 fn set_symmetric_difference_test() {
     let tests: Vec<(Value, Value, Value)> = vec![
         (

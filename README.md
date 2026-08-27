@@ -30,7 +30,10 @@ Each carries the upstream path and pinned commit SHA
 values, pointer identity, big.Float aliasing, struct reflection) are kept in place as
 `NOTE(port)` comments rather than silently dropped.
 
-They fail until the corresponding behavior exists. That is the backlog, not a defect.
+Every test starts marked `#[ignore = "not yet implemented"]`; that is the backlog.
+As behavior lands, run the backlog with `cargo test -- --ignored`, and delete the
+`#[ignore]` from tests that now pass — from then on they gate CI like any other
+test. `cargo test -- --include-ignored` runs everything.
 
 Tests that need the pinned go-cty checkout read `$REFERENCE_DIR` and skip when it is unset.
 

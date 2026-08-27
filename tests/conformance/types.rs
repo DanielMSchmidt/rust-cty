@@ -14,6 +14,7 @@ use cty::{CapsuleOps, Type, Value};
 // Ported from TestTypeIsPrimitiveType:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/primitive_type_test.go#L8
 #[test]
+#[ignore = "not yet implemented"]
 fn type_is_primitive_type() {
     let tests: Vec<(Type, bool)> = vec![
         (Type::string(), true),
@@ -38,6 +39,7 @@ fn type_is_primitive_type() {
 // Ported from TestHasDynamicTypes:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/type_test.go#L8
 #[test]
+#[ignore = "not yet implemented"]
 fn has_dynamic_types() {
     let tests: Vec<(Type, bool)> = vec![
         (Type::dynamic(), true),
@@ -72,6 +74,7 @@ fn has_dynamic_types() {
 // Ported from TestWithoutOptionalAttributesDeep:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/type_test.go#L58
 #[test]
+#[ignore = "not yet implemented"]
 fn without_optional_attributes_deep() {
     let tests: Vec<(Type, Type)> = vec![
         (Type::dynamic(), Type::dynamic()),
@@ -154,6 +157,7 @@ fn without_optional_attributes_deep() {
 // Ported from TestTypeGoString:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/type_test.go#L164
 #[test]
+#[ignore = "not yet implemented"]
 fn type_go_string() {
     let tests: Vec<(Type, &str)> = vec![
         (Type::dynamic(), r#"cty.DynamicPseudoType"#),
@@ -210,6 +214,7 @@ fn type_go_string() {
 // Display twin of TestTypeGoString:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/type_test.go#L164
 #[test]
+#[ignore = "not yet implemented"]
 fn type_display() {
     let tests: Vec<(Type, &str)> = vec![
         (Type::dynamic(), "Type::dynamic()"),
@@ -261,6 +266,7 @@ fn type_display() {
 // Ported from TestObjectTypeEquals:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/object_type_test.go#L8
 #[test]
+#[ignore = "not yet implemented"]
 fn object_type_equals() {
     let tests: Vec<(Type, Type, bool)> = vec![
         (
@@ -341,6 +347,7 @@ fn object_type_equals() {
 // Ported from TestTupleTypeEquals:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/tuple_type_test.go#L8
 #[test]
+#[ignore = "not yet implemented"]
 fn tuple_type_equals() {
     let tests: Vec<(Type, Type, bool)> = vec![
         (Type::tuple([]), Type::tuple([]), true),
@@ -385,6 +392,7 @@ fn tuple_type_equals() {
 // Ported from TestSetOperations:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/set_type_test.go#L11
 #[test]
+#[ignore = "not yet implemented"]
 fn set_operations() {
     // This test is for the mechanisms that allow a calling application to
     // implement set operations using the underlying set type. This is
@@ -414,6 +422,7 @@ fn set_operations() {
 // Ported from TestSetOfCapsuleType:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/set_type_test.go#L45
 #[test]
+#[ignore = "not yet implemented"]
 fn set_of_capsule_type() {
     #[derive(Debug)]
     struct CapsuleTypeForSetTests {

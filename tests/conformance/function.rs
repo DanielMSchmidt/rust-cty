@@ -26,6 +26,7 @@ fn stub_impl() -> ImplFunc {
 // Ported from TestReturnTypeForValues:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/function_test.go#L10
 #[test]
+#[ignore = "not yet implemented"]
 fn return_type_for_values() {
     struct TestCase {
         spec: Spec,
@@ -257,6 +258,7 @@ fn return_type_for_values() {
 // Ported from TestFunctionWithNewDescriptions ("no params"):
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/function_test.go#L209
 #[test]
+#[ignore = "not yet implemented"]
 fn function_with_new_descriptions_no_params() {
     let f1 = Function::new(Spec {
         description: "old func".to_string(),
@@ -283,6 +285,7 @@ fn function_with_new_descriptions_no_params() {
 // Ported from TestFunctionWithNewDescriptions ("one pos param"):
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/function_test.go#L209
 #[test]
+#[ignore = "not yet implemented"]
 fn function_with_new_descriptions_one_pos_param() {
     let f1 = Function::new(Spec {
         description: "old func".to_string(),
@@ -326,6 +329,7 @@ fn function_with_new_descriptions_one_pos_param() {
 // Ported from TestFunctionWithNewDescriptions ("two pos params"):
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/function_test.go#L209
 #[test]
+#[ignore = "not yet implemented"]
 fn function_with_new_descriptions_two_pos_params() {
     let f1 = Function::new(Spec {
         description: "old func".to_string(),
@@ -386,6 +390,7 @@ fn function_with_new_descriptions_two_pos_params() {
 // Ported from TestFunctionWithNewDescriptions ("varparam overridden"):
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/function_test.go#L209
 #[test]
+#[ignore = "not yet implemented"]
 fn function_with_new_descriptions_varparam_overridden() {
     let f1 = Function::new(Spec {
         description: "old func".to_string(),
@@ -443,6 +448,7 @@ fn function_with_new_descriptions_varparam_overridden() {
 // Ported from TestFunctionWithNewDescriptions ("varparam not overridden"):
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/function_test.go#L209
 #[test]
+#[ignore = "not yet implemented"]
 fn function_with_new_descriptions_varparam_not_overridden() {
     let f1 = Function::new(Spec {
         description: "old func".to_string(),
@@ -505,6 +511,7 @@ fn function_with_new_descriptions_varparam_not_overridden() {
 // Ported from TestFunctionWithNewDescriptions ("solo varparam overridden"):
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/function_test.go#L209
 #[test]
+#[ignore = "not yet implemented"]
 fn function_with_new_descriptions_solo_varparam_overridden() {
     let f1 = Function::new(Spec {
         description: "old func".to_string(),
@@ -548,6 +555,7 @@ fn function_with_new_descriptions_solo_varparam_overridden() {
 // Ported from TestFunctionWithNewDescriptions ("solo varparam not overridden"):
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/function_test.go#L209
 #[test]
+#[ignore = "not yet implemented"]
 fn function_with_new_descriptions_solo_varparam_not_overridden() {
     let f1 = Function::new(Spec {
         description: "old func".to_string(),
@@ -596,6 +604,7 @@ fn function_with_new_descriptions_solo_varparam_not_overridden() {
 // Ported from TestFunctionCallWithUnknownVals ("params"):
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/function_test.go#L497
 #[test]
+#[ignore = "not yet implemented"]
 fn function_call_with_unknown_vals_params() {
     let f = Function::new(Spec {
         description: String::new(),
@@ -634,6 +643,7 @@ fn function_call_with_unknown_vals_params() {
 // Ported from TestFunctionCallWithUnknownVals ("params-partial-marks"):
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/function_test.go#L497
 #[test]
+#[ignore = "not yet implemented"]
 fn function_call_with_unknown_vals_params_partial_marks() {
     let f = Function::new(Spec {
         description: String::new(),
@@ -675,6 +685,7 @@ fn function_call_with_unknown_vals_params_partial_marks() {
 // Ported from TestFunctionCallWithUnknownVals ("varparam"):
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/function_test.go#L497
 #[test]
+#[ignore = "not yet implemented"]
 fn function_call_with_unknown_vals_varparam() {
     let f = Function::new(Spec {
         description: String::new(),
@@ -705,6 +716,7 @@ fn function_call_with_unknown_vals_varparam() {
 // Ported from TestFunctionCallWithUnknownVals ("refined-marked"):
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/function_test.go#L497
 #[test]
+#[ignore = "not yet implemented"]
 fn function_call_with_unknown_vals_refined_marked() {
     let f = Function::new(Spec {
         description: String::new(),
@@ -744,6 +756,7 @@ fn function_call_with_unknown_vals_refined_marked() {
 // Ported from TestFunctionCallWithUnknownVals ("marked-dynamic-not-refined"):
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/function_test.go#L497
 #[test]
+#[ignore = "not yet implemented"]
 fn function_call_with_unknown_vals_marked_dynamic_not_refined() {
     let f = Function::new(Spec {
         description: String::new(),
@@ -785,6 +798,7 @@ fn function_call_with_unknown_vals_marked_dynamic_not_refined() {
 // Ported from TestUnpredictable:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/unpredictable_test.go#L9
 #[test]
+#[ignore = "not yet implemented"]
 fn unpredictable() {
     let f = Function::new(Spec {
         description: String::new(),

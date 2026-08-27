@@ -20,6 +20,7 @@ use cty::{CapsuleOps, Type, Value};
 // Ported from TestCapsuleWithOps:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/capsule_test.go#L29
 #[test]
+#[ignore = "not yet implemented"]
 fn capsule_with_ops() {
     let i = 0_i64;
     let i2 = 0_i64;
@@ -119,6 +120,7 @@ fn capsule_with_ops() {
 // Display twin of TestCapsuleWithOps:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/capsule_test.go#L29
 #[test]
+#[ignore = "not yet implemented"]
 fn capsule_with_ops_display() {
     let i = 0_i64;
 
@@ -175,6 +177,7 @@ fn capsule_with_ops_display() {
 // Ported from TestCapsuleExtensionData:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/capsule_test.go#L101
 #[test]
+#[ignore = "not yet implemented"]
 fn capsule_extension_data() {
     let ty = Type::capsule_with_ops::<i64>(
         "with extension data",

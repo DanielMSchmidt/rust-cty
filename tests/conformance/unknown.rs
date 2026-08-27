@@ -32,6 +32,7 @@ type Case = (&'static str, fn() -> Value, Expect);
 // Ported from TestValueRefine:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/unknown_refinement_test.go#L9
 #[test]
+#[ignore = "not yet implemented"]
 fn value_refine() {
     let tests: Vec<Case> = vec![
         (

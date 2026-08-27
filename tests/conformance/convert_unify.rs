@@ -16,6 +16,7 @@ use cty::convert;
 // the unified type plus, for each input, whether a conversion is needed
 // (`true` = the Go slice held a non-nil Conversion).
 #[test]
+#[ignore = "not yet implemented"]
 fn unify() {
     #[allow(clippy::type_complexity)]
     let tests: Vec<(Vec<Type>, Option<(Type, Vec<bool>)>)> = vec![

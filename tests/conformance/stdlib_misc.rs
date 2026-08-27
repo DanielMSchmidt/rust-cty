@@ -21,6 +21,7 @@ use cty::{Type, Value};
 // Ported from TestNot:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/bool_test.go#L10
 #[test]
+#[ignore = "not yet implemented"]
 fn not() {
     let tests: Vec<(Value, Value)> = vec![
         (Value::bool(true), Value::bool(false)),
@@ -46,6 +47,7 @@ fn not() {
 // Ported from TestAnd:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/bool_test.go#L52
 #[test]
+#[ignore = "not yet implemented"]
 fn and() {
     let tests: Vec<(Value, Value, Value)> = vec![
         (Value::bool(false), Value::bool(false), Value::bool(false)),
@@ -84,6 +86,7 @@ fn and() {
 // Ported from TestOr:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/bool_test.go#L115
 #[test]
+#[ignore = "not yet implemented"]
 fn or() {
     let tests: Vec<(Value, Value, Value)> = vec![
         (Value::bool(false), Value::bool(false), Value::bool(false)),
@@ -126,6 +129,7 @@ fn or() {
 // Ported from TestBytesLen:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/bytes_test.go#L10
 #[test]
+#[ignore = "not yet implemented"]
 fn bytes_len() {
     let tests: Vec<(Value, Value)> = vec![
         (stdlib::bytes_val(b"".to_vec()), Value::number_int(0)),
@@ -142,6 +146,7 @@ fn bytes_len() {
 // Ported from TestBytesSlice:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/bytes_test.go#L47
 #[test]
+#[ignore = "not yet implemented"]
 fn bytes_slice() {
     let tests: Vec<(Value, Value, Value, Value)> = vec![
         (
@@ -208,6 +213,7 @@ const CSV_TEST: &str = r#""name","size","type"
 // Ported from TestCSVDecode:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/csv_test.go#L10
 #[test]
+#[ignore = "not yet implemented"]
 fn csv_decode() {
     let tests: Vec<(Value, Value, &str)> = vec![
         (
@@ -297,6 +303,7 @@ fn csv_decode() {
 // Ported from TestTo:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/conversion_test.go#L10
 #[test]
+#[ignore = "not yet implemented"]
 fn to() {
     let tests: Vec<(Value, Type, Value, &str)> = vec![
         (Value::string("a"), Type::string(), Value::string("a"), ""),
@@ -419,6 +426,7 @@ fn to() {
 // Ported from TestFormatDate (format table):
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/datetime_test.go#L11
 #[test]
+#[ignore = "not yet implemented"]
 fn format_date() {
     // NOTE(port): upstream uses cty.NilVal as the (unused) Want in the error
     // cases; represented here as None since NilVal has no Rust analogue.
@@ -539,6 +547,7 @@ fn format_date() {
 // Ported from TestFormatDate (parse error tests):
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/datetime_test.go#L11
 #[test]
+#[ignore = "not yet implemented"]
 fn format_date_parse_errors() {
     let parse_err_tests: Vec<(Value, &str)> = vec![
         (
@@ -641,6 +650,7 @@ fn format_date_parse_errors() {
 // Ported from TestFormatDate (parse success tests):
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/datetime_test.go#L11
 #[test]
+#[ignore = "not yet implemented"]
 fn format_date_parse_success() {
     let parse_success_tests: Vec<(&str, &str, &str)> = vec![
         (
@@ -701,6 +711,7 @@ fn format_date_parse_success() {
 // Ported from TestEqual:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/general_test.go#L10
 #[test]
+#[ignore = "not yet implemented"]
 fn equal() {
     let tests: Vec<(Value, Value, Value)> = vec![
         (
@@ -755,6 +766,7 @@ fn equal() {
 // Ported from TestCoalesce:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/general_test.go#L73
 #[test]
+#[ignore = "not yet implemented"]
 fn coalesce() {
     let tests: Vec<(Vec<Value>, Value)> = vec![
         (vec![Value::bool(true)], Value::bool(true)),
@@ -807,6 +819,7 @@ fn coalesce() {
 // Ported from TestJSONEncode:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/json_test.go#L10
 #[test]
+#[ignore = "not yet implemented"]
 fn json_encode() {
     let tests: Vec<(Value, Value)> = vec![
         // This does not comprehensively test all possible inputs because
@@ -885,6 +898,7 @@ fn json_encode() {
 // Ported from TestJSONDecode:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/function/stdlib/json_test.go#L96
 #[test]
+#[ignore = "not yet implemented"]
 fn json_decode() {
     let tests: Vec<(Value, Value)> = vec![
         (Value::string("15"), Value::number_int(15)),

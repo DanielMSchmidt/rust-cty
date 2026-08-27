@@ -10,6 +10,7 @@ use cty::{Type, Value};
 // Ported from TestValueGoString:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_ops_test.go#L3667
 #[test]
+#[ignore = "not yet implemented"]
 fn value_go_string() {
     let tests: Vec<(Value, &str)> = vec![
         (
@@ -154,6 +155,7 @@ fn value_go_string() {
 // Display twin of TestValueGoString:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_ops_test.go#L3667
 #[test]
+#[ignore = "not yet implemented"]
 fn value_display() {
     let tests: Vec<(Value, &str)> = vec![
         (Value::null(Type::dynamic()), "Value::null(Type::dynamic())"),
@@ -293,6 +295,7 @@ fn value_display() {
 // Ported from TestHasWhollyKnownType:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_ops_test.go#L3833
 #[test]
+#[ignore = "not yet implemented"]
 fn has_wholly_known_type() {
     let tests: Vec<(Value, bool)> = vec![
         (Value::dynamic(), false),

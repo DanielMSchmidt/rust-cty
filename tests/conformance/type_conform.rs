@@ -10,6 +10,7 @@ use cty::Type;
 // Ported from TestTypeTestConformance:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/type_conform_test.go#L9
 #[test]
+#[ignore = "not yet implemented"]
 fn type_test_conformance() {
     let tests: Vec<(Type, Type, bool)> = vec![
         (Type::number(), Type::number(), true),

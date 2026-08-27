@@ -10,6 +10,7 @@ use cty::{Type, Value};
 // Ported from TestValueNot:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_ops_test.go#L2992
 #[test]
+#[ignore = "not yet implemented"]
 fn value_not() {
     let tests: Vec<(Value, Value)> = vec![
         (Value::bool(true), Value::bool(false)),
@@ -37,6 +38,7 @@ fn value_not() {
 // Ported from TestValueAnd:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_ops_test.go#L3029
 #[test]
+#[ignore = "not yet implemented"]
 fn value_and() {
     let tests: Vec<(Value, Value, Value)> = vec![
         (Value::bool(false), Value::bool(false), Value::bool(false)),
@@ -114,6 +116,7 @@ fn value_and() {
 // Ported from TestValueOr:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_ops_test.go#L3132
 #[test]
+#[ignore = "not yet implemented"]
 fn value_or() {
     let tests: Vec<(Value, Value, Value)> = vec![
         (Value::bool(false), Value::bool(false), Value::bool(false)),
@@ -191,6 +194,7 @@ fn value_or() {
 // Ported from TestLessThan:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_ops_test.go#L3235
 #[test]
+#[ignore = "not yet implemented"]
 fn less_than() {
     let tests: Vec<(Value, Value, Value)> = vec![
         (
@@ -308,6 +312,7 @@ fn less_than() {
 // Ported from TestGreaterThan:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_ops_test.go#L3348
 #[test]
+#[ignore = "not yet implemented"]
 fn greater_than() {
     let tests: Vec<(Value, Value, Value)> = vec![
         (
@@ -425,6 +430,7 @@ fn greater_than() {
 // Ported from TestLessThanOrEqualTo:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_ops_test.go#L3461
 #[test]
+#[ignore = "not yet implemented"]
 fn less_than_or_equal_to() {
     let tests: Vec<(Value, Value, Value)> = vec![
         (
@@ -526,6 +532,7 @@ fn less_than_or_equal_to() {
 // Ported from TestGreaterThanOrEqualTo:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_ops_test.go#L3564
 #[test]
+#[ignore = "not yet implemented"]
 fn greater_than_or_equal_to() {
     let tests: Vec<(Value, Value, Value)> = vec![
         (

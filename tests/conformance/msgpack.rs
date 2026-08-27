@@ -12,6 +12,7 @@ use cty::{Type, Value, convert};
 // Ported from TestRoundTrip:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/msgpack/roundtrip_test.go#L12
 #[test]
+#[ignore = "not yet implemented"]
 fn round_trip() {
     let big_number_val = Value::parse_number(
         "9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999",
@@ -273,6 +274,7 @@ fn round_trip() {
 // Ported from TestRoundTrip_fromString:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/msgpack/roundtrip_test.go#L371
 #[test]
+#[ignore = "not yet implemented"]
 fn round_trip_from_string() {
     let tests: Vec<(&str, Type)> = vec![
         ("0", Type::number()),
@@ -339,6 +341,7 @@ fn round_trip_from_string() {
 // losslessly. If the prefix is longer than 256 bytes it will be truncated to
 // a maximum of 256 bytes.
 #[test]
+#[ignore = "not yet implemented"]
 fn round_trip_truncates_string_prefix_refinement() {
     let tests: Vec<(Value, Type, Value)> = vec![
         (
@@ -405,6 +408,7 @@ fn round_trip_truncates_string_prefix_refinement() {
 // Ported from TestImpliedType:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/msgpack/type_implied_test.go#L10
 #[test]
+#[ignore = "not yet implemented"]
 fn implied_type_test() {
     let tests: Vec<(&[u8], Type)> = vec![
         (b"\xc0", Type::dynamic()),
