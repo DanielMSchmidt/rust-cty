@@ -173,7 +173,13 @@ pub enum WrangleAction {
 
 /// A callback deciding what to do with each mark encountered by
 /// [`Value::wrangle_marks_deep`] (go-cty: `cty.WrangleFunc`).
-pub type WrangleFunc<'a> = &'a mut dyn FnMut(&Mark, &Path) -> Result<WrangleAction, Error>;
+///
+/// Mirrors Go's `func(mark any, path cty.Path) (ctymarks.WrangleAction, error)`,
+/// whose two results are independent: a `None` action means "no opinion, let
+/// the next wrangler decide" (Go's nil action), and an error may accompany any
+/// action — the action is still applied and the error is accumulated.
+pub type WrangleFunc<'a> =
+    &'a mut dyn FnMut(&Mark, &Path) -> (Option<WrangleAction>, Option<Error>);
 
 impl Value {
     /// Whether this value is directly marked (go-cty: `Value.IsMarked`).
@@ -270,7 +276,13 @@ impl Value {
 
     /// Rewrites the marks of this value and all nested values by applying the
     /// given wrangler callbacks in turn (go-cty: `Value.WrangleMarksDeep`).
-    pub fn wrangle_marks_deep(&self, wranglers: &mut [WrangleFunc<'_>]) -> Result<Value, Error> {
+    ///
+    /// Mirrors Go's `(Value, error)` result pair: the returned value is
+    /// meaningful even when errors were accumulated (wrangling continues past
+    /// errors), so this returns `(Value, Option<Error>)` rather than a
+    /// `Result`. Multiple accumulated errors are joined into one `Error`
+    /// whose message is their newline-joined messages (Go's `errors.Join`).
+    pub fn wrangle_marks_deep(&self, wranglers: &mut [WrangleFunc<'_>]) -> (Value, Option<Error>) {
         let _ = wranglers;
         todo!()
     }
