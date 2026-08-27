@@ -11,15 +11,19 @@
 //! `cty::interop` module, so upstream cases are translated per native type:
 //! Go `int` → `i64`, `uint` → `u64`, `[]T` → `Vec<T>`, `map[string]T` →
 //! `BTreeMap<String, T>`, `[N]T` → `[T; N]`, and pointers → `Option<T>`
-//! (nil pointer ↔ `None` ↔ null). Cases relying on Go struct reflection with
-//! `cty:"…"` tags, `interface{}` (`any`) values, or other reflection-only
-//! features are kept as NOTE(port) comment blocks awaiting a derive macro.
+//! (nil pointer ↔ `None` ↔ null). Go struct reflection with `cty:"…"` tags
+//! translates to the stub derives from the `cty-derive` crate
+//! (`#[derive(IntoCty, FromCty, CtyTyped)]` with `#[cty(attr = "…")]` field
+//! attributes; Go defined types become derived newtypes); cases relying on
+//! `interface{}` (`any`) values or other Go-only reflection are kept as
+//! NOTE(port) comment blocks.
 
 use std::collections::BTreeMap;
 use std::fmt::Debug;
 
 use cty::interop::{self, CtyTyped, FromCty, IntoCty};
 use cty::{Type, Value};
+use cty_derive::{CtyTyped as CtyTypedDerive, FromCty as FromCtyDerive, IntoCty as IntoCtyDerive};
 
 /// Upstream TestIn assertion body: `ToCtyValue` must succeed and the result
 /// must `RawEquals` the wanted value (`==` on `Value` is RawEquals).
@@ -47,6 +51,101 @@ fn assert_implied<T: CtyTyped>(case: &str, want: Type) {
         .unwrap_or_else(|err| panic!("{case}: unexpected error: {err}"));
     assert!(got.equals(&want), "{case}: got {got:?}, want {want:?}");
 }
+
+// ---------------------------------------------------------------------------
+// The Rust analogues of upstream's reflected Go test structs, using the stub
+// derives from the cty-derive crate: each struct mirrors the corresponding Go
+// struct, with `#[cty(attr = "…")]` for each `cty:"…"` tag and untagged Go
+// fields left unannotated; single-field newtypes mirror Go defined types
+// (the `*Alias` types in out_test.go). See docs/api-mapping.md for the
+// attribute grammar. The `allow(dead_code)` is because the derive stubs emit
+// todo!() bodies that read no fields yet.
+// ---------------------------------------------------------------------------
+
+/// Go: `struct{}{}`.
+#[derive(Debug, PartialEq, IntoCtyDerive, FromCtyDerive)]
+struct EmptyStruct;
+
+/// Go: `struct{ Ignored int }` — no cty tag, so the field is ignored.
+#[allow(dead_code)]
+#[derive(IntoCtyDerive)]
+struct IgnoredFieldStruct {
+    ignored: i64,
+}
+
+/// Go: `struct{ Name string `cty:"name"`; Number int `cty:"number"` }`.
+#[allow(dead_code)]
+#[derive(IntoCtyDerive)]
+struct NameNumberStruct {
+    #[cty(attr = "name")]
+    name: String,
+    #[cty(attr = "number")]
+    number: i64,
+}
+
+/// Go: `struct{ Name string `cty:"name"`; Number int }` — Number untagged.
+#[allow(dead_code)]
+#[derive(IntoCtyDerive)]
+struct NameUntaggedNumberStruct {
+    #[cty(attr = "name")]
+    name: String,
+    number: i64,
+}
+
+/// Go: `type testStruct struct{ Name string `cty:"name"`; Number *int `cty:"number"` }`
+/// (out_test.go / type_implied_test.go).
+#[allow(dead_code)]
+#[derive(Debug, PartialEq, FromCtyDerive, CtyTypedDerive)]
+struct TestStruct {
+    #[cty(attr = "name")]
+    name: String,
+    #[cty(attr = "number")]
+    number: Option<i64>,
+}
+
+/// Go: `type testTupleStruct struct{ Name string; Number int }` — untagged,
+/// so fields map to tuple elements positionally.
+#[allow(dead_code)]
+#[derive(Debug, PartialEq, IntoCtyDerive, FromCtyDerive)]
+struct TestTupleStruct {
+    name: String,
+    number: i64,
+}
+
+/// Go: `type boolAlias bool`.
+#[allow(dead_code)]
+#[derive(Debug, PartialEq, FromCtyDerive)]
+struct BoolAlias(bool);
+
+/// Go: `type stringAlias string`.
+#[allow(dead_code)]
+#[derive(Debug, PartialEq, FromCtyDerive)]
+struct StringAlias(String);
+
+/// Go: `type intAlias int`.
+#[allow(dead_code)]
+#[derive(Debug, PartialEq, FromCtyDerive)]
+struct IntAlias(i64);
+
+/// Go: `type float32Alias float32`.
+#[allow(dead_code)]
+#[derive(Debug, PartialEq, FromCtyDerive)]
+struct Float32Alias(f32);
+
+/// Go: `type float64Alias float64`.
+#[allow(dead_code)]
+#[derive(Debug, PartialEq, FromCtyDerive)]
+struct Float64Alias(f64);
+
+/// Go: `type listIntAlias []int`.
+#[allow(dead_code)]
+#[derive(Debug, PartialEq, FromCtyDerive)]
+struct ListIntAlias(Vec<i64>);
+
+/// Go: `type mapIntAlias map[string]int`.
+#[allow(dead_code)]
+#[derive(Debug, PartialEq, FromCtyDerive)]
+struct MapIntAlias(BTreeMap<String, i64>);
 
 // Ported from TestIn:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/gocty/in_test.go#L13
@@ -297,31 +396,76 @@ fn gocty_in() {
     );
 
     // Objects
-    // NOTE(port): the seven upstream object cases all depend on Go
-    // reflection with no Rust analogue yet, and await a derive macro:
-    //   - struct{}{} into cty.EmptyObject → cty.EmptyObjectVal
-    //   - struct{ Ignored int }{1} into cty.EmptyObject → cty.EmptyObjectVal
-    //   - struct{}{} into cty.Object{"name": cty.String} →
-    //     cty.ObjectVal{"name": cty.NullVal(cty.String)}
-    //   - struct{ Name string `cty:"name"`; Number int `cty:"number"` }
-    //     {"Steven", 1} into cty.Object{"name","number"} →
-    //     cty.ObjectVal{"name": "Steven", "number": 1}
-    //   - the same struct with only the `cty:"name"` tag → the untagged
-    //     field is left null
-    //   - map[string]any{"name": "Steven", "number": 1} (heterogeneous
-    //     `any`-valued map) into cty.Object{"name","number"}
-    //   - map[string]any{"number": 1} into cty.Object{"name","number"} →
-    //     missing key becomes cty.NullVal(cty.String)
+    assert_in(
+        "struct{}{} into cty.EmptyObject",
+        EmptyStruct,
+        Type::empty_object(),
+        Value::empty_object(),
+    );
+    assert_in(
+        "struct{ Ignored int }{1} into cty.EmptyObject",
+        IgnoredFieldStruct { ignored: 1 },
+        Type::empty_object(),
+        Value::empty_object(),
+    );
+    assert_in(
+        "struct{}{} into cty.Object({name: String})",
+        EmptyStruct,
+        Type::object([("name", Type::string())]),
+        Value::object([("name", Value::null(Type::string()))]),
+    );
+    assert_in(
+        r#"tagged struct{"Steven", 1} into cty.Object({name, number})"#,
+        NameNumberStruct {
+            name: "Steven".to_string(),
+            number: 1,
+        },
+        Type::object([("name", Type::string()), ("number", Type::number())]),
+        Value::object([
+            ("name", Value::string("Steven")),
+            ("number", Value::number_int(1)),
+        ]),
+    );
+    assert_in(
+        r#"struct with untagged Number{"Steven", 1} into cty.Object({name, number})"#,
+        NameUntaggedNumberStruct {
+            name: "Steven".to_string(),
+            number: 1,
+        },
+        Type::object([("name", Type::string()), ("number", Type::number())]),
+        Value::object([
+            ("name", Value::string("Steven")),
+            ("number", Value::null(Type::number())),
+        ]),
+    );
+    // NOTE(port): the two remaining upstream object cases convert
+    // heterogeneous `map[string]any` values (one with both keys, one where
+    // the missing "name" becomes cty.NullVal(cty.String)); Go interface
+    // reflection has no Rust analogue, so they stay omitted.
 
     // Tuples
-    // NOTE(port): the six upstream tuple cases likewise depend on
-    // reflection over `any` slices or untagged structs and are omitted:
-    //   - []any{} into cty.EmptyTuple → cty.EmptyTupleVal
-    //   - struct{}{} into cty.EmptyTuple → cty.EmptyTupleVal
-    //   - testTupleStruct{"Stephen", 23} into cty.Tuple([String, Number])
-    //   - []any{1, 2, 3} into cty.Tuple([Number, Number, Number])
-    //   - []any{1, "hello", 3} into cty.Tuple([Number, String, Number])
-    //   - []any(nil) into cty.Tuple([Number]) → cty.NullVal of that tuple
+    // NOTE(port): upstream first converts `[]any{}` into cty.EmptyTuple;
+    // heterogeneous `any` slices have no Rust analogue (see the note after
+    // the struct cases below).
+    assert_in(
+        "struct{}{} into cty.EmptyTuple",
+        EmptyStruct,
+        Type::empty_tuple(),
+        Value::empty_tuple(),
+    );
+    assert_in(
+        r#"testTupleStruct{"Stephen", 23} into cty.Tuple([String, Number])"#,
+        TestTupleStruct {
+            name: "Stephen".to_string(),
+            number: 23,
+        },
+        Type::tuple([Type::string(), Type::number()]),
+        Value::tuple([Value::string("Stephen"), Value::number_int(23)]),
+    );
+    // NOTE(port): the three remaining upstream tuple cases convert `any`
+    // slices — []any{1, 2, 3}, []any{1, "hello", 3}, and []any(nil) (which
+    // becomes cty.NullVal of the tuple type); Go interface reflection has no
+    // Rust analogue, so they stay omitted.
 
     // Capsules
     // NOTE(port): upstream converts `capsuleANative` (a *capsuleType1Native
@@ -369,13 +513,6 @@ fn gocty_in() {
 #[test]
 #[ignore = "not yet implemented"]
 fn gocty_out() {
-    // NOTE(port): upstream also decodes into Go defined types (aliases):
-    // boolAlias, stringAlias, intAlias, float32Alias, float64Alias,
-    // bigIntAlias, listIntAlias, and mapIntAlias. Reflection handles those
-    // by Kind; Rust newtypes get no blanket FromCty impl (a future derive
-    // macro would provide one), so the eight alias cases are omitted
-    // throughout this test.
-
     // Bool
     assert_out("cty.True into bool", Value::bool(true), true);
     assert_out("cty.False into bool", Value::bool(false), false);
@@ -384,6 +521,11 @@ fn gocty_out() {
         "cty.NullVal(cty.Bool) into *bool",
         Value::null(Type::bool()),
         None::<bool>,
+    );
+    assert_out(
+        "cty.True into boolAlias",
+        Value::bool(true),
+        BoolAlias(true),
     );
 
     // String
@@ -406,6 +548,11 @@ fn gocty_out() {
         "cty.NullVal(cty.String) into *string",
         Value::null(Type::string()),
         None::<String>,
+    );
+    assert_out(
+        r#"cty.StringVal("hello") into stringAlias"#,
+        Value::string("hello"),
+        StringAlias("hello".to_string()),
     );
 
     // Number
@@ -442,10 +589,24 @@ fn gocty_out() {
         1.5f64,
     );
     // NOTE(port): upstream also decodes cty.NumberFloatVal(1.5) into
-    // *big.Float and cty.NumberIntVal(5) into *big.Int. There are no
-    // big-number types among the interop impls (see docs/api-mapping.md),
-    // so those two cases are omitted (the four alias cases are covered by
-    // the grouped note at the top of this test).
+    // *big.Float, cty.NumberIntVal(5) into *big.Int, and cty.NumberIntVal(5)
+    // into *bigIntAlias. There are no big-number types among the interop
+    // impls (see docs/api-mapping.md), so those three cases are omitted.
+    assert_out(
+        "cty.NumberIntVal(5) into intAlias",
+        Value::number_int(5),
+        IntAlias(5),
+    );
+    assert_out(
+        "cty.NumberFloatVal(1.5) into float32Alias",
+        Value::number_float(1.5),
+        Float32Alias(1.5),
+    );
+    assert_out(
+        "cty.NumberFloatVal(1.5) into float64Alias",
+        Value::number_float(1.5),
+        Float64Alias(1.5),
+    );
 
     // Lists
     assert_out(
@@ -481,6 +642,11 @@ fn gocty_out() {
         Value::list_empty(Type::number()),
         Some([] as [i64; 0]),
     );
+    assert_out(
+        "cty.ListVal([1, 5]) into listIntAlias",
+        Value::list([Value::number_int(1), Value::number_int(5)]),
+        ListIntAlias(vec![1, 5]),
+    );
 
     // Maps
     assert_out(
@@ -504,6 +670,17 @@ fn gocty_out() {
         Value::null(Type::map(Type::number())),
         None::<BTreeMap<String, i64>>,
     );
+    assert_out(
+        r#"cty.MapVal({"one": 1, "five": 5}) into mapIntAlias"#,
+        Value::map([
+            ("one", Value::number_int(1)),
+            ("five", Value::number_int(5)),
+        ]),
+        MapIntAlias(BTreeMap::from([
+            ("one".to_string(), 1i64),
+            ("five".to_string(), 5i64),
+        ])),
+    );
 
     // Sets
     assert_out(
@@ -523,18 +700,45 @@ fn gocty_out() {
     );
 
     // Objects
-    // NOTE(port): the three upstream object cases decode into Go structs
-    // (struct{}{} from cty.EmptyObjectVal, and `testStruct` — fields tagged
-    // `cty:"name"` / `cty:"number"` with a *int pointer field — from object
-    // values, one leaving the absent "number" as a nil pointer and one
-    // recovering ptrToInt(12)). Struct decoding relies on reflection over
-    // cty tags and awaits a derive macro.
+    assert_out(
+        "cty.EmptyObjectVal into struct{}{}",
+        Value::empty_object(),
+        EmptyStruct,
+    );
+    assert_out(
+        r#"cty.ObjectVal({name: "Stephen"}) into testStruct"#,
+        Value::object([("name", Value::string("Stephen"))]),
+        TestStruct {
+            name: "Stephen".to_string(),
+            number: None,
+        },
+    );
+    assert_out(
+        r#"cty.ObjectVal({name: "Stephen", number: 12}) into testStruct"#,
+        Value::object([
+            ("name", Value::string("Stephen")),
+            ("number", Value::number_int(12)),
+        ]),
+        TestStruct {
+            name: "Stephen".to_string(),
+            number: Some(12),
+        },
+    );
 
     // Tuples
-    // NOTE(port): the two upstream tuple cases decode cty.EmptyTupleVal into
-    // struct{}{} and cty.TupleVal(["Stephen", 5]) into the untagged
-    // testTupleStruct{Name, Number} by field order — struct reflection with
-    // no Rust analogue yet.
+    assert_out(
+        "cty.EmptyTupleVal into struct{}{}",
+        Value::empty_tuple(),
+        EmptyStruct,
+    );
+    assert_out(
+        r#"cty.TupleVal(["Stephen", 5]) into testTupleStruct"#,
+        Value::tuple([Value::string("Stephen"), Value::number_int(5)]),
+        TestTupleStruct {
+            name: "Stephen".to_string(),
+            number: 5,
+        },
+    );
 
     // Capsules
     // NOTE(port): the two upstream capsule cases decode a capsule value into
@@ -606,17 +810,19 @@ fn gocty_implied_type() {
     );
 
     // Structs
-    // NOTE(port): upstream implies
-    // cty.Object({"name": cty.String, "number": cty.Number}) from
-    // `testStruct{}` via its `cty:"…"` field tags — struct reflection with
-    // no Rust analogue yet; awaits a derive macro.
+    assert_implied::<TestStruct>(
+        "testStruct{}",
+        Type::object([("name", Type::string()), ("number", Type::number())]),
+    );
 
     // Pointers (unwrapped and ignored)
     assert_implied::<Option<i64>>("*int", Type::number());
     assert_implied::<Option<bool>>("*bool", Type::bool());
     assert_implied::<Option<String>>("*string", Type::string());
-    // NOTE(port): `&testStruct{}` implies the same object type as the
-    // struct case above — omitted for the same reason.
+    assert_implied::<Option<TestStruct>>(
+        "&testStruct{}",
+        Type::object([("name", Type::string()), ("number", Type::number())]),
+    );
 
     // Dynamic
     // NOTE(port): upstream passes cty.NilVal, whose static Go type is

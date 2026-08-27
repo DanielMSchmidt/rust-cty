@@ -86,7 +86,7 @@ conformance tests compile against. Pinned upstream:
 | `msgpack.Marshal/Unmarshal/ImpliedType` | `msgpack::{marshal, unmarshal, implied_type}` (`Vec<u8>`) |
 | `gocty.ToCtyValue/FromCtyValue/ImpliedType` | `interop::{to_cty_value, from_cty_value, implied_type}` via `IntoCty`/`FromCty`/`CtyTyped` traits |
 | Go pointers in gocty | `Option<T>` (`None` ↔ null) |
-| Go structs with `cty:"…"` tags in gocty | no analogue yet (future derive macro); such cases are noted and skipped |
+| Go structs with `cty:"…"` tags in gocty | `#[derive(IntoCty, FromCty, CtyTyped)]` from the `cty-derive` crate (see below) |
 
 ## Conformance test conventions
 
@@ -100,3 +100,20 @@ silently dropped.
 Upstream `GoString` expectations are ported twice: once against `go_string()`
 with the literal Go string, and once against `to_string()` with the
 translated Rust-syntax string.
+
+## The `cty-derive` attribute grammar
+
+The `cty-derive` proc-macro crate provides `#[derive(IntoCty)]`,
+`#[derive(FromCty)]`, and `#[derive(CtyTyped)]`, the analogue of gocty's
+struct reflection. Like the rest of the workspace, the derives currently emit
+`todo!()` bodies — they define the contract the conformance tests compile
+against; the generated logic is to be written by hand later.
+
+- `#[cty(attr = "name")]` on a field ≙ a Go `cty:"name"` tag: the field maps
+  to the object attribute `name`. Fields without the attribute are ignored
+  for object conversion, exactly as untagged Go fields are.
+- Tuple conversion uses no field attributes: struct fields map to tuple
+  elements positionally, as in gocty.
+- `Option<T>` fields ≙ Go pointer fields (`None` ↔ null).
+- Deriving on a single-field newtype (`struct StringAlias(String);`) ≙ a Go
+  defined type (`type stringAlias string`), delegating to the inner type.
