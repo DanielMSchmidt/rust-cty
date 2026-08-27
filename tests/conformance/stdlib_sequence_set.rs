@@ -210,7 +210,10 @@ fn range_test() {
             vec![Value::number_int(1)],
             Value::list([Value::number_int(0)]),
         ),
-        (vec![Value::number_int(0)], Value::list_empty(Type::number())),
+        (
+            vec![Value::number_int(0)],
+            Value::list_empty(Type::number()),
+        ),
         (
             vec![Value::parse_number("5.5").unwrap()],
             Value::list([
