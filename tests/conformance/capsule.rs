@@ -91,7 +91,8 @@ fn capsule_with_ops() {
         // run time), so here we pin the deterministic prefix and the closing
         // parentheses around the address rendering.
         let got = v.go_string();
-        let want_prefix = r#"cty.CapsuleVal(cty.Capsule("without ops", reflect.TypeOf(0)), (*int)(0x"#;
+        let want_prefix =
+            r#"cty.CapsuleVal(cty.Capsule("without ops", reflect.TypeOf(0)), (*int)(0x"#;
         assert!(
             got.starts_with(want_prefix) && got.ends_with("))"),
             "without ops: wrong GoString result: {got}"
