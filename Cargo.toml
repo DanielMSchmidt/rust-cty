@@ -1,5 +1,6 @@
 [workspace]
 # Own workspace: this repo is independent of the terraform-rewrite workbench it sits inside.
+members = ["cty-derive"]
 
 [package]
 name = "cty"
@@ -16,6 +17,9 @@ publish = false
 [dependencies]
 
 [dev-dependencies]
+# Stub derives for the interop traits, used only by the conformance tests until
+# the real derive implementations land; see cty-derive/src/lib.rs.
+cty-derive = { path = "cty-derive" }
 
 [lints.rust]
 missing_docs = "warn"
