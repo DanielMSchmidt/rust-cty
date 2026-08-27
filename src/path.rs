@@ -148,6 +148,22 @@ impl Path {
     pub fn error(&self, message: impl Into<String>) -> Error {
         Error::new_at_path(self.clone(), message)
     }
+
+    /// The Go-syntax representation of this path, byte-for-byte identical to
+    /// go-cty's `GoString` rendering, e.g.
+    /// `cty.Path{cty.GetAttrStep{Name:"foo"}}` (`cty.Path(nil)` when empty).
+    pub fn go_string(&self) -> String {
+        todo!()
+    }
+}
+
+/// Renders the path as the Rust expression that constructs it, e.g.
+/// `Path::new().attr("foo")` — the Rust analogue of [`Path::go_string`].
+impl std::fmt::Display for Path {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let _ = f;
+        todo!()
+    }
 }
 
 /// A mutable set of [`Path`]s (go-cty: `cty.PathSet`).
