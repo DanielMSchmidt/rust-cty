@@ -404,4 +404,789 @@ impl PartialEq for Value {
 }
 
 #[cfg(test)]
-mod conformance;
+mod conformance {
+    //! Conformance tests transcribed from go-cty
+    //! (github.com/zclconf/go-cty @ a918e1174fcf2a25b7a222e7e78b00ea40ace26c):
+    //!   cty/value_init_test.go
+    //!
+    //! Expected values are literals from the upstream tables; see
+    //! docs/api-mapping.md for the Go→Rust API correspondence.
+
+    use crate::{Value, ValueMarks};
+
+    // Ported from TestSetVal:
+    // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_init_test.go#L8
+    #[test]
+    #[ignore = "not yet implemented"]
+    fn set_val() {
+        let plain = Value::set([Value::bool(true)]);
+        let marked = Value::set([Value::bool(true)]).mark(1_i64);
+        let deep_marked =
+            Value::set([Value::bool(true).mark(2_i64), Value::bool(true).mark(3_i64)]);
+
+        assert_ne!(
+            plain, marked,
+            "plain should be unequal to marked\nplain:  {plain:?}\nmarked: {marked:?}"
+        );
+        assert_ne!(
+            marked, deep_marked,
+            "marked should be unequal to deepMarked\nmarked:      {marked:?}\ndeepmarked: {deep_marked:?}"
+        );
+        {
+            let got = marked.marks();
+            let want = ValueMarks::from_marks([1_i64]);
+            assert_eq!(got, want, "wrong marks for marked");
+        }
+        {
+            let got = deep_marked.marks();
+            let want = ValueMarks::from_marks([2_i64, 3_i64]);
+            // Both 2 and 3 marks are preserved even though both of them are
+            // marking the same value True, and thus the resulting set contains
+            // only one element.
+            assert_eq!(got, want, "wrong marks for deepMarked");
+        }
+
+        // NOTE(port): upstream calls the unexported `unmarkForce`, which is
+        // `Unmark` with the returned marks discarded.
+        {
+            let (got, _) = deep_marked.unmark();
+            let want = Value::set([Value::bool(true)]);
+            assert_eq!(got, want, "wrong unmarked value for deepMarked");
+        }
+    }
+
+    // Ported from TestSetVal_nestedStructures:
+    // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_init_test.go#L34
+    #[test]
+    #[ignore = "not yet implemented"]
+    fn set_val_nested_structures() {
+        let test_cases: Vec<(&str, Vec<Value>)> = vec![
+            ("set", vec![Value::set([Value::number(5)])]),
+            (
+                "doubly nested set",
+                vec![Value::set([Value::set([Value::number(5)])])],
+            ),
+            ("list", vec![Value::list([Value::number(5)])]),
+            (
+                "doubly nested list",
+                vec![Value::list([Value::list([Value::number(5)])])],
+            ),
+            ("map", vec![Value::map([("key", Value::number(5))])]),
+            (
+                "doubly nested map",
+                vec![Value::map([(
+                    "key",
+                    Value::map([("child", Value::string("hello world"))]),
+                )])],
+            ),
+            ("tuple", vec![Value::tuple([Value::number(5)])]),
+            (
+                "doubly nested tuple",
+                vec![Value::tuple([Value::tuple([Value::number(5)])])],
+            ),
+        ];
+
+        for (i, (name, elems)) in test_cases.into_iter().enumerate() {
+            // Each case just needs to construct without panicking.
+            let result =
+                std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| Value::set(elems)));
+            assert!(result.is_ok(), "case {i}-{name}: Value::set panicked");
+        }
+    }
+
+    // Ported from TestCanListVal:
+    // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_init_test.go#L120
+    #[test]
+    #[ignore = "not yet implemented"]
+    fn can_list_val() {
+        let test_cases: Vec<(Vec<Value>, bool)> = vec![
+            // Valid lists
+            (vec![Value::string("Hello"), Value::string("World")], true),
+            (vec![Value::number(13), Value::number(31)], true),
+            (vec![Value::bool(true), Value::bool(false)], true),
+            (
+                vec![
+                    Value::list([Value::string("Hello"), Value::string("World")]),
+                    Value::list([
+                        Value::string("beep"),
+                        Value::string("boop"),
+                        Value::string("bloop"),
+                    ]),
+                ],
+                true,
+            ),
+            (
+                vec![
+                    Value::map([("a", Value::string("Hello"))]),
+                    Value::map([("c", Value::string("World"))]),
+                ],
+                true,
+            ),
+            (
+                vec![
+                    Value::set([Value::string("Hello"), Value::string("World")]),
+                    Value::set([
+                        Value::string("beep"),
+                        Value::string("boop"),
+                        Value::string("bloop"),
+                    ]),
+                ],
+                true,
+            ),
+            // invalid list elements
+            (vec![Value::string("hello"), Value::number(13)], false),
+            (
+                vec![
+                    Value::list([Value::string("Hello"), Value::string("World")]),
+                    Value::map([("a", Value::string("bloop"))]),
+                ],
+                false,
+            ),
+            // List of string and List of lists
+            (
+                vec![
+                    Value::list([Value::string("Hello"), Value::string("World")]),
+                    Value::list([
+                        Value::list([Value::string("a"), Value::string("b")]),
+                        Value::list([Value::string("c"), Value::string("d")]),
+                    ]),
+                ],
+                false,
+            ),
+            // Inconsistent map elements
+            (
+                vec![
+                    Value::map([("a", Value::string("Hello"))]),
+                    Value::map([("a", Value::bool(true))]),
+                ],
+                false,
+            ),
+        ];
+
+        for (i, (elems, want)) in test_cases.iter().enumerate() {
+            let got = Value::can_list(elems.clone());
+            assert_eq!(
+                got, *want,
+                "case {i}: wrong result for elements {elems:?}:\ngot {got}, want {want}"
+            );
+        }
+    }
+
+    // Ported from TestCanSetVal:
+    // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_init_test.go#L224
+    #[test]
+    #[ignore = "not yet implemented"]
+    fn can_set_val() {
+        let test_cases: Vec<(Vec<Value>, bool)> = vec![
+            // Valid set elements
+            (vec![Value::string("Hello"), Value::string("World")], true),
+            (
+                vec![
+                    Value::string("Hello").mark(1_i64),
+                    Value::string("World").mark(2_i64),
+                ],
+                true,
+            ),
+            (vec![Value::number(13), Value::number(31)], true),
+            (vec![Value::bool(true), Value::bool(false)], true),
+            (
+                vec![
+                    Value::list([Value::string("Hello"), Value::string("World")]),
+                    Value::list([
+                        Value::string("beep"),
+                        Value::string("boop"),
+                        Value::string("bloop"),
+                    ]),
+                ],
+                true,
+            ),
+            (
+                vec![
+                    Value::map([("a", Value::string("Hello"))]),
+                    Value::map([("c", Value::string("World"))]),
+                ],
+                true,
+            ),
+            (
+                vec![
+                    Value::set([Value::string("Hello"), Value::string("World")]),
+                    Value::set([
+                        Value::string("beep"),
+                        Value::string("boop"),
+                        Value::string("bloop"),
+                    ]),
+                ],
+                true,
+            ),
+            // invalid set elements
+            (vec![Value::string("hello"), Value::number(13)], false),
+            (
+                vec![
+                    Value::list([Value::string("Hello"), Value::string("World")]),
+                    Value::map([("a", Value::string("bloop"))]),
+                ],
+                false,
+            ),
+            // List of string and List of lists
+            (
+                vec![
+                    Value::list([Value::string("Hello"), Value::string("World")]),
+                    Value::list([
+                        Value::list([Value::string("a"), Value::string("b")]),
+                        Value::list([Value::string("c"), Value::string("d")]),
+                    ]),
+                ],
+                false,
+            ),
+            // Inconsistent map elements
+            (
+                vec![
+                    Value::map([("a", Value::string("Hello"))]),
+                    Value::map([("a", Value::bool(true))]),
+                ],
+                false,
+            ),
+        ];
+
+        for (i, (elems, want)) in test_cases.iter().enumerate() {
+            let got = Value::can_set(elems);
+            assert_eq!(
+                got, *want,
+                "case {i}: wrong result for elements {elems:?}:\ngot {got}, want {want}"
+            );
+        }
+    }
+
+    // Ported from TestCanMapVal:
+    // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_init_test.go#L332
+    #[test]
+    #[ignore = "not yet implemented"]
+    fn can_map_val() {
+        fn entries<const N: usize>(pairs: [(&str, Value); N]) -> Vec<(String, Value)> {
+            pairs.into_iter().map(|(k, v)| (k.to_string(), v)).collect()
+        }
+
+        let test_cases: Vec<(Vec<(String, Value)>, bool)> = vec![
+            // Valid lists
+            (
+                entries([("a", Value::string("Hello")), ("b", Value::string("World"))]),
+                true,
+            ),
+            (
+                entries([("one", Value::number(13)), ("two", Value::number(31))]),
+                true,
+            ),
+            (
+                entries([("one", Value::bool(true)), ("two", Value::bool(false))]),
+                true,
+            ),
+            (
+                entries([
+                    (
+                        "lista",
+                        Value::list([Value::string("Hello"), Value::string("World")]),
+                    ),
+                    (
+                        "listb",
+                        Value::list([
+                            Value::string("beep"),
+                            Value::string("boop"),
+                            Value::string("bloop"),
+                        ]),
+                    ),
+                ]),
+                true,
+            ),
+            (
+                entries([
+                    ("map_a", Value::map([("a", Value::string("Hello"))])),
+                    ("map_b", Value::map([("c", Value::string("World"))])),
+                ]),
+                true,
+            ),
+            (
+                entries([
+                    (
+                        "set_a",
+                        Value::set([Value::string("Hello"), Value::string("World")]),
+                    ),
+                    (
+                        "set_b",
+                        Value::set([
+                            Value::string("beep"),
+                            Value::string("boop"),
+                            Value::string("bloop"),
+                        ]),
+                    ),
+                ]),
+                true,
+            ),
+            // invalid map elements
+            (
+                entries([("one", Value::string("hello")), ("two", Value::number(13))]),
+                false,
+            ),
+            (
+                entries([
+                    (
+                        "one",
+                        Value::list([Value::string("Hello"), Value::string("World")]),
+                    ),
+                    ("two", Value::map([("a", Value::string("bloop"))])),
+                ]),
+                false,
+            ),
+            (
+                entries([
+                    (
+                        "one",
+                        Value::list([Value::string("Hello"), Value::string("World")]),
+                    ),
+                    (
+                        "two",
+                        Value::list([
+                            Value::list([Value::string("a"), Value::string("b")]),
+                            Value::list([Value::string("c"), Value::string("d")]),
+                        ]),
+                    ),
+                ]),
+                false,
+            ),
+            // Inconsistent map elements
+            (
+                entries([
+                    ("one", Value::map([("a", Value::string("Hello"))])),
+                    ("two", Value::map([("a", Value::bool(true))])),
+                ]),
+                false,
+            ),
+        ];
+
+        for (i, (elems, want)) in test_cases.iter().enumerate() {
+            let got = Value::can_map(elems);
+            assert_eq!(
+                got, *want,
+                "case {i}: wrong result for elements {elems:?}:\ngot {got}, want {want}"
+            );
+        }
+    }
+
+    mod value_ops {
+        //! Conformance tests transcribed from go-cty
+        //! (github.com/zclconf/go-cty @ a918e1174fcf2a25b7a222e7e78b00ea40ace26c):
+        //!   cty/value_ops_test.go (TestValueGoString, TestHasWhollyKnownType, TestFloatCopy)
+        //!
+        //! Expected values are literals from the upstream tables; see
+        //! docs/api-mapping.md for the Go→Rust API correspondence.
+
+        use crate::{Type, Value};
+
+        // Ported from TestValueGoString:
+        // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_ops_test.go#L3667
+        //
+        // Upstream TestValueGoString is a single table covering several concepts at once.
+        // It is split below into one test per concept so they can be activated one at
+        // a time. Rows are transcribed verbatim and keep upstream order within a test;
+        // nothing is added, dropped, or rewritten.
+        mod value_go_string {
+            use super::*;
+
+            /// Runs transcribed upstream rows; fixture plumbing only, every
+            /// expected value is a literal from the upstream table.
+            fn check(tests: &[(Value, &str)]) {
+                for (i, (value, want)) in tests.iter().enumerate() {
+                    let got = value.go_string();
+                    assert_eq!(got, *want, "case {i}: wrong go_string result");
+                }
+            }
+
+            // TestValueGoString, primitives:
+            // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_ops_test.go#L3667
+            #[test]
+            #[ignore = "not yet implemented"]
+            fn primitives() {
+                let tests: Vec<(Value, &str)> = vec![
+                    (Value::null(Type::string()), r#"cty.NullVal(cty.String)"#),
+                    (Value::string(""), r#"cty.StringVal("")"#),
+                    (Value::string("hello"), r#"cty.StringVal("hello")"#),
+                    (Value::zero(), r#"cty.NumberIntVal(0)"#),
+                    (Value::number(1.2), r#"cty.NumberFloatVal(1.2)"#),
+                    (
+                        // the "float-ness" of the input is lost because its value is a
+                        // whole number
+                        Value::number(1.0),
+                        r#"cty.NumberIntVal(1)"#,
+                    ),
+                    (
+                        Value::parse_number(
+                            "3.14159265358979323846264338327950288419716939937510582097494459",
+                        ),
+                        r#"cty.MustParseNumberVal("3.14159265358979323846264338327950288419716939937510582097494459")"#,
+                    ),
+                    (Value::bool(true), r#"cty.True"#),
+                    (Value::bool(false), r#"cty.False"#),
+                    (
+                        Value::list_empty(Type::string()),
+                        r#"cty.ListValEmpty(cty.String)"#,
+                    ),
+                    (
+                        Value::set_empty(Type::string()),
+                        r#"cty.SetValEmpty(cty.String)"#,
+                    ),
+                    (Value::empty_tuple(), r#"cty.EmptyTupleVal"#),
+                    (
+                        Value::map_empty(Type::string()),
+                        r#"cty.MapValEmpty(cty.String)"#,
+                    ),
+                    (Value::empty_object(), r#"cty.EmptyObjectVal"#),
+                ];
+
+                check(&tests);
+            }
+
+            // TestValueGoString, collections:
+            // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_ops_test.go#L3667
+            #[test]
+            #[ignore = "not yet implemented"]
+            fn collections() {
+                let tests: Vec<(Value, &str)> = vec![
+                    (
+                        Value::null(Type::tuple([Type::string(), Type::bool()])),
+                        r#"cty.NullVal(cty.Tuple([]cty.Type{cty.String, cty.Bool}))"#,
+                    ),
+                    (
+                        Value::list_empty(Type::list(Type::string())),
+                        r#"cty.ListValEmpty(cty.List(cty.String))"#,
+                    ),
+                    (
+                        Value::list([Value::bool(true)]),
+                        r#"cty.ListVal([]cty.Value{cty.True})"#,
+                    ),
+                    (
+                        Value::set_empty(Type::map(Type::string())),
+                        r#"cty.SetValEmpty(cty.Map(cty.String))"#,
+                    ),
+                    (
+                        Value::set([Value::bool(true)]),
+                        r#"cty.SetVal([]cty.Value{cty.True})"#,
+                    ),
+                    (Value::tuple([] as [Value; 0]), r#"cty.EmptyTupleVal"#),
+                    (
+                        Value::tuple([Value::bool(true)]),
+                        r#"cty.TupleVal([]cty.Value{cty.True})"#,
+                    ),
+                    (
+                        Value::map_empty(Type::set(Type::string())),
+                        r#"cty.MapValEmpty(cty.Set(cty.String))"#,
+                    ),
+                    (
+                        Value::map([("boop", Value::bool(true))]),
+                        r#"cty.MapVal(map[string]cty.Value{"boop":cty.True})"#,
+                    ),
+                    (
+                        Value::object([] as [(&str, Value); 0]),
+                        r#"cty.EmptyObjectVal"#,
+                    ),
+                    (
+                        Value::object([("foo", Value::bool(true))]),
+                        r#"cty.ObjectVal(map[string]cty.Value{"foo":cty.True})"#,
+                    ),
+                ];
+
+                check(&tests);
+            }
+
+            // TestValueGoString, unknowns:
+            // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_ops_test.go#L3667
+            #[test]
+            #[ignore = "not yet implemented"]
+            fn unknowns() {
+                let tests: Vec<(Value, &str)> = vec![
+                    (
+                        Value::null(Type::dynamic()),
+                        r#"cty.NullVal(cty.DynamicPseudoType)"#,
+                    ),
+                    (Value::unknown(Type::dynamic()), r#"cty.DynamicVal"#),
+                    (
+                        Value::unknown(Type::string()),
+                        r#"cty.UnknownVal(cty.String)"#,
+                    ),
+                    (
+                        Value::unknown(Type::tuple([Type::string(), Type::bool()])),
+                        r#"cty.UnknownVal(cty.Tuple([]cty.Type{cty.String, cty.Bool}))"#,
+                    ),
+                    (
+                        Value::unknown(Type::string())
+                            .refine()
+                            .not_null()
+                            .new_value(),
+                        r#"cty.UnknownVal(cty.String).RefineNotNull()"#,
+                    ),
+                    (
+                        Value::unknown(Type::string())
+                            .refine()
+                            .not_null()
+                            .string_prefix("a-")
+                            .new_value(),
+                        r#"cty.UnknownVal(cty.String).Refine().NotNull().StringPrefixFull("a-").NewValue()"#,
+                    ),
+                    (
+                        // The last character of the prefix gets discarded in case the
+                        // next character is a combining diacritic
+                        Value::unknown(Type::string())
+                            .refine()
+                            .not_null()
+                            .string_prefix("foo")
+                            .new_value(),
+                        r#"cty.UnknownVal(cty.String).Refine().NotNull().StringPrefixFull("fo").NewValue()"#,
+                    ),
+                    (
+                        Value::unknown(Type::bool()).refine().not_null().new_value(),
+                        r#"cty.UnknownVal(cty.Bool).RefineNotNull()"#,
+                    ),
+                    (
+                        Value::unknown(Type::number())
+                            .refine()
+                            .number_range_inclusive(Value::zero(), Value::unknown(Type::number()))
+                            .new_value(),
+                        r#"cty.UnknownVal(cty.Number).Refine().NumberLowerBound(cty.NumberIntVal(0), true).NewValue()"#,
+                    ),
+                    (
+                        Value::unknown(Type::number())
+                            .refine()
+                            .number_range_inclusive(Value::zero(), Value::number(1))
+                            .new_value(),
+                        r#"cty.UnknownVal(cty.Number).Refine().NumberLowerBound(cty.NumberIntVal(0), true).NumberUpperBound(cty.NumberIntVal(1), true).NewValue()"#,
+                    ),
+                ];
+
+                check(&tests);
+            }
+        }
+
+        // Rust-syntax twin of value_go_string: the same table with the expectations
+        // translated into this crate's constructor syntax, pinning `Display`.
+        // Display twin of TestValueGoString:
+        // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_ops_test.go#L3667
+        //
+        // Upstream value_display is a single table covering several concepts at once.
+        // It is split below into one test per concept so they can be activated one at
+        // a time. Rows are transcribed verbatim and keep upstream order within a test;
+        // nothing is added, dropped, or rewritten.
+        mod value_display {
+            use super::*;
+
+            /// Runs transcribed upstream rows; fixture plumbing only, every
+            /// expected value is a literal from the upstream table.
+            fn check(tests: &[(Value, &str)]) {
+                for (i, (value, want)) in tests.iter().enumerate() {
+                    let got = value.to_string();
+                    assert_eq!(got, *want, "case {i}: wrong Display result");
+                }
+            }
+
+            // value_display, primitives:
+            // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_ops_test.go#L3667
+            #[test]
+            #[ignore = "not yet implemented"]
+            fn primitives() {
+                let tests: Vec<(Value, &str)> = vec![
+                    (Value::null(Type::string()), "Value::null(Type::string())"),
+                    (Value::string(""), r#"Value::string("")"#),
+                    (Value::string("hello"), r#"Value::string("hello")"#),
+                    (Value::zero(), "Value::number(0)"),
+                    (Value::number(1.2), "Value::number(1.2)"),
+                    (
+                        // the "float-ness" of the input is lost because its value is a
+                        // whole number
+                        Value::number(1.0),
+                        "Value::number(1)",
+                    ),
+                    (
+                        Value::parse_number(
+                            "3.14159265358979323846264338327950288419716939937510582097494459",
+                        ),
+                        r#"Value::parse_number("3.14159265358979323846264338327950288419716939937510582097494459").unwrap()"#,
+                    ),
+                    (Value::bool(true), "Value::bool(true)"),
+                    (Value::bool(false), "Value::bool(false)"),
+                    (
+                        Value::list_empty(Type::string()),
+                        "Value::list_empty(Type::string())",
+                    ),
+                    (
+                        Value::set_empty(Type::string()),
+                        "Value::set_empty(Type::string())",
+                    ),
+                    (Value::empty_tuple(), "Value::empty_tuple()"),
+                    (
+                        Value::map_empty(Type::string()),
+                        "Value::map_empty(Type::string())",
+                    ),
+                    (Value::empty_object(), "Value::empty_object()"),
+                ];
+
+                check(&tests);
+            }
+
+            // value_display, collections:
+            // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_ops_test.go#L3667
+            #[test]
+            #[ignore = "not yet implemented"]
+            fn collections() {
+                let tests: Vec<(Value, &str)> = vec![
+                    (
+                        Value::null(Type::tuple([Type::string(), Type::bool()])),
+                        "Value::null(Type::tuple([Type::string(), Type::bool()]))",
+                    ),
+                    (
+                        Value::list_empty(Type::list(Type::string())),
+                        "Value::list_empty(Type::list(Type::string()))",
+                    ),
+                    (
+                        Value::list([Value::bool(true)]),
+                        "Value::list([Value::bool(true)])",
+                    ),
+                    (
+                        Value::set_empty(Type::map(Type::string())),
+                        "Value::set_empty(Type::map(Type::string()))",
+                    ),
+                    (
+                        Value::set([Value::bool(true)]),
+                        "Value::set([Value::bool(true)])",
+                    ),
+                    (Value::tuple([] as [Value; 0]), "Value::empty_tuple()"),
+                    (
+                        Value::tuple([Value::bool(true)]),
+                        "Value::tuple([Value::bool(true)])",
+                    ),
+                    (
+                        Value::map_empty(Type::set(Type::string())),
+                        "Value::map_empty(Type::set(Type::string()))",
+                    ),
+                    (
+                        Value::map([("boop", Value::bool(true))]),
+                        r#"Value::map([("boop", Value::bool(true))])"#,
+                    ),
+                    (
+                        Value::object([] as [(&str, Value); 0]),
+                        "Value::empty_object()",
+                    ),
+                    (
+                        Value::object([("foo", Value::bool(true))]),
+                        r#"Value::object([("foo", Value::bool(true))])"#,
+                    ),
+                ];
+
+                check(&tests);
+            }
+
+            // value_display, unknowns:
+            // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_ops_test.go#L3667
+            #[test]
+            #[ignore = "not yet implemented"]
+            fn unknowns() {
+                let tests: Vec<(Value, &str)> = vec![
+                    (Value::null(Type::dynamic()), "Value::null(Type::dynamic())"),
+                    (Value::unknown(Type::dynamic()), "Value::dynamic()"),
+                    (
+                        Value::unknown(Type::string()),
+                        "Value::unknown(Type::string())",
+                    ),
+                    (
+                        Value::unknown(Type::tuple([Type::string(), Type::bool()])),
+                        "Value::unknown(Type::tuple([Type::string(), Type::bool()]))",
+                    ),
+                    (
+                        Value::unknown(Type::string())
+                            .refine()
+                            .not_null()
+                            .new_value(),
+                        "Value::unknown(Type::string()).refine_not_null()",
+                    ),
+                    (
+                        Value::unknown(Type::string())
+                            .refine()
+                            .not_null()
+                            .string_prefix("a-")
+                            .new_value(),
+                        r#"Value::unknown(Type::string()).refine().not_null().string_prefix_full("a-").new_value()"#,
+                    ),
+                    (
+                        // The last character of the prefix gets discarded in case the
+                        // next character is a combining diacritic
+                        Value::unknown(Type::string())
+                            .refine()
+                            .not_null()
+                            .string_prefix("foo")
+                            .new_value(),
+                        r#"Value::unknown(Type::string()).refine().not_null().string_prefix_full("fo").new_value()"#,
+                    ),
+                    (
+                        Value::unknown(Type::bool()).refine().not_null().new_value(),
+                        "Value::unknown(Type::bool()).refine_not_null()",
+                    ),
+                    (
+                        Value::unknown(Type::number())
+                            .refine()
+                            .number_range_inclusive(Value::zero(), Value::unknown(Type::number()))
+                            .new_value(),
+                        "Value::unknown(Type::number()).refine().number_range_lower_bound(Value::number(0), true).new_value()",
+                    ),
+                    (
+                        Value::unknown(Type::number())
+                            .refine()
+                            .number_range_inclusive(Value::zero(), Value::number(1))
+                            .new_value(),
+                        "Value::unknown(Type::number()).refine().number_range_lower_bound(Value::number(0), true).number_range_upper_bound(Value::number(1), true).new_value()",
+                    ),
+                ];
+
+                check(&tests);
+            }
+        }
+
+        // Ported from TestHasWhollyKnownType:
+        // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_ops_test.go#L3833
+        #[test]
+        #[ignore = "not yet implemented"]
+        fn has_wholly_known_type() {
+            let tests: Vec<(Value, bool)> = vec![
+                (Value::dynamic(), false),
+                (Value::object([("dyn", Value::dynamic())]), false),
+                (Value::null(Type::object([("dyn", Type::dynamic())])), true),
+                (
+                    Value::tuple([Value::string("a"), Value::null(Type::dynamic())]),
+                    true,
+                ),
+                (
+                    Value::list([Value::object([("null", Value::null(Type::dynamic()))])]),
+                    true,
+                ),
+                (
+                    Value::list([Value::null(Type::object([("dyn", Type::dynamic())]))]),
+                    true,
+                ),
+                (
+                    Value::object([(
+                        "tuple",
+                        Value::tuple([Value::string("a"), Value::null(Type::dynamic())]),
+                    )]),
+                    true,
+                ),
+                (
+                    Value::object([(
+                        "tuple",
+                        Value::tuple([Value::object([("dyn", Value::dynamic())])]),
+                    )]),
+                    false,
+                ),
+            ];
+
+            for (i, (value, want)) in tests.iter().enumerate() {
+                let got = value.has_wholly_known_type();
+                assert_eq!(got, *want, "case {i}: wrong result for {value:?}");
+            }
+        }
+    }
+}
