@@ -10,7 +10,6 @@ use cty::{Value, ValueMarks};
 // Ported from TestSetVal:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_init_test.go#L8
 #[test]
-#[ignore = "not yet implemented"]
 fn set_val() {
     let plain = Value::set([Value::bool(true)]);
     let marked = Value::set([Value::bool(true)]).mark(1_i64);
@@ -50,20 +49,19 @@ fn set_val() {
 // Ported from TestSetVal_nestedStructures:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_init_test.go#L34
 #[test]
-#[ignore = "not yet implemented"]
 fn set_val_nested_structures() {
     let test_cases: Vec<(&str, Vec<Value>)> = vec![
-        ("set", vec![Value::set([Value::number_int(5)])]),
+        ("set", vec![Value::set([Value::number(5)])]),
         (
             "doubly nested set",
-            vec![Value::set([Value::set([Value::number_int(5)])])],
+            vec![Value::set([Value::set([Value::number(5)])])],
         ),
-        ("list", vec![Value::list([Value::number_int(5)])]),
+        ("list", vec![Value::list([Value::number(5)])]),
         (
             "doubly nested list",
-            vec![Value::list([Value::list([Value::number_int(5)])])],
+            vec![Value::list([Value::list([Value::number(5)])])],
         ),
-        ("map", vec![Value::map([("key", Value::number_int(5))])]),
+        ("map", vec![Value::map([("key", Value::number(5))])]),
         (
             "doubly nested map",
             vec![Value::map([(
@@ -71,10 +69,10 @@ fn set_val_nested_structures() {
                 Value::map([("child", Value::string("hello world"))]),
             )])],
         ),
-        ("tuple", vec![Value::tuple([Value::number_int(5)])]),
+        ("tuple", vec![Value::tuple([Value::number(5)])]),
         (
             "doubly nested tuple",
-            vec![Value::tuple([Value::tuple([Value::number_int(5)])])],
+            vec![Value::tuple([Value::tuple([Value::number(5)])])],
         ),
     ];
 
@@ -88,12 +86,11 @@ fn set_val_nested_structures() {
 // Ported from TestCanListVal:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_init_test.go#L120
 #[test]
-#[ignore = "not yet implemented"]
 fn can_list_val() {
     let test_cases: Vec<(Vec<Value>, bool)> = vec![
         // Valid lists
         (vec![Value::string("Hello"), Value::string("World")], true),
-        (vec![Value::number_int(13), Value::number_int(31)], true),
+        (vec![Value::number(13), Value::number(31)], true),
         (vec![Value::bool(true), Value::bool(false)], true),
         (
             vec![
@@ -125,7 +122,7 @@ fn can_list_val() {
             true,
         ),
         // invalid list elements
-        (vec![Value::string("hello"), Value::number_int(13)], false),
+        (vec![Value::string("hello"), Value::number(13)], false),
         (
             vec![
                 Value::list([Value::string("Hello"), Value::string("World")]),
@@ -155,7 +152,7 @@ fn can_list_val() {
     ];
 
     for (i, (elems, want)) in test_cases.iter().enumerate() {
-        let got = Value::can_list(elems);
+        let got = Value::can_list(elems.clone());
         assert_eq!(
             got, *want,
             "case {i}: wrong result for elements {elems:?}:\ngot {got}, want {want}"
@@ -166,7 +163,6 @@ fn can_list_val() {
 // Ported from TestCanSetVal:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_init_test.go#L224
 #[test]
-#[ignore = "not yet implemented"]
 fn can_set_val() {
     let test_cases: Vec<(Vec<Value>, bool)> = vec![
         // Valid set elements
@@ -178,7 +174,7 @@ fn can_set_val() {
             ],
             true,
         ),
-        (vec![Value::number_int(13), Value::number_int(31)], true),
+        (vec![Value::number(13), Value::number(31)], true),
         (vec![Value::bool(true), Value::bool(false)], true),
         (
             vec![
@@ -210,7 +206,7 @@ fn can_set_val() {
             true,
         ),
         // invalid set elements
-        (vec![Value::string("hello"), Value::number_int(13)], false),
+        (vec![Value::string("hello"), Value::number(13)], false),
         (
             vec![
                 Value::list([Value::string("Hello"), Value::string("World")]),
@@ -251,7 +247,6 @@ fn can_set_val() {
 // Ported from TestCanMapVal:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_init_test.go#L332
 #[test]
-#[ignore = "not yet implemented"]
 fn can_map_val() {
     fn entries<const N: usize>(pairs: [(&str, Value); N]) -> Vec<(String, Value)> {
         pairs.into_iter().map(|(k, v)| (k.to_string(), v)).collect()
@@ -264,10 +259,7 @@ fn can_map_val() {
             true,
         ),
         (
-            entries([
-                ("one", Value::number_int(13)),
-                ("two", Value::number_int(31)),
-            ]),
+            entries([("one", Value::number(13)), ("two", Value::number(31))]),
             true,
         ),
         (
@@ -317,10 +309,7 @@ fn can_map_val() {
         ),
         // invalid map elements
         (
-            entries([
-                ("one", Value::string("hello")),
-                ("two", Value::number_int(13)),
-            ]),
+            entries([("one", Value::string("hello")), ("two", Value::number(13))]),
             false,
         ),
         (

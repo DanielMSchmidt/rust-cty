@@ -20,97 +20,85 @@ use cty::{Type, Value, ValueMarks};
 #[ignore = "not yet implemented"]
 fn value_add() {
     let tests: Vec<(Value, Value, Value)> = vec![
+        (Value::number(1), Value::number(2), Value::number(3)),
+        (Value::number(1), Value::number(-2), Value::number(-1)),
+        (Value::number(1), Value::number(0.5), Value::number(1.5)),
         (
-            Value::number_int(1),
-            Value::number_int(2),
-            Value::number_int(3),
-        ),
-        (
-            Value::number_int(1),
-            Value::number_int(-2),
-            Value::number_int(-1),
-        ),
-        (
-            Value::number_int(1),
-            Value::number_float(0.5),
-            Value::number_float(1.5),
-        ),
-        (
-            Value::number_int(1),
+            Value::number(1),
             Value::unknown(Type::number()),
             Value::unknown(Type::number()).refine_not_null(),
         ),
         (
-            Value::number_int(1),
+            Value::number(1),
             Value::unknown(Type::number())
                 .refine()
-                .number_range_lower_bound(Value::number_int(2), false)
+                .number_range_lower_bound(Value::number(2), false)
                 .new_value(),
             Value::unknown(Type::number())
                 .refine()
                 .not_null()
-                .number_range_lower_bound(Value::number_int(3), true)
+                .number_range_lower_bound(Value::number(3), true)
                 .new_value(),
         ),
         (
             Value::zero(),
             Value::unknown(Type::number())
                 .refine()
-                .number_range_lower_bound(Value::number_int(2), false)
+                .number_range_lower_bound(Value::number(2), false)
                 .new_value(),
             Value::unknown(Type::number())
                 .refine()
                 .not_null()
-                .number_range_lower_bound(Value::number_int(2), true)
+                .number_range_lower_bound(Value::number(2), true)
                 .new_value(),
         ),
         (
             Value::unknown(Type::number())
                 .refine()
-                .number_range_lower_bound(Value::number_int(2), false)
+                .number_range_lower_bound(Value::number(2), false)
                 .new_value(),
             Value::unknown(Type::number())
                 .refine()
-                .number_range_lower_bound(Value::number_int(2), false)
+                .number_range_lower_bound(Value::number(2), false)
                 .new_value(),
             Value::unknown(Type::number())
                 .refine()
                 .not_null()
-                .number_range_lower_bound(Value::number_int(4), true)
+                .number_range_lower_bound(Value::number(4), true)
                 .new_value(),
         ),
         (
             Value::unknown(Type::number())
                 .refine()
-                .number_range_lower_bound(Value::number_int(1), true)
-                .number_range_upper_bound(Value::number_int(2), false)
+                .number_range_lower_bound(Value::number(1), true)
+                .number_range_upper_bound(Value::number(2), false)
                 .new_value(),
             Value::unknown(Type::number())
                 .refine()
-                .number_range_lower_bound(Value::number_int(2), false)
+                .number_range_lower_bound(Value::number(2), false)
                 .new_value(),
             Value::unknown(Type::number())
                 .refine()
                 .not_null()
-                .number_range_lower_bound(Value::number_int(3), true)
+                .number_range_lower_bound(Value::number(3), true)
                 .new_value(),
         ),
         (
             Value::unknown(Type::number())
                 .refine()
-                .number_range_lower_bound(Value::number_int(1), true)
-                .number_range_upper_bound(Value::number_int(2), false)
+                .number_range_lower_bound(Value::number(1), true)
+                .number_range_upper_bound(Value::number(2), false)
                 .new_value(),
             Value::unknown(Type::number())
                 .refine()
-                .number_range_lower_bound(Value::number_int(2), false)
-                .number_range_upper_bound(Value::number_int(3), false)
+                .number_range_lower_bound(Value::number(2), false)
+                .number_range_upper_bound(Value::number(3), false)
                 .new_value(),
             Value::unknown(Type::number())
                 .refine()
                 .not_null()
-                .number_range_lower_bound(Value::number_int(3), true)
-                .number_range_upper_bound(Value::number_int(5), true)
+                .number_range_lower_bound(Value::number(3), true)
+                .number_range_upper_bound(Value::number(5), true)
                 .new_value(),
         ),
         (
@@ -119,7 +107,7 @@ fn value_add() {
             Value::unknown(Type::number()).refine_not_null(),
         ),
         (
-            Value::number_int(1),
+            Value::number(1),
             Value::dynamic(),
             Value::unknown(Type::number()).refine_not_null(),
         ),
@@ -152,23 +140,11 @@ fn value_add() {
 #[ignore = "not yet implemented"]
 fn value_subtract() {
     let tests: Vec<(Value, Value, Value)> = vec![
+        (Value::number(1), Value::number(2), Value::number(-1)),
+        (Value::number(1), Value::number(-2), Value::number(3)),
+        (Value::number(1), Value::number(0.5), Value::number(0.5)),
         (
-            Value::number_int(1),
-            Value::number_int(2),
-            Value::number_int(-1),
-        ),
-        (
-            Value::number_int(1),
-            Value::number_int(-2),
-            Value::number_int(3),
-        ),
-        (
-            Value::number_int(1),
-            Value::number_float(0.5),
-            Value::number_float(0.5),
-        ),
-        (
-            Value::number_int(1),
+            Value::number(1),
             Value::unknown(Type::number()),
             Value::unknown(Type::number()).refine_not_null(),
         ),
@@ -178,37 +154,37 @@ fn value_subtract() {
             Value::unknown(Type::number()).refine_not_null(),
         ),
         (
-            Value::number_int(1),
+            Value::number(1),
             Value::unknown(Type::number())
                 .refine()
-                .number_range_lower_bound(Value::number_int(2), true)
+                .number_range_lower_bound(Value::number(2), true)
                 .new_value(),
             Value::unknown(Type::number())
                 .refine()
                 .not_null()
-                .number_range_upper_bound(Value::number_int(-1), true)
+                .number_range_upper_bound(Value::number(-1), true)
                 .new_value(),
         ),
         (
             Value::zero(),
             Value::unknown(Type::number())
                 .refine()
-                .number_range_lower_bound(Value::number_int(2), true)
+                .number_range_lower_bound(Value::number(2), true)
                 .new_value(),
             Value::unknown(Type::number())
                 .refine()
                 .not_null()
-                .number_range_upper_bound(Value::number_int(-2), true)
+                .number_range_upper_bound(Value::number(-2), true)
                 .new_value(),
         ),
         (
             Value::unknown(Type::number())
                 .refine()
-                .number_range_lower_bound(Value::number_int(2), true)
+                .number_range_lower_bound(Value::number(2), true)
                 .new_value(),
             Value::unknown(Type::number())
                 .refine()
-                .number_range_lower_bound(Value::number_int(2), true)
+                .number_range_lower_bound(Value::number(2), true)
                 .new_value(),
             // We don't currently refine this case
             Value::unknown(Type::number()).refine_not_null(),
@@ -216,39 +192,39 @@ fn value_subtract() {
         (
             Value::unknown(Type::number())
                 .refine()
-                .number_range_lower_bound(Value::number_int(1), true)
-                .number_range_upper_bound(Value::number_int(2), false)
+                .number_range_lower_bound(Value::number(1), true)
+                .number_range_upper_bound(Value::number(2), false)
                 .new_value(),
             Value::unknown(Type::number())
                 .refine()
-                .number_range_lower_bound(Value::number_int(2), true)
+                .number_range_lower_bound(Value::number(2), true)
                 .new_value(),
             Value::unknown(Type::number())
                 .refine()
                 .not_null()
-                .number_range_upper_bound(Value::number_int(0), true)
+                .number_range_upper_bound(Value::number(0), true)
                 .new_value(),
         ),
         (
             Value::unknown(Type::number())
                 .refine()
-                .number_range_lower_bound(Value::number_int(1), true)
-                .number_range_upper_bound(Value::number_int(2), false)
+                .number_range_lower_bound(Value::number(1), true)
+                .number_range_upper_bound(Value::number(2), false)
                 .new_value(),
             Value::unknown(Type::number())
                 .refine()
-                .number_range_lower_bound(Value::number_int(2), false)
-                .number_range_upper_bound(Value::number_int(3), false)
+                .number_range_lower_bound(Value::number(2), false)
+                .number_range_upper_bound(Value::number(3), false)
                 .new_value(),
             Value::unknown(Type::number())
                 .refine()
                 .not_null()
-                .number_range_lower_bound(Value::number_int(-2), true)
-                .number_range_upper_bound(Value::number_int(0), true)
+                .number_range_lower_bound(Value::number(-2), true)
+                .number_range_upper_bound(Value::number(0), true)
                 .new_value(),
         ),
         (
-            Value::number_int(1),
+            Value::number(1),
             Value::dynamic(),
             Value::unknown(Type::number()).refine_not_null(),
         ),
@@ -281,8 +257,8 @@ fn value_subtract() {
 #[ignore = "not yet implemented"]
 fn value_negate() {
     let tests: Vec<(Value, Value)> = vec![
-        (Value::number_int(1), Value::number_int(-1)),
-        (Value::number_float(0.5), Value::number_float(-0.5)),
+        (Value::number(1), Value::number(-1)),
+        (Value::number(0.5), Value::number(-0.5)),
         (
             Value::unknown(Type::number()),
             Value::unknown(Type::number()).refine_not_null(),
@@ -308,24 +284,17 @@ fn value_negate() {
 #[test]
 #[ignore = "not yet implemented"]
 fn value_multiply() {
+    // NOTE(deviation): cannot pass. Numbers are `f64` (deviation 1 in the
+    // workbench's docs/deviations.md); upstream numbers are arbitrary-precision.
+    // Out of range here: the 48- and 53-digit operands and the 28-digit product below.
+    // Kept as transcribed: the assertions state upstream behavior, which is the
+    // point. Do not trim the table or relax them to make this green.
     let tests: Vec<(Value, Value, Value)> = vec![
+        (Value::number(4), Value::number(2), Value::number(8)),
+        (Value::number(1), Value::number(-2), Value::number(-2)),
+        (Value::number(5), Value::number(0.5), Value::number(2.5)),
         (
-            Value::number_int(4),
-            Value::number_int(2),
-            Value::number_int(8),
-        ),
-        (
-            Value::number_int(1),
-            Value::number_int(-2),
-            Value::number_int(-2),
-        ),
-        (
-            Value::number_int(5),
-            Value::number_float(0.5),
-            Value::number_float(2.5),
-        ),
-        (
-            Value::number_int(1),
+            Value::number(1),
             Value::unknown(Type::number()),
             Value::unknown(Type::number()).refine_not_null(),
         ),
@@ -335,15 +304,15 @@ fn value_multiply() {
             Value::unknown(Type::number()).refine_not_null(),
         ),
         (
-            Value::number_int(3),
+            Value::number(3),
             Value::unknown(Type::number())
                 .refine()
-                .number_range_lower_bound(Value::number_int(2), false)
+                .number_range_lower_bound(Value::number(2), false)
                 .new_value(),
             Value::unknown(Type::number())
                 .refine()
                 .not_null()
-                .number_range_lower_bound(Value::number_int(6), true)
+                .number_range_lower_bound(Value::number(6), true)
                 .new_value(),
         ),
         (Value::zero(), Value::unknown(Type::number()), Value::zero()),
@@ -352,70 +321,70 @@ fn value_multiply() {
             Value::zero(),
             Value::unknown(Type::number())
                 .refine()
-                .number_range_lower_bound(Value::number_int(2), false)
+                .number_range_lower_bound(Value::number(2), false)
                 .new_value(),
             Value::zero(),
         ),
         (
             Value::unknown(Type::number())
                 .refine()
-                .number_range_lower_bound(Value::number_int(2), false)
+                .number_range_lower_bound(Value::number(2), false)
                 .new_value(),
             Value::unknown(Type::number())
                 .refine()
-                .number_range_lower_bound(Value::number_int(4), false)
+                .number_range_lower_bound(Value::number(4), false)
                 .new_value(),
             Value::unknown(Type::number())
                 .refine()
                 .not_null()
-                .number_range_lower_bound(Value::number_int(8), true)
+                .number_range_lower_bound(Value::number(8), true)
                 .new_value(),
         ),
         (
             Value::unknown(Type::number())
                 .refine()
-                .number_range_lower_bound(Value::number_int(3), true)
-                .number_range_upper_bound(Value::number_int(4), false)
+                .number_range_lower_bound(Value::number(3), true)
+                .number_range_upper_bound(Value::number(4), false)
                 .new_value(),
             Value::unknown(Type::number())
                 .refine()
-                .number_range_lower_bound(Value::number_int(2), false)
+                .number_range_lower_bound(Value::number(2), false)
                 .new_value(),
             Value::unknown(Type::number())
                 .refine()
                 .not_null()
-                .number_range_lower_bound(Value::number_int(6), true)
+                .number_range_lower_bound(Value::number(6), true)
                 .new_value(),
         ),
         (
             Value::unknown(Type::number())
                 .refine()
-                .number_range_lower_bound(Value::number_int(1), true)
-                .number_range_upper_bound(Value::number_int(2), false)
+                .number_range_lower_bound(Value::number(1), true)
+                .number_range_upper_bound(Value::number(2), false)
                 .new_value(),
             Value::unknown(Type::number())
                 .refine()
-                .number_range_lower_bound(Value::number_int(2), false)
-                .number_range_upper_bound(Value::number_int(3), false)
+                .number_range_lower_bound(Value::number(2), false)
+                .number_range_upper_bound(Value::number(3), false)
                 .new_value(),
             Value::unknown(Type::number())
                 .refine()
                 .not_null()
-                .number_range_lower_bound(Value::number_int(2), true)
-                .number_range_upper_bound(Value::number_int(6), true)
+                .number_range_lower_bound(Value::number(2), true)
+                .number_range_upper_bound(Value::number(6), true)
                 .new_value(),
         ),
         (
             Value::unknown(Type::number())
                 .refine()
-                .number_range_lower_bound(Value::number_int(1), true)
-                .number_range_upper_bound(Value::number_int(2), false)
+                .number_range_lower_bound(Value::number(1), true)
+                .number_range_upper_bound(Value::number(2), false)
                 .new_value(),
             Value::zero(),
             Value::zero(), // deduced by refinement
         ),
         (
-            Value::number_int(1),
+            Value::number(1),
             Value::dynamic(),
             Value::unknown(Type::number()).refine_not_null(),
         ),
@@ -432,14 +401,14 @@ fn value_multiply() {
             Value::zero().with_marks([ValueMarks::from_marks([1, 2])]),
         ),
         (
-            Value::parse_number("967323432120515089486873574508975134568969931547").unwrap(),
-            Value::number_float(12345.0),
-            Value::parse_number("11941607769527758779715454277313298036253933804947715").unwrap(),
+            Value::parse_number("967323432120515089486873574508975134568969931547"),
+            Value::number(12345.0),
+            Value::parse_number("11941607769527758779715454277313298036253933804947715"),
         ),
         (
-            Value::number_float(22337203685475.5),
-            Value::number_float(22337203685475.5),
-            Value::parse_number("498950668486420259929661100.2").unwrap(),
+            Value::number(22337203685475.5),
+            Value::number(22337203685475.5),
+            Value::parse_number("498950668486420259929661100.2"),
         ),
     ];
 
@@ -458,33 +427,21 @@ fn value_multiply() {
 #[ignore = "not yet implemented"]
 fn value_divide() {
     let tests: Vec<(Value, Value, Value)> = vec![
+        (Value::number(10), Value::number(2), Value::number(5)),
+        (Value::number(1), Value::number(-2), Value::number(-0.5)),
+        (Value::number(5), Value::number(0.5), Value::number(10)),
         (
-            Value::number_int(10),
-            Value::number_int(2),
-            Value::number_int(5),
-        ),
-        (
-            Value::number_int(1),
-            Value::number_int(-2),
-            Value::number_float(-0.5),
-        ),
-        (
-            Value::number_int(5),
-            Value::number_float(0.5),
-            Value::number_int(10),
-        ),
-        (
-            Value::number_int(5),
-            Value::number_int(0),
+            Value::number(5),
+            Value::number(0),
             Value::positive_infinity(),
         ),
         (
-            Value::number_int(-5),
-            Value::number_int(0),
+            Value::number(-5),
+            Value::number(0),
             Value::negative_infinity(),
         ),
         (
-            Value::number_int(1),
+            Value::number(1),
             Value::unknown(Type::number()),
             Value::unknown(Type::number()).refine_not_null(),
         ),
@@ -494,7 +451,7 @@ fn value_divide() {
             Value::unknown(Type::number()).refine_not_null(),
         ),
         (
-            Value::number_int(1),
+            Value::number(1),
             Value::dynamic(),
             Value::unknown(Type::number()).refine_not_null(),
         ),
@@ -505,17 +462,17 @@ fn value_divide() {
         ),
         (
             Value::zero().mark(1),
-            Value::number_int(1),
+            Value::number(1),
             Value::zero().mark(1),
         ),
         (
             Value::zero(),
-            Value::number_int(1).mark(2),
+            Value::number(1).mark(2),
             Value::zero().mark(2),
         ),
         (
             Value::zero().mark(1),
-            Value::number_int(1).mark(2),
+            Value::number(1).mark(2),
             Value::zero().with_marks([ValueMarks::from_marks([1, 2])]),
         ),
     ];
@@ -534,54 +491,23 @@ fn value_divide() {
 #[test]
 #[ignore = "not yet implemented"]
 fn value_modulo() {
+    // NOTE(deviation): cannot pass. Numbers are `f64` (deviation 1 in the
+    // workbench's docs/deviations.md); upstream numbers are arbitrary-precision.
+    // Out of range here: the 48-digit operand below.
+    // Kept as transcribed: the assertions state upstream behavior, which is the
+    // point. Do not trim the table or relax them to make this green.
     let tests: Vec<(Value, Value, Value)> = vec![
+        (Value::number(10), Value::number(2), Value::number(0)),
+        (Value::number(-10), Value::number(2), Value::number(0)),
+        (Value::number(11), Value::number(2), Value::number(1)),
+        (Value::number(-11), Value::number(2), Value::number(-1)),
+        (Value::number(1), Value::number(-2), Value::number(1.0)),
+        (Value::number(5), Value::number(0.5), Value::number(0)),
+        (Value::number(5), Value::number(1.5), Value::number(0.5)),
+        (Value::number(5), Value::number(0), Value::number(5)),
+        (Value::number(-5), Value::number(0), Value::number(-5)),
         (
-            Value::number_int(10),
-            Value::number_int(2),
-            Value::number_int(0),
-        ),
-        (
-            Value::number_int(-10),
-            Value::number_int(2),
-            Value::number_int(0),
-        ),
-        (
-            Value::number_int(11),
-            Value::number_int(2),
-            Value::number_int(1),
-        ),
-        (
-            Value::number_int(-11),
-            Value::number_int(2),
-            Value::number_int(-1),
-        ),
-        (
-            Value::number_int(1),
-            Value::number_int(-2),
-            Value::number_float(1.0),
-        ),
-        (
-            Value::number_int(5),
-            Value::number_float(0.5),
-            Value::number_int(0),
-        ),
-        (
-            Value::number_int(5),
-            Value::number_float(1.5),
-            Value::number_float(0.5),
-        ),
-        (
-            Value::number_int(5),
-            Value::number_int(0),
-            Value::number_int(5),
-        ),
-        (
-            Value::number_int(-5),
-            Value::number_int(0),
-            Value::number_int(-5),
-        ),
-        (
-            Value::number_int(1),
+            Value::number(1),
             Value::unknown(Type::number()),
             Value::unknown(Type::number()).refine_not_null(),
         ),
@@ -591,7 +517,7 @@ fn value_modulo() {
             Value::unknown(Type::number()).refine_not_null(),
         ),
         (
-            Value::number_int(1),
+            Value::number(1),
             Value::dynamic(),
             Value::unknown(Type::number()).refine_not_null(),
         ),
@@ -601,24 +527,24 @@ fn value_modulo() {
             Value::unknown(Type::number()).refine_not_null(),
         ),
         (
-            Value::number_int(10).mark(1),
-            Value::number_int(10),
+            Value::number(10).mark(1),
+            Value::number(10),
             Value::zero().mark(1),
         ),
         (
-            Value::number_int(10),
-            Value::number_int(10).mark(2),
+            Value::number(10),
+            Value::number(10).mark(2),
             Value::zero().mark(2),
         ),
         (
-            Value::number_int(10).mark(1),
-            Value::number_int(10).mark(2),
+            Value::number(10).mark(1),
+            Value::number(10).mark(2),
             Value::zero().with_marks([ValueMarks::from_marks([1, 2])]),
         ),
         (
-            Value::parse_number("967323432120515089486873574508975134568969931547").unwrap(),
-            Value::number_int(10),
-            Value::number_int(7),
+            Value::parse_number("967323432120515089486873574508975134568969931547"),
+            Value::number(10),
+            Value::number(7),
         ),
     ];
 
@@ -637,10 +563,10 @@ fn value_modulo() {
 #[ignore = "not yet implemented"]
 fn value_absolute() {
     let tests: Vec<(Value, Value)> = vec![
-        (Value::number_int(1), Value::number_int(1)),
-        (Value::number_int(-1), Value::number_int(1)),
-        (Value::number_float(0.5), Value::number_float(0.5)),
-        (Value::number_float(-0.5), Value::number_float(0.5)),
+        (Value::number(1), Value::number(1)),
+        (Value::number(-1), Value::number(1)),
+        (Value::number(0.5), Value::number(0.5)),
+        (Value::number(-0.5), Value::number(0.5)),
         (Value::positive_infinity(), Value::positive_infinity()),
         (Value::negative_infinity(), Value::positive_infinity()),
         (
@@ -659,7 +585,7 @@ fn value_absolute() {
                 .number_range_inclusive(Value::zero(), Value::unknown(Type::number()))
                 .new_value(),
         ),
-        (Value::number_int(-1).mark(1), Value::number_int(1).mark(1)),
+        (Value::number(-1).mark(1), Value::number(1).mark(1)),
     ];
 
     for (i, (receiver, expected)) in tests.iter().enumerate() {

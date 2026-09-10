@@ -47,7 +47,7 @@ mod value_ops;
 mod walk;
 
 pub use capsule::CapsuleOps;
-pub use error::Error;
+pub use error::CtyError;
 pub use marks::{Mark, PathValueMarks, ValueMarks, WrangleAction, WrangleFunc};
 pub use path::{Path, PathSet, PathStep};
 pub use refinement::{RefinementBuilder, ValueRange};

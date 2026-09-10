@@ -197,59 +197,27 @@ fn value_or() {
 #[ignore = "not yet implemented"]
 fn less_than() {
     let tests: Vec<(Value, Value, Value)> = vec![
-        (
-            Value::number_int(0),
-            Value::number_int(1),
-            Value::bool(true),
-        ),
-        (
-            Value::number_int(1),
-            Value::number_int(0),
-            Value::bool(false),
-        ),
-        (
-            Value::number_int(0),
-            Value::number_int(0),
-            Value::bool(false),
-        ),
-        (
-            Value::number_float(0.1),
-            Value::number_float(0.2),
-            Value::bool(true),
-        ),
-        (
-            Value::number_float(0.2),
-            Value::number_float(0.1),
-            Value::bool(false),
-        ),
-        (
-            Value::number_int(0),
-            Value::number_float(0.2),
-            Value::bool(true),
-        ),
-        (
-            Value::number_float(0.2),
-            Value::number_int(0),
-            Value::bool(false),
-        ),
-        (
-            Value::number_float(0.2),
-            Value::number_float(0.2),
-            Value::bool(false),
-        ),
+        (Value::number(0), Value::number(1), Value::bool(true)),
+        (Value::number(1), Value::number(0), Value::bool(false)),
+        (Value::number(0), Value::number(0), Value::bool(false)),
+        (Value::number(0.1), Value::number(0.2), Value::bool(true)),
+        (Value::number(0.2), Value::number(0.1), Value::bool(false)),
+        (Value::number(0), Value::number(0.2), Value::bool(true)),
+        (Value::number(0.2), Value::number(0), Value::bool(false)),
+        (Value::number(0.2), Value::number(0.2), Value::bool(false)),
         (
             Value::unknown(Type::number()),
             Value::unknown(Type::number()),
             Value::unknown(Type::bool()).refine_not_null(),
         ),
         (
-            Value::number_int(1),
+            Value::number(1),
             Value::unknown(Type::number()),
             Value::unknown(Type::bool()).refine_not_null(),
         ),
         (
             Value::unknown(Type::number()),
-            Value::number_int(1),
+            Value::number(1),
             Value::unknown(Type::bool()).refine_not_null(),
         ),
         (
@@ -257,15 +225,15 @@ fn less_than() {
                 .refine()
                 .number_range_upper_bound(Value::zero(), true)
                 .new_value(),
-            Value::number_int(1),
+            Value::number(1),
             Value::bool(true), // Deduction from the refinement
         ),
         (
             Value::unknown(Type::number())
                 .refine()
-                .number_range_lower_bound(Value::number_int(2), true)
+                .number_range_lower_bound(Value::number(2), true)
                 .new_value(),
-            Value::number_int(1),
+            Value::number(1),
             Value::bool(false), // Deduction from the refinement
         ),
         (
@@ -274,28 +242,28 @@ fn less_than() {
             Value::unknown(Type::bool()).refine_not_null(),
         ),
         (
-            Value::number_int(1),
+            Value::number(1),
             Value::dynamic(),
             Value::unknown(Type::bool()).refine_not_null(),
         ),
         (
             Value::dynamic(),
-            Value::number_int(1),
+            Value::number(1),
             Value::unknown(Type::bool()).refine_not_null(),
         ),
         (
-            Value::number_int(0).mark(1),
-            Value::number_int(1),
+            Value::number(0).mark(1),
+            Value::number(1),
             Value::bool(true).mark(1),
         ),
         (
-            Value::number_int(0),
-            Value::number_int(1).mark(1),
+            Value::number(0),
+            Value::number(1).mark(1),
             Value::bool(true).mark(1),
         ),
         (
-            Value::number_int(0).mark(1),
-            Value::number_int(1).mark(1),
+            Value::number(0).mark(1),
+            Value::number(1).mark(1),
             Value::bool(true).mark(1),
         ),
     ];
@@ -315,75 +283,43 @@ fn less_than() {
 #[ignore = "not yet implemented"]
 fn greater_than() {
     let tests: Vec<(Value, Value, Value)> = vec![
-        (
-            Value::number_int(0),
-            Value::number_int(1),
-            Value::bool(false),
-        ),
-        (
-            Value::number_int(1),
-            Value::number_int(0),
-            Value::bool(true),
-        ),
-        (
-            Value::number_int(0),
-            Value::number_int(0),
-            Value::bool(false),
-        ),
-        (
-            Value::number_float(0.1),
-            Value::number_float(0.2),
-            Value::bool(false),
-        ),
-        (
-            Value::number_float(0.2),
-            Value::number_float(0.1),
-            Value::bool(true),
-        ),
-        (
-            Value::number_int(0),
-            Value::number_float(0.2),
-            Value::bool(false),
-        ),
-        (
-            Value::number_float(0.2),
-            Value::number_int(0),
-            Value::bool(true),
-        ),
-        (
-            Value::number_float(0.2),
-            Value::number_float(0.2),
-            Value::bool(false),
-        ),
+        (Value::number(0), Value::number(1), Value::bool(false)),
+        (Value::number(1), Value::number(0), Value::bool(true)),
+        (Value::number(0), Value::number(0), Value::bool(false)),
+        (Value::number(0.1), Value::number(0.2), Value::bool(false)),
+        (Value::number(0.2), Value::number(0.1), Value::bool(true)),
+        (Value::number(0), Value::number(0.2), Value::bool(false)),
+        (Value::number(0.2), Value::number(0), Value::bool(true)),
+        (Value::number(0.2), Value::number(0.2), Value::bool(false)),
         (
             Value::unknown(Type::number()),
             Value::unknown(Type::number()),
             Value::unknown(Type::bool()).refine_not_null(),
         ),
         (
-            Value::number_int(1),
+            Value::number(1),
             Value::unknown(Type::number()),
             Value::unknown(Type::bool()).refine_not_null(),
         ),
         (
             Value::unknown(Type::number()),
-            Value::number_int(1),
+            Value::number(1),
             Value::unknown(Type::bool()).refine_not_null(),
         ),
         (
             Value::unknown(Type::number())
                 .refine()
-                .number_range_lower_bound(Value::number_int(2), true)
+                .number_range_lower_bound(Value::number(2), true)
                 .new_value(),
-            Value::number_int(1),
+            Value::number(1),
             Value::bool(true), // Deduction based on the refinements
         ),
         (
             Value::unknown(Type::number())
                 .refine()
-                .number_range_upper_bound(Value::number_int(0), true)
+                .number_range_upper_bound(Value::number(0), true)
                 .new_value(),
-            Value::number_int(1),
+            Value::number(1),
             Value::bool(false), // Deduction based on the refinements
         ),
         (
@@ -392,28 +328,28 @@ fn greater_than() {
             Value::unknown(Type::bool()).refine_not_null(),
         ),
         (
-            Value::number_int(1),
+            Value::number(1),
             Value::dynamic(),
             Value::unknown(Type::bool()).refine_not_null(),
         ),
         (
             Value::dynamic(),
-            Value::number_int(1),
+            Value::number(1),
             Value::unknown(Type::bool()).refine_not_null(),
         ),
         (
-            Value::number_int(1).mark(1),
-            Value::number_int(0),
+            Value::number(1).mark(1),
+            Value::number(0),
             Value::bool(true).mark(1),
         ),
         (
-            Value::number_int(1),
-            Value::number_int(0).mark(1),
+            Value::number(1),
+            Value::number(0).mark(1),
             Value::bool(true).mark(1),
         ),
         (
-            Value::number_int(1).mark(1),
-            Value::number_int(0).mark(1),
+            Value::number(1).mark(1),
+            Value::number(0).mark(1),
             Value::bool(true).mark(1),
         ),
     ];
@@ -433,59 +369,27 @@ fn greater_than() {
 #[ignore = "not yet implemented"]
 fn less_than_or_equal_to() {
     let tests: Vec<(Value, Value, Value)> = vec![
-        (
-            Value::number_int(0),
-            Value::number_int(1),
-            Value::bool(true),
-        ),
-        (
-            Value::number_int(1),
-            Value::number_int(0),
-            Value::bool(false),
-        ),
-        (
-            Value::number_int(0),
-            Value::number_int(0),
-            Value::bool(true),
-        ),
-        (
-            Value::number_float(0.1),
-            Value::number_float(0.2),
-            Value::bool(true),
-        ),
-        (
-            Value::number_float(0.2),
-            Value::number_float(0.1),
-            Value::bool(false),
-        ),
-        (
-            Value::number_int(0),
-            Value::number_float(0.2),
-            Value::bool(true),
-        ),
-        (
-            Value::number_float(0.2),
-            Value::number_int(0),
-            Value::bool(false),
-        ),
-        (
-            Value::number_float(0.2),
-            Value::number_float(0.2),
-            Value::bool(true),
-        ),
+        (Value::number(0), Value::number(1), Value::bool(true)),
+        (Value::number(1), Value::number(0), Value::bool(false)),
+        (Value::number(0), Value::number(0), Value::bool(true)),
+        (Value::number(0.1), Value::number(0.2), Value::bool(true)),
+        (Value::number(0.2), Value::number(0.1), Value::bool(false)),
+        (Value::number(0), Value::number(0.2), Value::bool(true)),
+        (Value::number(0.2), Value::number(0), Value::bool(false)),
+        (Value::number(0.2), Value::number(0.2), Value::bool(true)),
         (
             Value::unknown(Type::number()),
             Value::unknown(Type::number()),
             Value::unknown(Type::bool()).refine_not_null(),
         ),
         (
-            Value::number_int(1),
+            Value::number(1),
             Value::unknown(Type::number()),
             Value::unknown(Type::bool()).refine_not_null(),
         ),
         (
             Value::unknown(Type::number()),
-            Value::number_int(1),
+            Value::number(1),
             Value::unknown(Type::bool()).refine_not_null(),
         ),
         (
@@ -494,28 +398,28 @@ fn less_than_or_equal_to() {
             Value::unknown(Type::bool()).refine_not_null(),
         ),
         (
-            Value::number_int(1),
+            Value::number(1),
             Value::dynamic(),
             Value::unknown(Type::bool()).refine_not_null(),
         ),
         (
             Value::dynamic(),
-            Value::number_int(1),
+            Value::number(1),
             Value::unknown(Type::bool()).refine_not_null(),
         ),
         (
-            Value::number_int(0).mark(1),
-            Value::number_int(1),
+            Value::number(0).mark(1),
+            Value::number(1),
             Value::bool(true).mark(1),
         ),
         (
-            Value::number_int(0),
-            Value::number_int(1).mark(1),
+            Value::number(0),
+            Value::number(1).mark(1),
             Value::bool(true).mark(1),
         ),
         (
-            Value::number_int(0).mark(1),
-            Value::number_int(1).mark(1),
+            Value::number(0).mark(1),
+            Value::number(1).mark(1),
             Value::bool(true).mark(1),
         ),
     ];
@@ -535,59 +439,27 @@ fn less_than_or_equal_to() {
 #[ignore = "not yet implemented"]
 fn greater_than_or_equal_to() {
     let tests: Vec<(Value, Value, Value)> = vec![
-        (
-            Value::number_int(0),
-            Value::number_int(1),
-            Value::bool(false),
-        ),
-        (
-            Value::number_int(1),
-            Value::number_int(0),
-            Value::bool(true),
-        ),
-        (
-            Value::number_int(0),
-            Value::number_int(0),
-            Value::bool(true),
-        ),
-        (
-            Value::number_float(0.1),
-            Value::number_float(0.2),
-            Value::bool(false),
-        ),
-        (
-            Value::number_float(0.2),
-            Value::number_float(0.1),
-            Value::bool(true),
-        ),
-        (
-            Value::number_int(0),
-            Value::number_float(0.2),
-            Value::bool(false),
-        ),
-        (
-            Value::number_float(0.2),
-            Value::number_int(0),
-            Value::bool(true),
-        ),
-        (
-            Value::number_float(0.2),
-            Value::number_float(0.2),
-            Value::bool(true),
-        ),
+        (Value::number(0), Value::number(1), Value::bool(false)),
+        (Value::number(1), Value::number(0), Value::bool(true)),
+        (Value::number(0), Value::number(0), Value::bool(true)),
+        (Value::number(0.1), Value::number(0.2), Value::bool(false)),
+        (Value::number(0.2), Value::number(0.1), Value::bool(true)),
+        (Value::number(0), Value::number(0.2), Value::bool(false)),
+        (Value::number(0.2), Value::number(0), Value::bool(true)),
+        (Value::number(0.2), Value::number(0.2), Value::bool(true)),
         (
             Value::unknown(Type::number()),
             Value::unknown(Type::number()),
             Value::unknown(Type::bool()).refine_not_null(),
         ),
         (
-            Value::number_int(1),
+            Value::number(1),
             Value::unknown(Type::number()),
             Value::unknown(Type::bool()).refine_not_null(),
         ),
         (
             Value::unknown(Type::number()),
-            Value::number_int(1),
+            Value::number(1),
             Value::unknown(Type::bool()).refine_not_null(),
         ),
         (
@@ -596,28 +468,28 @@ fn greater_than_or_equal_to() {
             Value::unknown(Type::bool()).refine_not_null(),
         ),
         (
-            Value::number_int(1),
+            Value::number(1),
             Value::dynamic(),
             Value::unknown(Type::bool()).refine_not_null(),
         ),
         (
             Value::dynamic(),
-            Value::number_int(1),
+            Value::number(1),
             Value::unknown(Type::bool()).refine_not_null(),
         ),
         (
-            Value::number_int(0).mark(1),
-            Value::number_int(1),
+            Value::number(0).mark(1),
+            Value::number(1),
             Value::bool(false).mark(1),
         ),
         (
-            Value::number_int(0),
-            Value::number_int(1).mark(1),
+            Value::number(0),
+            Value::number(1).mark(1),
             Value::bool(false).mark(1),
         ),
         (
-            Value::number_int(0).mark(1),
-            Value::number_int(1).mark(1),
+            Value::number(0).mark(1),
+            Value::number(1).mark(1),
             Value::bool(false).mark(1),
         ),
     ];

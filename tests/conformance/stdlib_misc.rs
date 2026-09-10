@@ -132,9 +132,9 @@ fn or() {
 #[ignore = "not yet implemented"]
 fn bytes_len() {
     let tests: Vec<(Value, Value)> = vec![
-        (stdlib::bytes_val(b"".to_vec()), Value::number_int(0)),
-        (stdlib::bytes_val(b"a".to_vec()), Value::number_int(1)),
-        (stdlib::bytes_val(b"abc".to_vec()), Value::number_int(3)),
+        (stdlib::bytes_val(b"".to_vec()), Value::number(0)),
+        (stdlib::bytes_val(b"a".to_vec()), Value::number(1)),
+        (stdlib::bytes_val(b"abc".to_vec()), Value::number(3)),
     ];
 
     for (i, (input, want)) in tests.iter().enumerate() {
@@ -151,32 +151,32 @@ fn bytes_slice() {
     let tests: Vec<(Value, Value, Value, Value)> = vec![
         (
             stdlib::bytes_val(b"".to_vec()),
-            Value::number_int(0),
-            Value::number_int(0),
+            Value::number(0),
+            Value::number(0),
             stdlib::bytes_val(b"".to_vec()),
         ),
         (
             stdlib::bytes_val(b"a".to_vec()),
-            Value::number_int(0),
-            Value::number_int(1),
+            Value::number(0),
+            Value::number(1),
             stdlib::bytes_val(b"a".to_vec()),
         ),
         (
             stdlib::bytes_val(b"abc".to_vec()),
-            Value::number_int(0),
-            Value::number_int(2),
+            Value::number(0),
+            Value::number(2),
             stdlib::bytes_val(b"ab".to_vec()),
         ),
         (
             stdlib::bytes_val(b"abc".to_vec()),
-            Value::number_int(1),
-            Value::number_int(2),
+            Value::number(1),
+            Value::number(2),
             stdlib::bytes_val(b"bc".to_vec()),
         ),
         (
             stdlib::bytes_val(b"abc".to_vec()),
-            Value::number_int(0),
-            Value::number_int(3),
+            Value::number(0),
+            Value::number(3),
             stdlib::bytes_val(b"abc".to_vec()),
         ),
     ];
@@ -714,28 +714,20 @@ fn format_date_parse_success() {
 #[ignore = "not yet implemented"]
 fn equal() {
     let tests: Vec<(Value, Value, Value)> = vec![
-        (
-            Value::number_int(1),
-            Value::number_int(2),
-            Value::bool(false),
-        ),
-        (
-            Value::number_int(2),
-            Value::number_int(2),
-            Value::bool(true),
-        ),
+        (Value::number(1), Value::number(2), Value::bool(false)),
+        (Value::number(2), Value::number(2), Value::bool(true)),
         (
             Value::null(Type::number()),
             Value::null(Type::number()),
             Value::bool(true),
         ),
         (
-            Value::number_int(2),
+            Value::number(2),
             Value::null(Type::number()),
             Value::bool(false),
         ),
         (
-            Value::number_int(1),
+            Value::number(1),
             Value::unknown(Type::number()),
             Value::unknown(Type::bool()).refine_not_null(),
         ),
@@ -745,7 +737,7 @@ fn equal() {
             Value::unknown(Type::bool()).refine_not_null(),
         ),
         (
-            Value::number_int(1),
+            Value::number(1),
             Value::dynamic(),
             Value::unknown(Type::bool()).refine_not_null(),
         ),
@@ -826,7 +818,7 @@ fn json_encode() {
         // the underlying functions in package json already have tests of
         // their own. Here we are mainly concerned with seeing that the
         // function's definition accepts all reasonable values.
-        (Value::number_int(15), Value::string("15")),
+        (Value::number(15), Value::string("15")),
         (Value::string("hello"), Value::string(r#""hello""#)),
         (Value::bool(true), Value::string("true")),
         (Value::list_empty(Type::number()), Value::string("[]")),
@@ -901,7 +893,7 @@ fn json_encode() {
 #[ignore = "not yet implemented"]
 fn json_decode() {
     let tests: Vec<(Value, Value)> = vec![
-        (Value::string("15"), Value::number_int(15)),
+        (Value::string("15"), Value::number(15)),
         (Value::string(r#""hello""#), Value::string("hello")),
         (Value::string("true"), Value::bool(true)),
         (Value::string("[]"), Value::empty_tuple()),

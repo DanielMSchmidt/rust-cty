@@ -5,12 +5,12 @@
 //! Expected values are literals from the upstream tables; see
 //! docs/api-mapping.md for the Go→Rust API correspondence.
 
+use cty::set::{OrderedRules, Rules};
 use cty::{CapsuleOps, Type, Value, ValueMarks, internals};
 
 // Ported from TestSetHashBytes:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/set_internals_test.go#L12
 #[test]
-#[ignore = "not yet implemented"]
 fn set_hash_bytes() {
     #[derive(Debug)]
     struct Encapsulated {
@@ -47,7 +47,7 @@ fn set_hash_bytes() {
         (Value::null(Type::number()), "~", ValueMarks::new()),
         (Value::null(Type::string()), "~", ValueMarks::new()),
         (Value::dynamic(), "?", ValueMarks::new()),
-        (Value::number_float(12.0), "12", ValueMarks::new()),
+        (Value::number(12.0), "12", ValueMarks::new()),
         (Value::string(""), r#""""#, ValueMarks::new()),
         (Value::string("pizza"), r#""pizza""#, ValueMarks::new()),
         (Value::bool(true), "T", ValueMarks::new()),
@@ -99,14 +99,14 @@ fn set_hash_bytes() {
         (
             Value::object([
                 ("name", Value::string("ermintrude")),
-                ("age", Value::number_float(54.0)),
+                ("age", Value::number(54.0)),
             ]),
             r#"<54;"ermintrude";>"#,
             ValueMarks::new(),
         ),
         (Value::empty_tuple(), "<>", ValueMarks::new()),
         (
-            Value::tuple([Value::string("ermintrude"), Value::number_float(54.0)]),
+            Value::tuple([Value::string("ermintrude"), Value::number(54.0)]),
             r#"<"ermintrude";54;>"#,
             ValueMarks::new(),
         ),
@@ -119,7 +119,7 @@ fn set_hash_bytes() {
         (
             Value::object([
                 ("name", Value::string("ermintrude").mark(1i64)),
-                ("age", Value::number_float(54.0).mark(2i64)),
+                ("age", Value::number(54.0).mark(2i64)),
             ]),
             r#"<54;"ermintrude";>"#,
             ValueMarks::from_marks([1i64, 2i64]),
@@ -172,8 +172,8 @@ fn set_order() {
         (Value::unknown(Type::string()), Value::string("a"), false),
         (Value::string("a"), Value::unknown(Type::string()), true),
         // Numbers sort numerically (this is a compatibility constraint)
-        (Value::zero(), Value::number_int(1), true),
-        (Value::number_int(1), Value::zero(), false),
+        (Value::zero(), Value::number(1), true),
+        (Value::number(1), Value::zero(), false),
         // Booleans sort false before true (this is a compatibility constraint)
         (Value::bool(false), Value::bool(true), true),
         (Value::bool(true), Value::bool(false), false),
@@ -235,15 +235,7 @@ fn set_order() {
     for (i, (a, b, want)) in tests.iter().enumerate() {
         let rules = internals::set_rules(a.ty()); // both values are assumed to have the same type
         let got = rules.less(a, b);
-        // NOTE(port): Go's `setRules.Less` returns a bare bool because
-        // `setRules` always implements `set.OrderedRules`; the Rust `Rules`
-        // trait folds `OrderedRules` into an `Option`-returning `less`, so the
-        // set rules must always return `Some` here.
-        assert_eq!(
-            got,
-            Some(*want),
-            "case {i}: wrong result\na: {a:?}\nb: {b:?}"
-        );
+        assert_eq!(got, *want, "case {i}: wrong result\na: {a:?}\nb: {b:?}");
     }
 }
 
@@ -271,7 +263,7 @@ fn set_rules_same_rules() {
     for (i, (a, b, want)) in tests.iter().enumerate() {
         let a_rules = internals::set_rules(a.clone());
         let b_rules = internals::set_rules(b.clone());
-        let got = a_rules.same_rules(b_rules.as_ref());
+        let got = a_rules.same_rules(&b_rules);
         assert_eq!(
             got, *want,
             "case {i}: wrong result\na: {a:?}\nb: {b:?}\ngot {got:?}, want {want:?}"

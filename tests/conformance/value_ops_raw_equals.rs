@@ -56,8 +56,8 @@ fn value_raw_equals() {
         (Value::bool(false), Value::bool(false), true),
         (Value::bool(true), Value::bool(false), false),
         // Numbers
-        (Value::number_int(1), Value::number_int(2), false),
-        (Value::number_int(2), Value::number_int(2), true),
+        (Value::number(1), Value::number(2), false),
+        (Value::number(2), Value::number(2), true),
         // Strings
         (Value::string(""), Value::string(""), true),
         (Value::string("hello"), Value::string("hello"), true),
@@ -83,80 +83,80 @@ fn value_raw_equals() {
             true,
         ),
         (
-            Value::object([("num", Value::number_int(1))]),
-            Value::object([("num", Value::number_int(1))]),
+            Value::object([("num", Value::number(1))]),
+            Value::object([("num", Value::number(1))]),
             true,
         ),
         (
-            Value::object([("h\u{e9}llo", Value::number_int(1))]), // precombined é
-            Value::object([("he\u{301}llo", Value::number_int(1))]), // e with combining acute accent
+            Value::object([("h\u{e9}llo", Value::number(1))]), // precombined é
+            Value::object([("he\u{301}llo", Value::number(1))]), // e with combining acute accent
             true,
         ),
         (
-            Value::object([("num", Value::number_int(1))]),
+            Value::object([("num", Value::number(1))]),
             Value::object([] as [(&str, Value); 0]),
             false,
         ),
         (
-            Value::object([("num", Value::number_int(1)), ("flag", Value::bool(true))]),
-            Value::object([("num", Value::number_int(1)), ("flag", Value::bool(true))]),
+            Value::object([("num", Value::number(1)), ("flag", Value::bool(true))]),
+            Value::object([("num", Value::number(1)), ("flag", Value::bool(true))]),
             true,
         ),
         (
-            Value::object([("num", Value::number_int(1))]),
-            Value::object([("num", Value::number_int(2))]),
+            Value::object([("num", Value::number(1))]),
+            Value::object([("num", Value::number(2))]),
             false,
         ),
         (
-            Value::object([("num", Value::number_int(1))]),
-            Value::object([("othernum", Value::number_int(1))]),
+            Value::object([("num", Value::number(1))]),
+            Value::object([("othernum", Value::number(1))]),
             false,
         ),
         (
-            Value::object([("num", Value::number_int(1)), ("flag", Value::bool(true))]),
-            Value::object([("num", Value::number_int(1))]),
+            Value::object([("num", Value::number(1)), ("flag", Value::bool(true))]),
+            Value::object([("num", Value::number(1))]),
             false,
         ),
         (
-            Value::object([("num", Value::number_int(1)), ("flag", Value::bool(true))]),
-            Value::object([("num", Value::number_int(1)), ("flag", Value::bool(false))]),
+            Value::object([("num", Value::number(1)), ("flag", Value::bool(true))]),
+            Value::object([("num", Value::number(1)), ("flag", Value::bool(false))]),
             false,
         ),
         // Tuples
         (Value::empty_tuple(), Value::empty_tuple(), true),
         (
-            Value::tuple([Value::number_int(1)]),
-            Value::tuple([Value::number_int(1)]),
+            Value::tuple([Value::number(1)]),
+            Value::tuple([Value::number(1)]),
             true,
         ),
         (
-            Value::tuple([Value::number_int(1)]),
-            Value::tuple([Value::number_int(2)]),
+            Value::tuple([Value::number(1)]),
+            Value::tuple([Value::number(2)]),
             false,
         ),
         (
             Value::tuple([Value::string("hi")]),
-            Value::tuple([Value::number_int(1)]),
+            Value::tuple([Value::number(1)]),
             false,
         ),
         (
-            Value::tuple([Value::number_int(1)]),
-            Value::tuple([Value::number_int(1), Value::number_int(2)]),
+            Value::tuple([Value::number(1)]),
+            Value::tuple([Value::number(1), Value::number(2)]),
             false,
         ),
         (
-            Value::tuple([Value::number_int(1), Value::number_int(2)]),
-            Value::tuple([Value::number_int(1)]),
+            Value::tuple([Value::number(1), Value::number(2)]),
+            Value::tuple([Value::number(1)]),
             false,
         ),
         (
-            Value::tuple([Value::number_int(1), Value::number_int(2)]),
-            Value::tuple([Value::number_int(1), Value::number_int(2)]),
+            Value::tuple([Value::number(1), Value::number(2)]),
+            Value::tuple([Value::number(1), Value::number(2)]),
             true,
         ),
         (
             Value::tuple([Value::unknown(Type::number())]),
-            Value::tuple([Value::number_int(1)]),
+            Value::tuple([Value::number(1)]),
             false,
         ),
         (
@@ -165,40 +165,32 @@ fn value_raw_equals() {
             true,
         ),
         (
-            Value::tuple([Value::number_int(1)]),
+            Value::tuple([Value::number(1)]),
             Value::tuple([Value::unknown(Type::number())]),
             false,
         ),
         (
-            Value::tuple([Value::number_int(1)]),
+            Value::tuple([Value::number(1)]),
             Value::tuple([Value::dynamic()]),
             false,
         ),
         (
             Value::tuple([Value::dynamic()]),
-            Value::tuple([Value::number_int(1)]),
+            Value::tuple([Value::number(1)]),
             false,
         ),
         (
-            Value::tuple([Value::number_int(1)]),
+            Value::tuple([Value::number(1)]),
             Value::unknown(Type::tuple([Type::number()])),
             false,
         ),
         (
             Value::unknown(Type::tuple([Type::number()])),
-            Value::tuple([Value::number_int(1)]),
+            Value::tuple([Value::number(1)]),
             false,
         ),
-        (
-            Value::dynamic(),
-            Value::tuple([Value::number_int(1)]),
-            false,
-        ),
-        (
-            Value::tuple([Value::number_int(1)]),
-            Value::dynamic(),
-            false,
-        ),
+        (Value::dynamic(), Value::tuple([Value::number(1)]), false),
+        (Value::tuple([Value::number(1)]), Value::dynamic(), false),
         // Lists
         (
             Value::list_empty(Type::number()),
@@ -211,33 +203,33 @@ fn value_raw_equals() {
             false,
         ),
         (
-            Value::list([Value::number_int(1)]),
-            Value::list([Value::number_int(1)]),
+            Value::list([Value::number(1)]),
+            Value::list([Value::number(1)]),
             true,
         ),
         (
-            Value::list([Value::number_int(1)]),
+            Value::list([Value::number(1)]),
             Value::list_empty(Type::string()),
             false,
         ),
         (
-            Value::list([Value::number_int(1), Value::number_int(2)]),
-            Value::list([Value::number_int(1), Value::number_int(2)]),
+            Value::list([Value::number(1), Value::number(2)]),
+            Value::list([Value::number(1), Value::number(2)]),
             true,
         ),
         (
-            Value::list([Value::number_int(1)]),
-            Value::list([Value::number_int(2)]),
+            Value::list([Value::number(1)]),
+            Value::list([Value::number(2)]),
             false,
         ),
         (
-            Value::list([Value::number_int(1), Value::number_int(2)]),
-            Value::list([Value::number_int(1)]),
+            Value::list([Value::number(1), Value::number(2)]),
+            Value::list([Value::number(1)]),
             false,
         ),
         (
-            Value::list([Value::number_int(1)]),
-            Value::list([Value::number_int(1), Value::number_int(2)]),
+            Value::list([Value::number(1)]),
+            Value::list([Value::number(1), Value::number(2)]),
             false,
         ),
         // Maps
@@ -272,66 +264,48 @@ fn value_raw_equals() {
             false,
         ),
         (
-            Value::map([("num", Value::number_int(1))]),
-            Value::map([("num", Value::number_int(1))]),
+            Value::map([("num", Value::number(1))]),
+            Value::map([("num", Value::number(1))]),
             true,
         ),
         (
-            Value::map([("h\u{e9}llo", Value::number_int(1))]), // precombined é
-            Value::map([("he\u{301}llo", Value::number_int(1))]), // e with combining acute accent
+            Value::map([("h\u{e9}llo", Value::number(1))]), // precombined é
+            Value::map([("he\u{301}llo", Value::number(1))]), // e with combining acute accent
             true,
         ),
         (
-            Value::map([("num", Value::number_int(1))]),
+            Value::map([("num", Value::number(1))]),
             Value::map_empty(Type::string()),
             false,
         ),
         (
-            Value::map([
-                ("num1", Value::number_int(1)),
-                ("num2", Value::number_int(2)),
-            ]),
-            Value::map([
-                ("num1", Value::number_int(1)),
-                ("num2", Value::number_int(2)),
-            ]),
+            Value::map([("num1", Value::number(1)), ("num2", Value::number(2))]),
+            Value::map([("num1", Value::number(1)), ("num2", Value::number(2))]),
             true,
         ),
         (
-            Value::map([("num", Value::number_int(1))]),
-            Value::map([("num", Value::number_int(2))]),
+            Value::map([("num", Value::number(1))]),
+            Value::map([("num", Value::number(2))]),
             false,
         ),
         (
-            Value::map([("num", Value::number_int(1))]),
-            Value::map([("othernum", Value::number_int(1))]),
+            Value::map([("num", Value::number(1))]),
+            Value::map([("othernum", Value::number(1))]),
             false,
         ),
         (
-            Value::map([
-                ("num1", Value::number_int(1)),
-                ("num2", Value::number_int(2)),
-            ]),
-            Value::map([("num1", Value::number_int(1))]),
+            Value::map([("num1", Value::number(1)), ("num2", Value::number(2))]),
+            Value::map([("num1", Value::number(1))]),
             false,
         ),
         (
-            Value::map([("num1", Value::number_int(1))]),
-            Value::map([
-                ("num1", Value::number_int(1)),
-                ("num2", Value::number_int(2)),
-            ]),
+            Value::map([("num1", Value::number(1))]),
+            Value::map([("num1", Value::number(1)), ("num2", Value::number(2))]),
             false,
         ),
         (
-            Value::map([
-                ("num1", Value::number_int(1)),
-                ("num2", Value::number_int(2)),
-            ]),
-            Value::map([
-                ("num1", Value::number_int(1)),
-                ("num2", Value::number_int(3)),
-            ]),
+            Value::map([("num1", Value::number(1)), ("num2", Value::number(2))]),
+            Value::map([("num1", Value::number(1)), ("num2", Value::number(3))]),
             false,
         ),
         // Sets
@@ -346,33 +320,33 @@ fn value_raw_equals() {
             false,
         ),
         (
-            Value::set([Value::number_int(1)]),
-            Value::set([Value::number_int(1)]),
+            Value::set([Value::number(1)]),
+            Value::set([Value::number(1)]),
             true,
         ),
         (
-            Value::set([Value::number_int(1)]),
+            Value::set([Value::number(1)]),
             Value::set_empty(Type::string()),
             false,
         ),
         (
-            Value::set([Value::number_int(1), Value::number_int(2)]),
-            Value::set([Value::number_int(2), Value::number_int(1)]),
+            Value::set([Value::number(1), Value::number(2)]),
+            Value::set([Value::number(2), Value::number(1)]),
             true,
         ),
         (
-            Value::set([Value::number_int(1)]),
-            Value::set([Value::number_int(2)]),
+            Value::set([Value::number(1)]),
+            Value::set([Value::number(2)]),
             false,
         ),
         (
-            Value::set([Value::number_int(1), Value::number_int(2)]),
-            Value::set([Value::number_int(1)]),
+            Value::set([Value::number(1), Value::number(2)]),
+            Value::set([Value::number(1)]),
             false,
         ),
         (
-            Value::set([Value::number_int(1)]),
-            Value::set([Value::number_int(1), Value::number_int(2)]),
+            Value::set([Value::number(1)]),
+            Value::set([Value::number(1), Value::number(2)]),
             false,
         ),
         // Capsules
@@ -390,8 +364,8 @@ fn value_raw_equals() {
             false,
         ),
         // Unknowns and Dynamics
-        (Value::number_int(2), Value::unknown(Type::number()), false),
-        (Value::number_int(1), Value::dynamic(), false),
+        (Value::number(2), Value::unknown(Type::number()), false),
+        (Value::number(1), Value::dynamic(), false),
         (Value::dynamic(), Value::bool(true), false),
         (
             Value::dynamic(),
@@ -475,7 +449,7 @@ fn value_raw_equals() {
         ),
         (
             Value::unknown(Type::string()),
-            Value::number_int(1),
+            Value::number(1),
             false, // because no string value -- even null -- can be equal to a non-null number
         ),
         (
@@ -584,22 +558,22 @@ fn value_raw_equals() {
         (
             Value::unknown(Type::number())
                 .refine()
-                .number_range_inclusive(Value::zero(), Value::number_int(1))
+                .number_range_inclusive(Value::zero(), Value::number(1))
                 .new_value(),
             Value::unknown(Type::number())
                 .refine()
-                .number_range_inclusive(Value::zero(), Value::number_int(2))
+                .number_range_inclusive(Value::zero(), Value::number(2))
                 .new_value(),
             false,
         ),
         (
             Value::unknown(Type::number())
                 .refine()
-                .number_range_inclusive(Value::zero(), Value::number_int(1))
+                .number_range_inclusive(Value::zero(), Value::number(1))
                 .new_value(),
             Value::unknown(Type::number())
                 .refine()
-                .number_range_inclusive(Value::zero(), Value::number_int(1))
+                .number_range_inclusive(Value::zero(), Value::number(1))
                 .new_value(),
             true,
         ),

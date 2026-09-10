@@ -2,7 +2,7 @@
 
 use std::cmp::Ordering;
 
-use crate::error::Error;
+use crate::error::CtyError;
 use crate::types::Type;
 use crate::value::Value;
 
@@ -21,7 +21,7 @@ impl std::fmt::Debug for Conversion {
 impl Conversion {
     /// Applies the conversion to a value, which must be of the source type the
     /// conversion was created for.
-    pub fn apply(&self, value: &Value) -> Result<Value, Error> {
+    pub fn apply(&self, value: &Value) -> Result<Value, CtyError> {
         let _ = value;
         todo!()
     }
@@ -29,7 +29,7 @@ impl Conversion {
 
 /// Converts a value to the given type, applying only safe (lossless and
 /// unambiguous) conversions (go-cty: `convert.Convert`).
-pub fn convert(value: &Value, want: &Type) -> Result<Value, Error> {
+pub fn convert(value: &Value, want: &Type) -> Result<Value, CtyError> {
     let _ = (value, want);
     todo!()
 }

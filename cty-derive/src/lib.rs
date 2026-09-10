@@ -31,7 +31,7 @@ pub fn derive_into_cty(input: TokenStream) -> TokenStream {
     let (impl_generics, ty_generics, where_clause) = input.generics.split_for_impl();
     quote! {
         impl #impl_generics ::cty::interop::IntoCty for #name #ty_generics #where_clause {
-            fn into_cty(self, ty: &::cty::Type) -> ::core::result::Result<::cty::Value, ::cty::Error> {
+            fn into_cty(self, ty: &::cty::Type) -> ::core::result::Result<::cty::Value, ::cty::CtyError> {
                 let _ = ty;
                 todo!()
             }
@@ -49,7 +49,7 @@ pub fn derive_from_cty(input: TokenStream) -> TokenStream {
     let (impl_generics, ty_generics, where_clause) = input.generics.split_for_impl();
     quote! {
         impl #impl_generics ::cty::interop::FromCty for #name #ty_generics #where_clause {
-            fn from_cty(value: &::cty::Value) -> ::core::result::Result<Self, ::cty::Error> {
+            fn from_cty(value: &::cty::Value) -> ::core::result::Result<Self, ::cty::CtyError> {
                 let _ = value;
                 todo!()
             }
@@ -68,7 +68,7 @@ pub fn derive_cty_typed(input: TokenStream) -> TokenStream {
     let (impl_generics, ty_generics, where_clause) = input.generics.split_for_impl();
     quote! {
         impl #impl_generics ::cty::interop::CtyTyped for #name #ty_generics #where_clause {
-            fn implied_type() -> ::core::result::Result<::cty::Type, ::cty::Error> {
+            fn implied_type() -> ::core::result::Result<::cty::Type, ::cty::CtyError> {
                 todo!()
             }
         }

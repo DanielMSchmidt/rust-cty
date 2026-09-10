@@ -4,10 +4,8 @@
 //! observable (set element ordering, hash formats) and covered by upstream
 //! tests. Not part of the supported API.
 
-use std::rc::Rc;
-
 use crate::marks::ValueMarks;
-use crate::set::Rules;
+use crate::set::ValueRules;
 use crate::types::Type;
 use crate::value::Value;
 
@@ -28,7 +26,7 @@ pub fn set_hash_bytes(value: &Value) -> (String, ValueMarks) {
 ///
 /// These rules always define an ordering, so their `less` never returns
 /// `None`.
-pub fn set_rules(element_type: Type) -> Rc<dyn Rules<Value>> {
+pub fn set_rules(element_type: Type) -> ValueRules {
     let _ = element_type;
     todo!()
 }

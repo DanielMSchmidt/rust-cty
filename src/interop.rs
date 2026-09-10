@@ -9,7 +9,7 @@
 //! future derive macro would fill that role, and the conformance tests note
 //! the upstream cases that depend on it.
 
-use crate::error::Error;
+use crate::error::CtyError;
 use crate::types::Type;
 use crate::value::Value;
 
@@ -17,38 +17,38 @@ use crate::value::Value;
 /// (go-cty: `gocty.ToCtyValue`).
 pub trait IntoCty {
     /// Converts `self` to a cty value conforming to `ty`.
-    fn into_cty(self, ty: &Type) -> Result<Value, Error>;
+    fn into_cty(self, ty: &Type) -> Result<Value, CtyError>;
 }
 
 /// Conversion from a cty value to a native Rust value
 /// (go-cty: `gocty.FromCtyValue`).
 pub trait FromCty: Sized {
     /// Converts a cty value into `Self`.
-    fn from_cty(value: &Value) -> Result<Self, Error>;
+    fn from_cty(value: &Value) -> Result<Self, CtyError>;
 }
 
 /// A native Rust type with a preferred cty type representation
 /// (go-cty: `gocty.ImpliedType`).
 pub trait CtyTyped {
     /// The cty type that best represents this Rust type.
-    fn implied_type() -> Result<Type, Error>;
+    fn implied_type() -> Result<Type, CtyError>;
 }
 
 /// Converts a native value to a cty value of the given type; convenience
 /// free-function form of [`IntoCty`] (go-cty: `gocty.ToCtyValue`).
-pub fn to_cty_value<T: IntoCty>(value: T, ty: &Type) -> Result<Value, Error> {
+pub fn to_cty_value<T: IntoCty>(value: T, ty: &Type) -> Result<Value, CtyError> {
     value.into_cty(ty)
 }
 
 /// Converts a cty value to a native value; convenience free-function form of
 /// [`FromCty`] (go-cty: `gocty.FromCtyValue`).
-pub fn from_cty_value<T: FromCty>(value: &Value) -> Result<T, Error> {
+pub fn from_cty_value<T: FromCty>(value: &Value) -> Result<T, CtyError> {
     T::from_cty(value)
 }
 
 /// The cty type that best represents the Rust type `T`; convenience
 /// free-function form of [`CtyTyped`] (go-cty: `gocty.ImpliedType`).
-pub fn implied_type<T: CtyTyped>() -> Result<Type, Error> {
+pub fn implied_type<T: CtyTyped>() -> Result<Type, CtyError> {
     T::implied_type()
 }
 
@@ -56,21 +56,21 @@ macro_rules! declare_interop_stub {
     ($($t:ty),* $(,)?) => {
         $(
             impl IntoCty for $t {
-                fn into_cty(self, ty: &Type) -> Result<Value, Error> {
+                fn into_cty(self, ty: &Type) -> Result<Value, CtyError> {
                     let _ = ty;
                     todo!()
                 }
             }
 
             impl FromCty for $t {
-                fn from_cty(value: &Value) -> Result<Self, Error> {
+                fn from_cty(value: &Value) -> Result<Self, CtyError> {
                     let _ = value;
                     todo!()
                 }
             }
 
             impl CtyTyped for $t {
-                fn implied_type() -> Result<Type, Error> {
+                fn implied_type() -> Result<Type, CtyError> {
                     todo!()
                 }
             }
@@ -81,82 +81,82 @@ macro_rules! declare_interop_stub {
 declare_interop_stub!(bool, i8, i16, i32, i64, u8, u16, u32, u64, f32, f64, String);
 
 impl IntoCty for &str {
-    fn into_cty(self, ty: &Type) -> Result<Value, Error> {
+    fn into_cty(self, ty: &Type) -> Result<Value, CtyError> {
         let _ = ty;
         todo!()
     }
 }
 
 impl<T: IntoCty> IntoCty for Vec<T> {
-    fn into_cty(self, ty: &Type) -> Result<Value, Error> {
+    fn into_cty(self, ty: &Type) -> Result<Value, CtyError> {
         let _ = ty;
         todo!()
     }
 }
 
 impl<T: FromCty> FromCty for Vec<T> {
-    fn from_cty(value: &Value) -> Result<Self, Error> {
+    fn from_cty(value: &Value) -> Result<Self, CtyError> {
         let _ = value;
         todo!()
     }
 }
 
 impl<T: CtyTyped> CtyTyped for Vec<T> {
-    fn implied_type() -> Result<Type, Error> {
+    fn implied_type() -> Result<Type, CtyError> {
         todo!()
     }
 }
 
 impl<T: IntoCty> IntoCty for std::collections::BTreeMap<String, T> {
-    fn into_cty(self, ty: &Type) -> Result<Value, Error> {
+    fn into_cty(self, ty: &Type) -> Result<Value, CtyError> {
         let _ = ty;
         todo!()
     }
 }
 
 impl<T: FromCty> FromCty for std::collections::BTreeMap<String, T> {
-    fn from_cty(value: &Value) -> Result<Self, Error> {
+    fn from_cty(value: &Value) -> Result<Self, CtyError> {
         let _ = value;
         todo!()
     }
 }
 
 impl<T: CtyTyped> CtyTyped for std::collections::BTreeMap<String, T> {
-    fn implied_type() -> Result<Type, Error> {
+    fn implied_type() -> Result<Type, CtyError> {
         todo!()
     }
 }
 
 /// `Option` is the analogue of a Go pointer: `None` converts to and from null.
 impl<T: IntoCty> IntoCty for Option<T> {
-    fn into_cty(self, ty: &Type) -> Result<Value, Error> {
+    fn into_cty(self, ty: &Type) -> Result<Value, CtyError> {
         let _ = ty;
         todo!()
     }
 }
 
 impl<T: FromCty> FromCty for Option<T> {
-    fn from_cty(value: &Value) -> Result<Self, Error> {
+    fn from_cty(value: &Value) -> Result<Self, CtyError> {
         let _ = value;
         todo!()
     }
 }
 
 impl<T: CtyTyped> CtyTyped for Option<T> {
-    fn implied_type() -> Result<Type, Error> {
+    fn implied_type() -> Result<Type, CtyError> {
         todo!()
     }
 }
 
 impl<T: IntoCty, const N: usize> IntoCty for [T; N] {
-    fn into_cty(self, ty: &Type) -> Result<Value, Error> {
+    fn into_cty(self, ty: &Type) -> Result<Value, CtyError> {
         let _ = ty;
         todo!()
     }
 }
 
 impl<T: FromCty, const N: usize> FromCty for [T; N] {
-    fn from_cty(value: &Value) -> Result<Self, Error> {
+    fn from_cty(value: &Value) -> Result<Self, CtyError> {
         let _ = value;
         todo!()
     }
@@ -164,14 +164,14 @@ impl<T: FromCty, const N: usize> FromCty for [T; N] {
 
 /// Passing a `Value` through is the identity conversion, as in gocty.
 impl IntoCty for Value {
-    fn into_cty(self, ty: &Type) -> Result<Value, Error> {
+    fn into_cty(self, ty: &Type) -> Result<Value, CtyError> {
         let _ = ty;
         todo!()
     }
 }
 
 impl FromCty for Value {
-    fn from_cty(value: &Value) -> Result<Self, Error> {
+    fn from_cty(value: &Value) -> Result<Self, CtyError> {
         let _ = value;
         todo!()
     }
@@ -180,7 +180,7 @@ impl FromCty for Value {
 /// The implied cty type of a `Value` target is dynamic, as in gocty's
 /// reflection over `cty.Value` (go-cty: `gocty.ImpliedType`).
 impl CtyTyped for Value {
-    fn implied_type() -> Result<Type, Error> {
+    fn implied_type() -> Result<Type, CtyError> {
         todo!()
     }
 }

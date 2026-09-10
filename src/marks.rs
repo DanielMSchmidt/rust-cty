@@ -9,7 +9,7 @@ use std::any::Any;
 use std::fmt::Debug;
 use std::hash::Hash;
 
-use crate::error::Error;
+use crate::error::CtyError;
 use crate::path::Path;
 use crate::value::Value;
 
@@ -179,7 +179,7 @@ pub enum WrangleAction {
 /// the next wrangler decide" (Go's nil action), and an error may accompany any
 /// action — the action is still applied and the error is accumulated.
 pub type WrangleFunc<'a> =
-    &'a mut dyn FnMut(&Mark, &Path) -> (Option<WrangleAction>, Option<Error>);
+    &'a mut dyn FnMut(&Mark, &Path) -> (Option<WrangleAction>, Option<CtyError>);
 
 impl Value {
     /// Whether this value is directly marked (go-cty: `Value.IsMarked`).
@@ -279,10 +279,13 @@ impl Value {
     ///
     /// Mirrors Go's `(Value, error)` result pair: the returned value is
     /// meaningful even when errors were accumulated (wrangling continues past
-    /// errors), so this returns `(Value, Option<Error>)` rather than a
+    /// errors), so this returns `(Value, Option<CtyError>)` rather than a
     /// `Result`. Multiple accumulated errors are joined into one `Error`
     /// whose message is their newline-joined messages (Go's `errors.Join`).
-    pub fn wrangle_marks_deep(&self, wranglers: &mut [WrangleFunc<'_>]) -> (Value, Option<Error>) {
+    pub fn wrangle_marks_deep(
+        &self,
+        wranglers: &mut [WrangleFunc<'_>],
+    ) -> (Value, Option<CtyError>) {
         let _ = wranglers;
         todo!()
     }

@@ -4,7 +4,7 @@
 //! free functions (`cty.GetAttrPath("a").Index(...)`), the Rust API starts from
 //! `Path::new()` and chains: `Path::new().attr("a").index_int(0)`.
 
-use crate::error::Error;
+use crate::error::CtyError;
 use crate::value::Value;
 
 /// One step in a [`Path`] (go-cty: `cty.PathStep`, i.e. `GetAttrStep` or
@@ -19,7 +19,7 @@ pub enum PathStep {
 
 impl PathStep {
     /// Applies this single step to a value (go-cty: `PathStep.Apply`).
-    pub fn apply(&self, value: &Value) -> Result<Value, Error> {
+    pub fn apply(&self, value: &Value) -> Result<Value, CtyError> {
         let _ = value;
         todo!()
     }
@@ -119,14 +119,14 @@ impl Path {
     }
 
     /// Follows the path down into the given value (go-cty: `Path.Apply`).
-    pub fn apply(&self, value: &Value) -> Result<Value, Error> {
+    pub fn apply(&self, value: &Value) -> Result<Value, CtyError> {
         let _ = value;
         todo!()
     }
 
     /// Applies all but the final step, returning the penultimate value and the
     /// final step (go-cty: `Path.LastStep`).
-    pub fn last_step(&self, value: &Value) -> Result<(Value, PathStep), Error> {
+    pub fn last_step(&self, value: &Value) -> Result<(Value, PathStep), CtyError> {
         let _ = value;
         todo!()
     }
@@ -145,8 +145,8 @@ impl Path {
     }
 
     /// Creates an error carrying this path as context (go-cty: `Path.NewErrorf`).
-    pub fn error(&self, message: impl Into<String>) -> Error {
-        Error::new_at_path(self.clone(), message)
+    pub fn error(&self, message: impl Into<String>) -> CtyError {
+        CtyError::new_at_path(self.clone(), message)
     }
 
     /// The Go-syntax representation of this path, byte-for-byte identical to

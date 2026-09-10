@@ -9,7 +9,7 @@
 use std::collections::HashSet;
 
 use cty::{
-    Error, Path, Transformer, Type, Value, deep_values, transform, transform_with_transformer,
+    CtyError, Path, Transformer, Type, Value, deep_values, transform, transform_with_transformer,
     unknown_as_null, walk,
 };
 
@@ -17,7 +17,7 @@ use cty::{
 fn walk_test_value() -> Value {
     Value::object([
         ("string", Value::string("hello")),
-        ("number", Value::number_int(10)),
+        ("number", Value::number(10)),
         ("bool", Value::bool(true)),
         ("list", Value::list([Value::bool(true)])),
         ("list_empty", Value::list_empty(Type::bool())),
@@ -207,7 +207,7 @@ fn walk_and_deep_values_display() {
         (r#"Path::new().attr("bool")"#, "bool"),
         (r#"Path::new().attr("list")"#, "list of bool"),
         (
-            r#"Path::new().attr("list").index(Value::number_int(0))"#,
+            r#"Path::new().attr("list").index(Value::number(0))"#,
             "bool",
         ),
         (r#"Path::new().attr("list_empty")"#, "list of bool"),
@@ -219,7 +219,7 @@ fn walk_and_deep_values_display() {
         (r#"Path::new().attr("set_empty")"#, "list of bool"),
         (r#"Path::new().attr("tuple")"#, "tuple"),
         (
-            r#"Path::new().attr("tuple").index(Value::number_int(0))"#,
+            r#"Path::new().attr("tuple").index(Value::number(0))"#,
             "bool",
         ),
         (r#"Path::new().attr("tuple_empty")"#, "tuple"),
@@ -237,7 +237,7 @@ fn walk_and_deep_values_display() {
         (r#"Path::new().attr("marked_string")"#, "string"),
         (r#"Path::new().attr("marked_list")"#, "list of bool"),
         (
-            r#"Path::new().attr("marked_list").index(Value::number_int(0))"#,
+            r#"Path::new().attr("marked_list").index(Value::number(0))"#,
             "bool",
         ),
         (r#"Path::new().attr("marked_set")"#, "set of bool"),
@@ -249,7 +249,7 @@ fn walk_and_deep_values_display() {
         (r#"Path::new().attr("marked_object").attr("true")"#, "bool"),
         (r#"Path::new().attr("marked_tuple")"#, "tuple"),
         (
-            r#"Path::new().attr("marked_tuple").index(Value::number_int(0))"#,
+            r#"Path::new().attr("marked_tuple").index(Value::number(0))"#,
             "bool",
         ),
         (r#"Path::new().attr("marked_map")"#, "map of bool"),
@@ -280,7 +280,7 @@ fn walk_and_deep_values_display() {
 fn transform_with_transformer_test_value() -> Value {
     Value::object([
         ("string", Value::string("hello")),
-        ("number", Value::number_int(10)),
+        ("number", Value::number(10)),
         ("bool", Value::bool(true)),
         ("list", Value::list([Value::bool(true)])),
         ("list_empty", Value::list_empty(Type::bool())),
@@ -322,11 +322,11 @@ fn transform_with_transformer_test_value() -> Value {
 struct PathTransformer;
 
 impl Transformer for PathTransformer {
-    fn enter(&mut self, _path: &Path, value: &Value) -> Result<Value, Error> {
+    fn enter(&mut self, _path: &Path, value: &Value) -> Result<Value, CtyError> {
         Ok(value.clone())
     }
 
-    fn exit(&mut self, path: &Path, value: &Value) -> Result<Value, Error> {
+    fn exit(&mut self, path: &Path, value: &Value) -> Result<Value, CtyError> {
         if value.ty().is_primitive_type() {
             return Ok(Value::string(path.go_string()));
         }
@@ -463,11 +463,11 @@ fn transform_with_transformer_paths() {
 struct DisplayPathTransformer;
 
 impl Transformer for DisplayPathTransformer {
-    fn enter(&mut self, _path: &Path, value: &Value) -> Result<Value, Error> {
+    fn enter(&mut self, _path: &Path, value: &Value) -> Result<Value, CtyError> {
         Ok(value.clone())
     }
 
-    fn exit(&mut self, path: &Path, value: &Value) -> Result<Value, Error> {
+    fn exit(&mut self, path: &Path, value: &Value) -> Result<Value, CtyError> {
         if value.ty().is_primitive_type() {
             return Ok(Value::string(path.to_string()));
         }
@@ -495,7 +495,7 @@ fn transform_with_transformer_paths_display() {
         (
             "list",
             Value::list([Value::string(
-                r#"Path::new().attr("list").index(Value::number_int(0))"#,
+                r#"Path::new().attr("list").index(Value::number(0))"#,
             )]),
         ),
         ("list_empty", Value::list_empty(Type::bool())),
@@ -509,7 +509,7 @@ fn transform_with_transformer_paths_display() {
         (
             "tuple",
             Value::tuple([Value::string(
-                r#"Path::new().attr("tuple").index(Value::number_int(0))"#,
+                r#"Path::new().attr("tuple").index(Value::number(0))"#,
             )]),
         ),
         ("tuple_empty", Value::empty_tuple()),
@@ -540,7 +540,7 @@ fn transform_with_transformer_paths_display() {
         (
             "marked_list",
             Value::list([Value::string(
-                r#"Path::new().attr("marked_list").index(Value::number_int(0))"#,
+                r#"Path::new().attr("marked_list").index(Value::number(0))"#,
             )])
             .mark("blorp"),
         ),
@@ -554,7 +554,7 @@ fn transform_with_transformer_paths_display() {
         (
             "marked_tuple",
             Value::tuple([Value::string(
-                r#"Path::new().attr("marked_tuple").index(Value::number_int(0))"#,
+                r#"Path::new().attr("marked_tuple").index(Value::number(0))"#,
             )])
             .mark("blorp"),
         ),
@@ -584,11 +584,11 @@ fn transform_with_transformer_paths_display() {
 struct ErrorTransformer;
 
 impl Transformer for ErrorTransformer {
-    fn enter(&mut self, _path: &Path, value: &Value) -> Result<Value, Error> {
+    fn enter(&mut self, _path: &Path, value: &Value) -> Result<Value, CtyError> {
         Ok(value.clone())
     }
 
-    fn exit(&mut self, path: &Path, value: &Value) -> Result<Value, Error> {
+    fn exit(&mut self, path: &Path, value: &Value) -> Result<Value, CtyError> {
         let ty = value.ty();
         if ty.is_primitive_type() {
             return Ok(value.clone());
@@ -604,7 +604,7 @@ impl Transformer for ErrorTransformer {
 fn transform_with_transformer_error() {
     let val = Value::object([
         ("string", Value::string("hello")),
-        ("number", Value::number_int(10)),
+        ("number", Value::number(10)),
         ("bool", Value::bool(true)),
         ("list", Value::list([Value::bool(true)])),
     ]);
@@ -618,7 +618,7 @@ fn transform_with_transformer_error() {
     };
 
     // NOTE(port): upstream asserts the error is a cty.PathError via a type
-    // assertion; the analogue here is `Error::path` returning the path.
+    // assertion; the analogue here is `CtyError::path` returning the path.
     let want = Path::new().attr("list");
     let got = err.path().expect("expected path-carrying error, got none");
     assert!(

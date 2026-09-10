@@ -16,12 +16,12 @@ fn has_index() {
     let tests: Vec<(Value, Value, Value)> = vec![
         (
             Value::list_empty(Type::number()),
-            Value::number_int(2),
+            Value::number(2),
             Value::bool(false),
         ),
         (
             Value::list([Value::bool(true)]),
-            Value::number_int(0),
+            Value::number(0),
             Value::bool(true),
         ),
         (
@@ -44,14 +44,10 @@ fn has_index() {
             Value::string("hello"),
             Value::bool(false),
         ),
-        (
-            Value::empty_tuple(),
-            Value::number_int(0),
-            Value::bool(false),
-        ),
+        (Value::empty_tuple(), Value::number(0), Value::bool(false)),
         (
             Value::tuple([Value::bool(true)]),
-            Value::number_int(0),
+            Value::number(0),
             Value::bool(true),
         ),
         (
@@ -100,49 +96,49 @@ fn chunklist() {
     let tests: Vec<Case> = vec![
         Case {
             list: Value::list_empty(Type::string()),
-            len: Value::number_int(2),
+            len: Value::number(2),
             want: Some(Value::list_empty(Type::list(Type::string()))),
             err: "",
         },
         Case {
             list: Value::unknown(Type::list(Type::string())),
-            len: Value::number_int(2),
+            len: Value::number(2),
             want: Some(Value::unknown(Type::list(Type::list(Type::string()))).refine_not_null()),
             err: "",
         },
         Case {
             list: Value::list([Value::string("a")]),
-            len: Value::number_int(2),
+            len: Value::number(2),
             want: Some(Value::list([Value::list([Value::string("a")])])),
             err: "",
         },
         Case {
             list: Value::list([Value::string("a").mark("b")]),
-            len: Value::number_int(2),
+            len: Value::number(2),
             want: Some(Value::list([Value::list([Value::string("a").mark("b")])])),
             err: "",
         },
         Case {
             list: Value::list([Value::string("a")]).mark("a"),
-            len: Value::number_int(2),
+            len: Value::number(2),
             want: Some(Value::list([Value::list([Value::string("a")])]).mark("a")),
             err: "",
         },
         Case {
             list: Value::list([Value::string("a").mark("b")]).mark("a"),
-            len: Value::number_int(2),
+            len: Value::number(2),
             want: Some(Value::list([Value::list([Value::string("a").mark("b")])]).mark("a")),
             err: "",
         },
         Case {
             list: Value::list([Value::unknown(Type::string())]),
-            len: Value::number_int(2),
+            len: Value::number(2),
             want: Some(Value::list([Value::list([Value::unknown(Type::string())])])),
             err: "",
         },
         Case {
             list: Value::list([Value::string("a"), Value::string("b")]),
-            len: Value::number_int(2),
+            len: Value::number(2),
             want: Some(Value::list([Value::list([
                 Value::string("a"),
                 Value::string("b"),
@@ -152,7 +148,7 @@ fn chunklist() {
         // Multiple result elements, one shorter
         Case {
             list: Value::list([Value::string("a"), Value::string("b"), Value::string("c")]),
-            len: Value::number_int(2),
+            len: Value::number(2),
             want: Some(Value::list([
                 Value::list([Value::string("a"), Value::string("b")]),
                 Value::list([Value::string("c")]),
@@ -169,7 +165,7 @@ fn chunklist() {
                 Value::string("e"),
                 Value::string("f"),
             ]),
-            len: Value::number_int(2),
+            len: Value::number(2),
             want: Some(Value::list([
                 Value::list([Value::string("a"), Value::string("b")]),
                 Value::list([Value::string("c"), Value::string("d")]),
@@ -204,7 +200,7 @@ fn chunklist() {
         },
         Case {
             list: Value::list_empty(Type::string()),
-            len: Value::number_int(-1),
+            len: Value::number(-1),
             want: None,
             err: "the size argument must be positive",
         },
@@ -216,7 +212,7 @@ fn chunklist() {
         },
         Case {
             list: Value::list_empty(Type::string()),
-            len: Value::number_float(1.5),
+            len: Value::number(1.5),
             want: None,
             err: "invalid size: value must be a whole number, between -9223372036854775808 and 9223372036854775807",
         },
@@ -248,10 +244,10 @@ fn contains() {
         Value::string("fox"),
     ]);
     let list_of_ints = Value::list([
-        Value::number_int(1),
-        Value::number_int(2),
-        Value::number_int(3),
-        Value::number_int(4),
+        Value::number(1),
+        Value::number(2),
+        Value::number(3),
+        Value::number(4),
     ]);
     let list_with_unknown = Value::list([
         Value::string("the"),
@@ -287,13 +283,13 @@ fn contains() {
         ),
         (
             list_of_ints.clone(),
-            Value::number_int(1),
+            Value::number(1),
             Value::bool(true),
             false,
         ),
         (
             list_of_ints.clone(),
-            Value::number_int(42),
+            Value::number(42),
             Value::bool(false),
             false,
         ),
@@ -359,9 +355,9 @@ fn contains() {
             Value::tuple([
                 Value::string("quick"),
                 Value::string("brown"),
-                Value::number_int(3),
+                Value::number(3),
             ]),
-            Value::number_int(3),
+            Value::number(3),
             Value::bool(true),
             false,
         ),
@@ -581,11 +577,11 @@ fn merge() {
         Case {
             values: vec![
                 Value::map([("a", Value::list([Value::string("b")]))]),
-                Value::object([("d", Value::number_int(2))]),
+                Value::object([("d", Value::number(2))]),
             ],
             want: Some(Value::object([
                 ("a", Value::list([Value::string("b")])),
-                ("d", Value::number_int(2)),
+                ("d", Value::number(2)),
             ])),
             err: false,
         },
@@ -695,7 +691,7 @@ fn index() {
     let tests: Vec<(Value, Value, Value)> = vec![
         (
             Value::list([Value::bool(true)]),
-            Value::number_int(0),
+            Value::number(0),
             Value::bool(true),
         ),
         (
@@ -705,12 +701,12 @@ fn index() {
         ),
         (
             Value::tuple([Value::bool(true), Value::string("hello")]),
-            Value::number_int(0),
+            Value::number(0),
             Value::bool(true),
         ),
         (
             Value::tuple([Value::bool(true), Value::string("hello")]),
-            Value::number_int(1),
+            Value::number(1),
             Value::string("hello"),
         ),
         (
@@ -750,13 +746,13 @@ fn index() {
 #[ignore = "not yet implemented"]
 fn length() {
     let tests: Vec<(Value, Value)> = vec![
-        (Value::list_empty(Type::number()), Value::number_int(0)),
-        (Value::list([Value::bool(true)]), Value::number_int(1)),
-        (Value::set_empty(Type::number()), Value::number_int(0)),
-        (Value::set([Value::bool(true)]), Value::number_int(1)),
+        (Value::list_empty(Type::number()), Value::number(0)),
+        (Value::list([Value::bool(true)]), Value::number(1)),
+        (Value::set_empty(Type::number()), Value::number(0)),
+        (Value::set([Value::bool(true)]), Value::number(1)),
         (
             Value::set([Value::bool(true), Value::bool(false)]),
-            Value::number_int(2),
+            Value::number(2),
         ),
         (
             Value::set([Value::bool(true), Value::unknown(Type::bool())]),
@@ -765,26 +761,23 @@ fn length() {
             Value::unknown(Type::number())
                 .refine()
                 .not_null()
-                .number_range_inclusive(Value::number_int(1), Value::number_int(2))
+                .number_range_inclusive(Value::number(1), Value::number(2))
                 .new_value(),
         ),
         (
             Value::set([Value::unknown(Type::bool())]),
-            Value::number_int(1), // Will be one regardless of what value the unknown in the input is representing
+            Value::number(1), // Will be one regardless of what value the unknown in the input is representing
         ),
-        (Value::map_empty(Type::bool()), Value::number_int(0)),
-        (
-            Value::map([("hello", Value::bool(true))]),
-            Value::number_int(1),
-        ),
-        (Value::empty_tuple(), Value::number_int(0)),
-        (Value::tuple([Value::bool(true)]), Value::number_int(1)),
+        (Value::map_empty(Type::bool()), Value::number(0)),
+        (Value::map([("hello", Value::bool(true))]), Value::number(1)),
+        (Value::empty_tuple(), Value::number(0)),
+        (Value::tuple([Value::bool(true)]), Value::number(1)),
         (
             Value::unknown(Type::list(Type::bool())),
             Value::unknown(Type::number())
                 .refine()
                 .not_null()
-                .number_range_inclusive(Value::zero(), Value::number_int(i64::MAX))
+                .number_range_inclusive(Value::zero(), Value::number(f64::MAX))
                 .new_value(),
         ),
         (
@@ -792,7 +785,7 @@ fn length() {
             Value::unknown(Type::number())
                 .refine()
                 .not_null()
-                .number_range_inclusive(Value::zero(), Value::number_int(i64::MAX))
+                .number_range_inclusive(Value::zero(), Value::number(f64::MAX))
                 .new_value(),
         ),
         (
@@ -803,13 +796,13 @@ fn length() {
             Value::unknown(Type::number())
                 .refine()
                 .not_null()
-                .number_range_inclusive(Value::zero(), Value::number_int(2))
+                .number_range_inclusive(Value::zero(), Value::number(2))
                 .new_value(),
         ),
         // Marked collections return a marked length
         (
             Value::list([Value::string("hello"), Value::string("world")]).mark("secret"),
-            Value::number_int(2).mark("secret"),
+            Value::number(2).mark("secret"),
         ),
         // Marks on values in unmarked collections do not propagate
         (
@@ -817,7 +810,7 @@ fn length() {
                 Value::string("hello").mark("a"),
                 Value::string("world").mark("b"),
             ]),
-            Value::number_int(2),
+            Value::number(2),
         ),
     ];
 
@@ -898,7 +891,7 @@ fn lookup() {
                 ("frob", Value::string("honk").mark("b")),
             ]),
             Value::string("squish"),
-            Value::number_int(5).mark("c"),
+            Value::number(5).mark("c"),
             Value::string("5").mark("c"),
         ),
         // propagate marks from key
@@ -925,6 +918,11 @@ fn lookup() {
 #[test]
 #[ignore = "not yet implemented"]
 fn element() {
+    // NOTE(deviation): cannot pass. Numbers are `f64` (deviation 1 in the
+    // workbench's docs/deviations.md); upstream numbers are arbitrary-precision.
+    // Out of range here: -9223372036854775809 and 9223372036854775808 below.
+    // Kept as transcribed: the assertions state upstream behavior, which is the
+    // point. Do not trim the table or relax them to make this green.
     let list_of_strings = Value::list([
         Value::string("the"),
         Value::string("quick"),
@@ -932,10 +930,10 @@ fn element() {
         Value::string("fox"),
     ]);
     let list_of_ints = Value::list([
-        Value::number_int(1),
-        Value::number_int(2),
-        Value::number_int(3),
-        Value::number_int(4),
+        Value::number(1),
+        Value::number(2),
+        Value::number(3),
+        Value::number(4),
     ]);
     let list_with_unknown = Value::list([
         Value::string("the"),
@@ -965,49 +963,49 @@ fn element() {
     let tests: Vec<(Value, Value, Value, bool)> = vec![
         (
             list_of_strings.clone(),
-            Value::number_int(2),
+            Value::number(2),
             Value::string("brown"),
             false,
         ),
         // index greater than length(list)
         (
             list_of_strings.clone(),
-            Value::number_int(5),
+            Value::number(5),
             Value::string("quick"),
             false,
         ),
         // negative index counts from the end of the list
         (
             list_of_strings.clone(),
-            Value::number_int(-1),
+            Value::number(-1),
             Value::string("fox"),
             false,
         ),
         // negative index can be out of bounds too
         (
             list_of_strings.clone(),
-            Value::number_int(-6),
+            Value::number(-6),
             Value::string("brown"),
             false,
         ),
         // minimum valid index
         (
             list_of_strings.clone(),
-            Value::number_int(i64::MIN),
+            Value::number(f64::MIN),
             Value::string("the"),
             false,
         ),
         // maximum valid index
         (
             list_of_strings.clone(),
-            Value::number_int(i64::MAX),
+            Value::number(f64::MAX),
             Value::string("fox"),
             false,
         ),
         // list of lists
         (
             Value::list([list_of_strings.clone(), list_of_strings.clone()]),
-            Value::number_int(0),
+            Value::number(0),
             list_of_strings.clone(),
             false,
         ),
@@ -1019,40 +1017,40 @@ fn element() {
         ),
         (
             list_of_ints.clone(),
-            Value::number_int(2),
-            Value::number_int(3),
+            Value::number(2),
+            Value::number(3),
             false,
         ),
         (
             list_with_unknown.clone(),
-            Value::number_int(2),
+            Value::number(2),
             Value::string("brown"),
             false,
         ),
         (
             list_with_unknown.clone(),
-            Value::number_int(3),
+            Value::number(3),
             Value::unknown(Type::string()),
             false,
         ),
         // preserve marks
         (
             list_with_marks.clone(),
-            Value::number_int(2),
+            Value::number(2),
             Value::string("brown").mark("fox"),
             false,
         ),
         // marked items
         (
             list_with_marks.clone(),
-            Value::number_int(1),
+            Value::number(1),
             Value::string("quick"),
             false,
         ),
         // The entire list is marked
         (
             list_with_marks.clone().mark("thewholeshebang"),
-            Value::number_int(2),
+            Value::number(2),
             Value::string("brown").with_marks([ValueMarks::from_marks(["thewholeshebang", "fox"])]),
             false,
         ),
@@ -1064,105 +1062,85 @@ fn element() {
         ),
         (
             list_of_strings.clone(),
-            Value::number_float(0.5),
+            Value::number(0.5),
             Value::dynamic(),
             true,
         ),
         // index out of bounds of int64
         (
             list_of_strings.clone(),
-            Value::parse_number("-9223372036854775809").unwrap(),
+            Value::parse_number("-9223372036854775809"),
             Value::string("the"),
             true,
         ),
         // index out of bounds of int64
         (
             list_of_strings.clone(),
-            Value::parse_number("9223372036854775808").unwrap(),
+            Value::parse_number("9223372036854775808"),
             Value::string("fox"),
             true,
         ),
+        (tuple.clone(), Value::number(0), Value::string("the"), false),
         (
             tuple.clone(),
-            Value::number_int(0),
-            Value::string("the"),
-            false,
-        ),
-        (
-            tuple.clone(),
-            Value::number_int(1),
+            Value::number(1),
             Value::unknown(Type::string()),
             false,
         ),
+        (tuple.clone(), Value::number(3), Value::bool(false), false),
+        (tuple.clone(), Value::number(4), Value::string("the"), false),
         (
             tuple.clone(),
-            Value::number_int(3),
-            Value::bool(false),
-            false,
-        ),
-        (
-            tuple.clone(),
-            Value::number_int(4),
-            Value::string("the"),
-            false,
-        ),
-        (
-            tuple.clone(),
-            Value::number_int(10),
+            Value::number(10),
             Value::string("brown"),
             false,
         ),
+        (tuple.clone(), Value::number(-1), Value::bool(false), false),
         (
             tuple.clone(),
-            Value::number_int(-1),
-            Value::bool(false),
-            false,
-        ),
-        (
-            tuple.clone(),
-            Value::number_int(-6),
+            Value::number(-6),
             Value::string("brown"),
             false,
         ),
         (
             unknown_tuple.clone(),
-            Value::number_int(0),
+            Value::number(0),
             Value::unknown(Type::string()),
             false,
         ),
         (
             unknown_tuple.clone(),
-            Value::number_int(1),
+            Value::number(1),
             Value::unknown(Type::string()),
             false,
         ),
         (
             unknown_tuple.clone(),
-            Value::number_int(3),
+            Value::number(3),
             Value::unknown(Type::bool()),
             false,
         ),
         (
             unknown_tuple.clone(),
-            Value::number_int(4),
+            Value::number(4),
             Value::unknown(Type::string()),
             false,
         ),
         (
             unknown_tuple.clone(),
-            Value::number_int(10),
+            Value::number(10),
             Value::unknown(Type::string()),
             false,
         ),
         (
             unknown_tuple.clone(),
-            Value::number_int(-1),
+            Value::number(-1),
             Value::unknown(Type::bool()),
             false,
         ),
         (
             unknown_tuple.clone(),
-            Value::number_int(-6),
+            Value::number(-6),
             Value::unknown(Type::string()),
             false,
         ),
@@ -1216,9 +1194,9 @@ fn coalesce_list() {
             name: "return type is dynamic, not unified",
             values: vec![
                 Value::list_empty(Type::string()),
-                Value::list([Value::number_int(3), Value::number_int(4)]),
+                Value::list([Value::number(3), Value::number(4)]),
             ],
-            want: Some(Value::list([Value::number_int(3), Value::number_int(4)])),
+            want: Some(Value::list([Value::number(3), Value::number(4)])),
             err: false,
         },
         Case {
@@ -2074,7 +2052,7 @@ fn setproduct() {
         Case {
             collections: vec![
                 Value::tuple([Value::string("the"), Value::string("brown")]),
-                Value::tuple([Value::string("fox"), Value::number_int(3)]),
+                Value::tuple([Value::string("fox"), Value::number(3)]),
             ],
             want: Some(Value::list([
                 Value::tuple([Value::string("the"), Value::string("fox")]),
@@ -2454,11 +2432,20 @@ fn setproduct() {
 #[test]
 #[ignore = "not yet implemented"]
 fn reverse_list() {
-    // NOTE(port): upstream's first case passes `cty.NilVal` as the input and
-    // expects the error "argument must not be null". Go's zero-value NilVal
-    // has no Rust analogue (see docs/api-mapping.md), so that case is
-    // deliberately omitted.
+    // NOTE(port): upstream's first case passes `cty.NilVal` as the input. Its
+    // `IsNull()` is true (cty/value.go:59-64), so it trips the AllowNull check
+    // in the function machinery (cty/function/function.go:169) before any type
+    // handling happens — the behavior under test is null rejection, not the Go
+    // zero value. It is therefore ported as a typed null, the same shape the
+    // null cases in TestValues/TestKeys/TestDistinct already use in this file.
+    // Upstream's `Want` here is NilVal and is never read; the `want` column
+    // below is likewise unread whenever an error is expected.
     let tests: Vec<(Value, Value, &'static str)> = vec![
+        (
+            Value::null(Type::list(Type::string())),
+            Value::null(Type::list(Type::string())),
+            "argument must not be null",
+        ),
         (
             Value::list_empty(Type::string()),
             Value::list_empty(Type::string()),
@@ -2566,8 +2553,8 @@ fn slice() {
     let tests: Vec<Case> = vec![
         Case {
             input: Value::list([Value::string("a"), Value::string("b"), Value::string("c")]),
-            start: Value::number_int(0),
-            end: Value::number_int(2),
+            start: Value::number(0),
+            end: Value::number(2),
             want: Value::list([Value::string("a"), Value::string("b")]),
             err: "",
         },
@@ -2575,8 +2562,8 @@ fn slice() {
         Case {
             input: Value::list([Value::string("a"), Value::string("b"), Value::string("c")])
                 .mark("bloop"),
-            start: Value::number_int(0),
-            end: Value::number_int(2),
+            start: Value::number(0),
+            end: Value::number(2),
             want: Value::list([Value::string("a"), Value::string("b")]).mark("bloop"),
             err: "",
         },
@@ -2587,8 +2574,8 @@ fn slice() {
                 Value::string("b").mark("bloop"),
                 Value::string("c"),
             ]),
-            start: Value::number_int(0),
-            end: Value::number_int(2),
+            start: Value::number(0),
+            end: Value::number(2),
             want: Value::list([Value::string("a"), Value::string("b").mark("bloop")]),
             err: "",
         },
@@ -2648,12 +2635,8 @@ fn distinct() {
         },
         // List where all elements are identical
         Case {
-            list: Value::list([
-                Value::number_int(42),
-                Value::number_int(42),
-                Value::number_int(42),
-            ]),
-            want: Some(Value::list([Value::number_int(42)])),
+            list: Value::list([Value::number(42), Value::number(42), Value::number(42)]),
+            want: Some(Value::list([Value::number(42)])),
             err: "",
         },
         // List that is already distinct

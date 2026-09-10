@@ -50,7 +50,7 @@ fn value_refine() {
                     .refine()
                     .not_null()
                     .string_prefix("beep")
-                    .number_range_inclusive(Value::zero(), Value::number_int(10))
+                    .number_range_inclusive(Value::zero(), Value::number(10))
                     .collection_length(5)
                     .new_value()
             },
@@ -241,13 +241,13 @@ fn value_refine() {
             || {
                 Value::unknown(Type::number())
                     .refine()
-                    .number_range_lower_bound(Value::number_int(1), true)
+                    .number_range_lower_bound(Value::number(1), true)
                     .new_value()
             },
             Expect::Value(|| {
                 Value::unknown(Type::number())
                     .refine()
-                    .number_range_lower_bound(Value::number_int(1), true)
+                    .number_range_lower_bound(Value::number(1), true)
                     .new_value()
             }),
         ),
@@ -256,13 +256,13 @@ fn value_refine() {
             || {
                 Value::unknown(Type::number())
                     .refine()
-                    .number_range_upper_bound(Value::number_int(1), true)
+                    .number_range_upper_bound(Value::number(1), true)
                     .new_value()
             },
             Expect::Value(|| {
                 Value::unknown(Type::number())
                     .refine()
-                    .number_range_upper_bound(Value::number_int(1), true)
+                    .number_range_upper_bound(Value::number(1), true)
                     .new_value()
             }),
         ),
@@ -271,15 +271,15 @@ fn value_refine() {
             || {
                 Value::unknown(Type::number())
                     .refine()
-                    .number_range_lower_bound(Value::number_int(1), true)
-                    .number_range_upper_bound(Value::number_int(2), false)
+                    .number_range_lower_bound(Value::number(1), true)
+                    .number_range_upper_bound(Value::number(2), false)
                     .new_value()
             },
             Expect::Value(|| {
                 Value::unknown(Type::number())
                     .refine()
-                    .number_range_lower_bound(Value::number_int(1), true)
-                    .number_range_upper_bound(Value::number_int(2), false)
+                    .number_range_lower_bound(Value::number(1), true)
+                    .number_range_upper_bound(Value::number(2), false)
                     .new_value()
             }),
         ),
@@ -288,20 +288,20 @@ fn value_refine() {
             || {
                 Value::unknown(Type::number())
                     .refine()
-                    .number_range_lower_bound(Value::number_int(1), true)
-                    .number_range_upper_bound(Value::number_int(1), true)
+                    .number_range_lower_bound(Value::number(1), true)
+                    .number_range_upper_bound(Value::number(1), true)
                     .not_null()
                     .new_value()
             },
-            Expect::Value(|| Value::number_int(1)),
+            Expect::Value(|| Value::number(1)),
         ),
         (
             "unknown number cannot have conflicting bounds",
             || {
                 Value::unknown(Type::number())
                     .refine()
-                    .number_range_lower_bound(Value::number_int(2), true)
-                    .number_range_upper_bound(Value::number_int(1), false)
+                    .number_range_lower_bound(Value::number(2), true)
+                    .number_range_upper_bound(Value::number(1), false)
                     .new_value()
             },
             Expect::Panic(
@@ -311,22 +311,22 @@ fn value_refine() {
         (
             "known number can have its bounds confirmed",
             || {
-                Value::number_int(1)
+                Value::number(1)
                     .refine()
-                    .number_range_lower_bound(Value::number_int(0), true)
-                    .number_range_upper_bound(Value::number_int(2), true)
+                    .number_range_lower_bound(Value::number(0), true)
+                    .number_range_upper_bound(Value::number(2), true)
                     .not_null()
                     .new_value()
             },
-            Expect::Value(|| Value::number_int(1)),
+            Expect::Value(|| Value::number(1)),
         ),
         (
             "can't refine a known number with non-matching bounds",
             || {
-                Value::number_int(10)
+                Value::number(10)
                     .refine()
-                    .number_range_lower_bound(Value::number_int(0), true)
-                    .number_range_upper_bound(Value::number_int(2), true)
+                    .number_range_lower_bound(Value::number(0), true)
+                    .number_range_upper_bound(Value::number(2), true)
                     .not_null()
                     .new_value()
             },

@@ -14,17 +14,14 @@ use cty::{Path, PathStep, PathValueMarks, Type, Value, ValueMarks};
 fn contains_marked() {
     let test_cases: Vec<(Value, bool)> = vec![
         (Value::string("a"), false),
-        (Value::number_int(1).mark("a"), true),
+        (Value::number(1).mark("a"), true),
+        (Value::list([Value::number(1), Value::number(2)]), false),
         (
-            Value::list([Value::number_int(1), Value::number_int(2)]),
-            false,
-        ),
-        (
-            Value::list([Value::number_int(1), Value::number_int(2).mark("a")]),
+            Value::list([Value::number(1), Value::number(2).mark("a")]),
             true,
         ),
         (
-            Value::list([Value::number_int(1), Value::number_int(2)]).mark("a"),
+            Value::list([Value::number(1), Value::number(2)]).mark("a"),
             true,
         ),
         (Value::list_empty(Type::string()).mark("c"), true),
@@ -36,21 +33,18 @@ fn contains_marked() {
             true,
         ),
         (
-            Value::tuple([Value::number_int(1).mark("a"), Value::string("y").mark("z")]),
+            Value::tuple([Value::number(1).mark("a"), Value::string("y").mark("z")]),
             true,
         ),
         (
-            Value::set([
-                Value::number_int(1).mark("a"),
-                Value::number_int(2).mark("z"),
-            ]),
+            Value::set([Value::number(1).mark("a"), Value::number(2).mark("z")]),
             true,
         ),
         (
             Value::object([
                 (
                     "x",
-                    Value::list([Value::number_int(1).mark("a"), Value::number_int(2)]),
+                    Value::list([Value::number(1).mark("a"), Value::number(2)]),
                 ),
                 ("y", Value::string("y")),
                 ("z", Value::bool(true)),
@@ -75,17 +69,14 @@ fn contains_marked() {
 fn is_marked() {
     let test_cases: Vec<(Value, bool)> = vec![
         (Value::string("a"), false),
-        (Value::number_int(1).mark("a"), true),
+        (Value::number(1).mark("a"), true),
+        (Value::list([Value::number(1), Value::number(2)]), false),
         (
-            Value::list([Value::number_int(1), Value::number_int(2)]),
+            Value::list([Value::number(1), Value::number(2).mark("a")]),
             false,
         ),
         (
-            Value::list([Value::number_int(1), Value::number_int(2).mark("a")]),
-            false,
-        ),
-        (
-            Value::list([Value::number_int(1), Value::number_int(2)]).mark("a"),
+            Value::list([Value::number(1), Value::number(2)]).mark("a"),
             true,
         ),
     ];
@@ -150,10 +141,10 @@ fn value_marks() {
 
     // One more test for a more interesting/realistic situation involving
     // a number of different operations.
-    let a = Value::number_int(2).mark("a");
-    let b = Value::number_int(5).mark("b");
-    let c = Value::number_int(1).mark("c");
-    let d = Value::number_int(12).mark("d");
+    let a = Value::number(2).mark("a");
+    let b = Value::number(5).mark("b");
+    let c = Value::number(1).mark("c");
+    let d = Value::number(12).mark("d");
     let result = a.multiply(&b).subtract(&c).greater_than_or_equal_to(&d);
     assert_eq!(
         result,
@@ -173,7 +164,7 @@ fn value_marks() {
 
     // If we call MarkWithPaths without any matching paths, we should get the unmarked result
     let marked_with_no_paths = unmarked_result.mark_with_paths(&[PathValueMarks {
-        path: Path::from_steps([PathStep::Index(Value::number_int(0))]),
+        path: Path::from_steps([PathStep::Index(Value::number(0))]),
         marks: ValueMarks::from_marks(["z"]),
     }]);
     assert_eq!(marked_with_no_paths, Value::bool(false), "wrong result");
@@ -205,11 +196,11 @@ fn path_value_marks_equal() {
     let tests: Vec<(PathValueMarks, PathValueMarks, bool)> = vec![
         (
             PathValueMarks {
-                path: Path::from_steps([PathStep::Index(Value::number_int(0))]),
+                path: Path::from_steps([PathStep::Index(Value::number(0))]),
                 marks: ValueMarks::from_marks(["a"]),
             },
             PathValueMarks {
-                path: Path::from_steps([PathStep::Index(Value::number_int(0))]),
+                path: Path::from_steps([PathStep::Index(Value::number(0))]),
                 marks: ValueMarks::from_marks(["a"]),
             },
             true,
@@ -227,33 +218,33 @@ fn path_value_marks_equal() {
         ),
         (
             PathValueMarks {
-                path: Path::from_steps([PathStep::Index(Value::number_int(0))]),
+                path: Path::from_steps([PathStep::Index(Value::number(0))]),
                 marks: ValueMarks::from_marks(["a"]),
             },
             PathValueMarks {
-                path: Path::from_steps([PathStep::Index(Value::number_int(1))]),
+                path: Path::from_steps([PathStep::Index(Value::number(1))]),
                 marks: ValueMarks::from_marks(["a"]),
             },
             false,
         ),
         (
             PathValueMarks {
-                path: Path::from_steps([PathStep::Index(Value::number_int(0))]),
+                path: Path::from_steps([PathStep::Index(Value::number(0))]),
                 marks: ValueMarks::from_marks(["a"]),
             },
             PathValueMarks {
-                path: Path::from_steps([PathStep::Index(Value::number_int(0))]),
+                path: Path::from_steps([PathStep::Index(Value::number(0))]),
                 marks: ValueMarks::from_marks(["b"]),
             },
             false,
         ),
         (
             PathValueMarks {
-                path: Path::from_steps([PathStep::Index(Value::number_int(0))]),
+                path: Path::from_steps([PathStep::Index(Value::number(0))]),
                 marks: ValueMarks::from_marks(["a"]),
             },
             PathValueMarks {
-                path: Path::from_steps([PathStep::Index(Value::number_int(1))]),
+                path: Path::from_steps([PathStep::Index(Value::number(1))]),
                 marks: ValueMarks::from_marks(["b"]),
             },
             false,
@@ -317,30 +308,26 @@ fn unmark_deep() {
         ),
         (
             "marked number",
-            Value::number_int(1).mark("a"),
-            Value::number_int(1),
+            Value::number(1).mark("a"),
+            Value::number(1),
             ValueMarks::from_marks(["a"]),
         ),
         (
             "unmarked list",
-            Value::list([Value::number_int(1), Value::number_int(2)]),
-            Value::list([Value::number_int(1), Value::number_int(2)]),
+            Value::list([Value::number(1), Value::number(2)]),
+            Value::list([Value::number(1), Value::number(2)]),
             ValueMarks::new(),
         ),
         (
             "list with some elements marked",
-            Value::list([Value::number_int(1).mark("a"), Value::number_int(2)]),
-            Value::list([Value::number_int(1), Value::number_int(2)]),
+            Value::list([Value::number(1).mark("a"), Value::number(2)]),
+            Value::list([Value::number(1), Value::number(2)]),
             ValueMarks::from_marks(["a"]),
         ),
         (
             "marked list with all elements marked",
-            Value::list([
-                Value::number_int(1).mark("a"),
-                Value::number_int(2).mark("b"),
-            ])
-            .mark("c"),
-            Value::list([Value::number_int(1), Value::number_int(2)]),
+            Value::list([Value::number(1).mark("a"), Value::number(2).mark("b")]).mark("c"),
+            Value::list([Value::number(1), Value::number(2)]),
             ValueMarks::from_marks(["a", "b", "c"]),
         ),
         (
@@ -360,17 +347,14 @@ fn unmark_deep() {
         ),
         (
             "tuple with elements marked",
-            Value::tuple([Value::number_int(1).mark("a"), Value::string("y").mark("z")]),
-            Value::tuple([Value::number_int(1), Value::string("y")]),
+            Value::tuple([Value::number(1).mark("a"), Value::string("y").mark("z")]),
+            Value::tuple([Value::number(1), Value::string("y")]),
             ValueMarks::from_marks(["a", "z"]),
         ),
         (
             "set with elements marked",
-            Value::set([
-                Value::number_int(1).mark("a"),
-                Value::number_int(2).mark("z"),
-            ]),
-            Value::set([Value::number_int(1), Value::number_int(2)]),
+            Value::set([Value::number(1).mark("a"), Value::number(2).mark("z")]),
+            Value::set([Value::number(1), Value::number(2)]),
             ValueMarks::from_marks(["a", "z"]),
         ),
         (
@@ -378,21 +362,15 @@ fn unmark_deep() {
             Value::object([
                 (
                     "x",
-                    Value::list([
-                        Value::number_int(3).mark("a"),
-                        Value::number_int(5).mark("b"),
-                    ])
-                    .with_marks([ValueMarks::from_marks(["c", "d"])]),
+                    Value::list([Value::number(3).mark("a"), Value::number(5).mark("b")])
+                        .with_marks([ValueMarks::from_marks(["c", "d"])]),
                 ),
                 ("y", Value::string("y").mark("e")),
                 ("z", Value::bool(true).mark("f")),
             ])
             .mark("g"),
             Value::object([
-                (
-                    "x",
-                    Value::list([Value::number_int(3), Value::number_int(5)]),
-                ),
+                ("x", Value::list([Value::number(3), Value::number(5)])),
                 ("y", Value::string("y")),
                 ("z", Value::bool(true)),
             ]),
@@ -421,8 +399,8 @@ fn path_value_marks() {
         ),
         (
             "marked number",
-            Value::number_int(1).mark("a"),
-            Value::number_int(1),
+            Value::number(1).mark("a"),
+            Value::number(1),
             vec![PathValueMarks {
                 path: Path::new(),
                 marks: ValueMarks::from_marks(["a"]),
@@ -430,8 +408,8 @@ fn path_value_marks() {
         ),
         (
             "list with some elements marked",
-            Value::list([Value::number_int(1).mark("a"), Value::number_int(2)]),
-            Value::list([Value::number_int(1), Value::number_int(2)]),
+            Value::list([Value::number(1).mark("a"), Value::number(2)]),
+            Value::list([Value::number(1), Value::number(2)]),
             vec![PathValueMarks {
                 path: Path::new().index_int(0),
                 marks: ValueMarks::from_marks(["a"]),
@@ -439,12 +417,8 @@ fn path_value_marks() {
         ),
         (
             "marked list with all elements marked",
-            Value::list([
-                Value::number_int(1).mark("a"),
-                Value::number_int(2).mark("b"),
-            ])
-            .mark("c"),
-            Value::list([Value::number_int(1), Value::number_int(2)]),
+            Value::list([Value::number(1).mark("a"), Value::number(2).mark("b")]).mark("c"),
+            Value::list([Value::number(1), Value::number(2)]),
             vec![
                 PathValueMarks {
                     path: Path::new(),
@@ -490,12 +464,12 @@ fn path_value_marks() {
         (
             "tuple with elements marked",
             Value::tuple([
-                Value::number_int(1).mark("a"),
+                Value::number(1).mark("a"),
                 Value::string("y").mark("z"),
                 Value::object([("x", Value::bool(true))]).mark("o"),
             ]),
             Value::tuple([
-                Value::number_int(1),
+                Value::number(1),
                 Value::string("y"),
                 Value::object([("x", Value::bool(true))]),
             ]),
@@ -516,11 +490,8 @@ fn path_value_marks() {
         ),
         (
             "set with elements marked",
-            Value::set([
-                Value::number_int(1).mark("a"),
-                Value::number_int(2).mark("z"),
-            ]),
-            Value::set([Value::number_int(1), Value::number_int(2)]),
+            Value::set([Value::number(1).mark("a"), Value::number(2).mark("z")]),
+            Value::set([Value::number(1), Value::number(2)]),
             vec![PathValueMarks {
                 path: Path::new(),
                 marks: ValueMarks::from_marks(["a", "z"]),
@@ -531,21 +502,15 @@ fn path_value_marks() {
             Value::object([
                 (
                     "x",
-                    Value::list([
-                        Value::number_int(3).mark("a"),
-                        Value::number_int(5).mark("b"),
-                    ])
-                    .with_marks([ValueMarks::from_marks(["c", "d"])]),
+                    Value::list([Value::number(3).mark("a"), Value::number(5).mark("b")])
+                        .with_marks([ValueMarks::from_marks(["c", "d"])]),
                 ),
                 ("y", Value::string("y").mark("e")),
                 ("z", Value::bool(true).mark("f")),
             ])
             .mark("g"),
             Value::object([
-                (
-                    "x",
-                    Value::list([Value::number_int(3), Value::number_int(5)]),
-                ),
+                ("x", Value::list([Value::number(3), Value::number(5)])),
                 ("y", Value::string("y")),
                 ("z", Value::bool(true)),
             ]),

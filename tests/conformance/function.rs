@@ -7,20 +7,20 @@
 //! docs/api-mapping.md for the Go→Rust API correspondence.
 
 use cty::function::{Function, ImplFunc, Parameter, Spec, TypeFunc, static_return_type};
-use cty::{Error, Type, Value, ValueMarks};
+use cty::{CtyError, Type, Value, ValueMarks};
 
 // NOTE(port): upstream's stubType returns `cty.NilType, fmt.Errorf("should not
 // be called")`; NilType has no Rust analogue — the error alone carries the
 // "not called" signal through `Result`.
 fn stub_type() -> TypeFunc {
-    Box::new(|_args| Err(Error::new("should not be called")))
+    Box::new(|_args| Err(CtyError::new("should not be called")))
 }
 
 // NOTE(port): upstream's stubImpl returns `cty.NilVal, fmt.Errorf("should not
 // be called")`; NilVal has no Rust analogue — the error alone carries the
 // "not called" signal through `Result`.
 fn stub_impl() -> ImplFunc {
-    Box::new(|_args, _ret_type| Err(Error::new("should not be called")))
+    Box::new(|_args, _ret_type| Err(CtyError::new("should not be called")))
 }
 
 // Ported from TestReturnTypeForValues:
@@ -42,7 +42,7 @@ fn return_type_for_values() {
             let ty = Type::number();
             for (i, arg) in args.iter().enumerate() {
                 if arg.contains_marked() {
-                    return Err(Error::new(format!(
+                    return Err(CtyError::new(format!(
                         "arg {i} {} contains marks",
                         arg.go_string()
                     )));
@@ -75,7 +75,7 @@ fn return_type_for_values() {
                 refine_result: None,
                 impl_fn: stub_impl(),
             },
-            args: vec![Value::number_int(2)],
+            args: vec![Value::number(2)],
             want_type: None,
             want_err: true,
         },
@@ -104,7 +104,7 @@ fn return_type_for_values() {
                 refine_result: None,
                 impl_fn: stub_impl(),
             },
-            args: vec![Value::number_int(2)],
+            args: vec![Value::number(2)],
             want_type: Some(Type::number()),
             want_err: false,
         },

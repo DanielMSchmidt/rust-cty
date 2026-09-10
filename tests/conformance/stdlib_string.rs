@@ -154,20 +154,20 @@ fn reverse() {
 #[ignore = "not yet implemented"]
 fn strlen() {
     let tests: Vec<(Value, Value)> = vec![
-        (Value::string("hello"), Value::number_int(5)),
-        (Value::string(""), Value::number_int(0)),
-        (Value::string("1"), Value::number_int(1)),
+        (Value::string("hello"), Value::number(5)),
+        (Value::string(""), Value::number(0)),
+        (Value::string("1"), Value::number(1)),
         (
             Value::string(
                 "\u{416}\u{438}\u{432}\u{43e}\u{439} \u{416}\u{443}\u{440}\u{43d}\u{430}\u{43b}",
             ),
-            Value::number_int(12),
+            Value::number(12),
         ),
         (
             // note that the dieresis here is intentionally a combining
             // ligature.
             Value::string("noe\u{308}l"),
-            Value::number_int(4),
+            Value::number(4),
         ),
         (
             // The Es in this string has three combining acute accents.
@@ -175,16 +175,16 @@ fn strlen() {
             // into a single precombined codepoint, since otherwise we might
             // be cheating and relying on the single-codepoint forms.
             Value::string("we\u{301}\u{301}\u{301}e\u{301}\u{301}\u{301}e\u{301}\u{301}\u{301}!"),
-            Value::number_int(5),
+            Value::number(5),
         ),
         (
             // Go's normalization forms don't handle this ligature, so we
             // will produce the wrong result but this is now a compatibility
             // constraint and so we'll test it.
             Value::string("ba\u{fb04}e"),
-            Value::number_int(4),
+            Value::number(4),
         ),
-        (Value::string("\u{1f638}\u{1f63e}"), Value::number_int(2)),
+        (Value::string("\u{1f638}\u{1f63e}"), Value::number(2)),
         (
             Value::unknown(Type::string()),
             Value::unknown(Type::number())
@@ -203,7 +203,7 @@ fn strlen() {
             Value::unknown(Type::number())
                 .refine()
                 .not_null()
-                .number_range_lower_bound(Value::number_int(5), true)
+                .number_range_lower_bound(Value::number(5), true)
                 .new_value(),
         ),
         (
@@ -231,104 +231,104 @@ fn substr() {
     let tests: Vec<(Value, Value, Value, Value)> = vec![
         (
             Value::string("hello"),
-            Value::number_int(0),
-            Value::number_int(2),
+            Value::number(0),
+            Value::number(2),
             Value::string("he"),
         ),
         (
             Value::string("hello"),
-            Value::number_int(1),
-            Value::number_int(3),
+            Value::number(1),
+            Value::number(3),
             Value::string("ell"),
         ),
         (
             Value::string("hello"),
-            Value::number_int(1),
-            Value::number_int(-1),
+            Value::number(1),
+            Value::number(-1),
             Value::string("ello"),
         ),
         (
             Value::string("hello"),
-            Value::number_int(1),
-            Value::number_int(-10), // not documented, but <0 is the same as -1
+            Value::number(1),
+            Value::number(-10), // not documented, but <0 is the same as -1
             Value::string("ello"),
         ),
         (
             Value::string("hello"),
-            Value::number_int(1),
-            Value::number_int(10),
+            Value::number(1),
+            Value::number(10),
             Value::string("ello"),
         ),
         (
             Value::string("hello"),
-            Value::number_int(-3),
-            Value::number_int(-1),
+            Value::number(-3),
+            Value::number(-1),
             Value::string("llo"),
         ),
         (
             Value::string("hello"),
-            Value::number_int(-3),
-            Value::number_int(2),
+            Value::number(-3),
+            Value::number(2),
             Value::string("ll"),
         ),
         (
             Value::string("hello"),
-            Value::number_int(10),
-            Value::number_int(10),
+            Value::number(10),
+            Value::number(10),
             Value::string(""),
         ),
         (
             Value::string("hello"),
-            Value::number_int(0),
-            Value::number_int(0),
+            Value::number(0),
+            Value::number(0),
             Value::string(""),
         ),
         (
             Value::string("noe\u{308}l"),
-            Value::number_int(0),
-            Value::number_int(3),
+            Value::number(0),
+            Value::number(3),
             Value::string("noe\u{308}"),
         ),
         (
             Value::string("noe\u{308}l"),
-            Value::number_int(3),
-            Value::number_int(-1),
+            Value::number(3),
+            Value::number(-1),
             Value::string("l"),
         ),
         (
             Value::string("we\u{301}\u{301}\u{301}e\u{301}\u{301}\u{301}e\u{301}\u{301}\u{301}!"),
-            Value::number_int(2),
-            Value::number_int(2),
+            Value::number(2),
+            Value::number(2),
             Value::string("e\u{301}\u{301}\u{301}e\u{301}\u{301}\u{301}"),
         ),
         (
             Value::string("we\u{301}\u{301}\u{301}e\u{301}\u{301}\u{301}e\u{301}\u{301}\u{301}!"),
-            Value::number_int(3),
-            Value::number_int(2),
+            Value::number(3),
+            Value::number(2),
             Value::string("e\u{301}\u{301}\u{301}!"),
         ),
         (
             Value::string("we\u{301}\u{301}\u{301}e\u{301}\u{301}\u{301}e\u{301}\u{301}\u{301}!"),
-            Value::number_int(-2),
-            Value::number_int(-1),
+            Value::number(-2),
+            Value::number(-1),
             Value::string("e\u{301}\u{301}\u{301}!"),
         ),
         (
             Value::string("noe\u{308}l"),
-            Value::number_int(-2),
-            Value::number_int(-1),
+            Value::number(-2),
+            Value::number(-1),
             Value::string("e\u{308}l"),
         ),
         (
             Value::string("\u{1f638}\u{1f63e}"),
-            Value::number_int(0),
-            Value::number_int(1),
+            Value::number(0),
+            Value::number(1),
             Value::string("\u{1f638}"),
         ),
         (
             Value::string("\u{1f638}\u{1f63e}"),
-            Value::number_int(1),
-            Value::number_int(1),
+            Value::number(1),
+            Value::number(1),
             Value::string("\u{1f63e}"),
         ),
     ];

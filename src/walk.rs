@@ -1,7 +1,7 @@
 //! Traversal of nested values: [`walk`], [`transform`], and
 //! [`transform_with_transformer`]. Mirrors go-cty's `walk.go`.
 
-use crate::error::Error;
+use crate::error::CtyError;
 use crate::path::Path;
 use crate::value::Value;
 
@@ -12,8 +12,8 @@ use crate::value::Value;
 /// `Ok(false)` to skip them; any error aborts the walk.
 pub fn walk(
     value: &Value,
-    callback: impl FnMut(&Path, &Value) -> Result<bool, Error>,
-) -> Result<(), Error> {
+    callback: impl FnMut(&Path, &Value) -> Result<bool, CtyError>,
+) -> Result<(), CtyError> {
     let _ = (value, &callback);
     todo!()
 }
@@ -29,8 +29,8 @@ pub fn deep_values(value: &Value) -> Vec<(Path, Value)> {
 /// value, depth-first (go-cty: `cty.Transform`).
 pub fn transform(
     value: &Value,
-    callback: impl FnMut(&Path, &Value) -> Result<Value, Error>,
-) -> Result<Value, Error> {
+    callback: impl FnMut(&Path, &Value) -> Result<Value, CtyError>,
+) -> Result<Value, CtyError> {
     let _ = (value, &callback);
     todo!()
 }
@@ -39,11 +39,11 @@ pub fn transform(
 /// (go-cty: `cty.Transformer`).
 pub trait Transformer {
     /// Called before descending into a value (go-cty: `Transformer.Enter`).
-    fn enter(&mut self, path: &Path, value: &Value) -> Result<Value, Error>;
+    fn enter(&mut self, path: &Path, value: &Value) -> Result<Value, CtyError>;
 
     /// Called after a value's children have been transformed
     /// (go-cty: `Transformer.Exit`).
-    fn exit(&mut self, path: &Path, value: &Value) -> Result<Value, Error>;
+    fn exit(&mut self, path: &Path, value: &Value) -> Result<Value, CtyError>;
 }
 
 /// Rewrites a value using enter/exit callbacks, allowing transformation both
@@ -51,7 +51,7 @@ pub trait Transformer {
 pub fn transform_with_transformer(
     value: &Value,
     transformer: &mut dyn Transformer,
-) -> Result<Value, Error> {
+) -> Result<Value, CtyError> {
     let _ = (value, transformer);
     todo!()
 }

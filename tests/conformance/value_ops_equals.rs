@@ -35,6 +35,11 @@ fn capsule_test_type_2() -> Type {
 #[test]
 #[ignore = "not yet implemented"]
 fn value_equals() {
+    // NOTE(deviation): cannot pass. Numbers are `f64` (deviation 1 in the
+    // workbench's docs/deviations.md); upstream numbers are arbitrary-precision.
+    // Out of range here: pi to 63 digits, and 9223372036854775808, below.
+    // Kept as transcribed: the assertions state upstream behavior, which is the
+    // point. Do not trim the table or relax them to make this green.
     // NOTE(port): upstream constructs each capsule value once and reuses the
     // same Go pointer across cases; the Rust analogue of that shared identity
     // is cloning the capsule Value.
@@ -65,76 +70,54 @@ fn value_equals() {
         (Value::bool(false), Value::bool(false), Value::bool(true)),
         (Value::bool(true), Value::bool(false), Value::bool(false)),
         // Numbers
+        (Value::number(1), Value::number(2), Value::bool(false)),
+        (Value::number(2), Value::number(2), Value::bool(true)),
+        (Value::number(2), Value::number(2.2), Value::bool(false)),
+        (Value::number(2.0), Value::number(2.2), Value::bool(false)),
         (
-            Value::number_int(1),
-            Value::number_int(2),
-            Value::bool(false),
-        ),
-        (
-            Value::number_int(2),
-            Value::number_int(2),
+            Value::parse_number("0.0"),
+            Value::parse_number("-0.0"), // a statically-generated negative zero
             Value::bool(true),
         ),
         (
-            Value::number_int(2),
-            Value::number_float(2.2),
-            Value::bool(false),
-        ),
-        (
-            Value::number_float(2.0),
-            Value::number_float(2.2),
-            Value::bool(false),
-        ),
-        (
-            Value::parse_number("0.0").unwrap(),
-            Value::parse_number("-0.0").unwrap(), // a statically-generated negative zero
+            Value::number(0.0),
+            Value::number(0.0).multiply(&Value::number(-1)), // a dynamically-generated negative zero
             Value::bool(true),
         ),
         (
-            Value::number_float(0.0),
-            Value::number_float(0.0).multiply(&Value::number_int(-1)), // a dynamically-generated negative zero
-            Value::bool(true),
-        ),
-        (
-            Value::parse_number("3.14159265358979323846264338327950288419716939937510582097494459")
-                .unwrap(),
-            Value::parse_number("3.14159265358979323846264338327950288419716939937510582097494459")
-                .unwrap(),
+            Value::parse_number("3.14159265358979323846264338327950288419716939937510582097494459"),
+            Value::parse_number("3.14159265358979323846264338327950288419716939937510582097494459"),
             Value::bool(true),
         ),
         (
             Value::parse_number(
                 "-3.14159265358979323846264338327950288419716939937510582097494459",
-            )
-            .unwrap(),
+            ),
             Value::parse_number(
                 "-3.14159265358979323846264338327950288419716939937510582097494459",
-            )
-            .unwrap(),
+            ),
             Value::bool(true),
         ),
         (
-            Value::parse_number("3.14159265358979323846264338327950288419716939937510582097494459")
-                .unwrap(),
+            Value::parse_number("3.14159265358979323846264338327950288419716939937510582097494459"),
             Value::parse_number(
                 "-3.14159265358979323846264338327950288419716939937510582097494459",
-            )
-            .unwrap(),
+            ),
             Value::bool(false),
         ),
         (
-            Value::parse_number("1.2").unwrap(),
-            Value::number_float(1.2),
+            Value::parse_number("1.2"),
+            Value::number(1.2),
             Value::bool(true),
         ),
         (
-            Value::parse_number("1.22222").unwrap(),
-            Value::number_float(1.22222),
+            Value::parse_number("1.22222"),
+            Value::number(1.22222),
             Value::bool(true),
         ),
         (
-            Value::parse_number("9223372036854775808").unwrap(),
-            Value::number_float(9223372036854775808.0),
+            Value::parse_number("9223372036854775808"),
+            Value::number(9223372036854775808.0),
             Value::bool(true),
         ),
         // Strings
@@ -174,43 +157,43 @@ fn value_equals() {
             Value::bool(true),
         ),
         (
-            Value::object([("num", Value::number_int(1))]),
-            Value::object([("num", Value::number_int(1))]),
+            Value::object([("num", Value::number(1))]),
+            Value::object([("num", Value::number(1))]),
             Value::bool(true),
         ),
         (
-            Value::object([("h\u{e9}llo", Value::number_int(1))]), // precombined é
-            Value::object([("he\u{301}llo", Value::number_int(1))]), // e with combining acute accent
+            Value::object([("h\u{e9}llo", Value::number(1))]), // precombined é
+            Value::object([("he\u{301}llo", Value::number(1))]), // e with combining acute accent
             Value::bool(true),
         ),
         (
-            Value::object([("num", Value::number_int(1))]),
+            Value::object([("num", Value::number(1))]),
             Value::object([] as [(&str, Value); 0]),
             Value::bool(false),
         ),
         (
-            Value::object([("num", Value::number_int(1)), ("flag", Value::bool(true))]),
-            Value::object([("num", Value::number_int(1)), ("flag", Value::bool(true))]),
+            Value::object([("num", Value::number(1)), ("flag", Value::bool(true))]),
+            Value::object([("num", Value::number(1)), ("flag", Value::bool(true))]),
             Value::bool(true),
         ),
         (
-            Value::object([("num", Value::number_int(1))]),
-            Value::object([("num", Value::number_int(2))]),
+            Value::object([("num", Value::number(1))]),
+            Value::object([("num", Value::number(2))]),
             Value::bool(false),
         ),
         (
-            Value::object([("num", Value::number_int(1))]),
-            Value::object([("othernum", Value::number_int(1))]),
+            Value::object([("num", Value::number(1))]),
+            Value::object([("othernum", Value::number(1))]),
             Value::bool(false),
         ),
         (
-            Value::object([("num", Value::number_int(1)), ("flag", Value::bool(true))]),
-            Value::object([("num", Value::number_int(1))]),
+            Value::object([("num", Value::number(1)), ("flag", Value::bool(true))]),
+            Value::object([("num", Value::number(1))]),
             Value::bool(false),
         ),
         (
-            Value::object([("num", Value::number_int(1)), ("flag", Value::bool(true))]),
-            Value::object([("num", Value::number_int(1)), ("flag", Value::bool(false))]),
+            Value::object([("num", Value::number(1)), ("flag", Value::bool(true))]),
+            Value::object([("num", Value::number(1)), ("flag", Value::bool(false))]),
             Value::bool(false),
         ),
         // Tuples
@@ -220,38 +203,38 @@ fn value_equals() {
             Value::bool(true),
         ),
         (
-            Value::tuple([Value::number_int(1)]),
-            Value::tuple([Value::number_int(1)]),
+            Value::tuple([Value::number(1)]),
+            Value::tuple([Value::number(1)]),
             Value::bool(true),
         ),
         (
-            Value::tuple([Value::number_int(1)]),
-            Value::tuple([Value::number_int(2)]),
+            Value::tuple([Value::number(1)]),
+            Value::tuple([Value::number(2)]),
             Value::bool(false),
         ),
         (
             Value::tuple([Value::string("hi")]),
-            Value::tuple([Value::number_int(1)]),
+            Value::tuple([Value::number(1)]),
             Value::bool(false),
         ),
         (
-            Value::tuple([Value::number_int(1)]),
-            Value::tuple([Value::number_int(1), Value::number_int(2)]),
+            Value::tuple([Value::number(1)]),
+            Value::tuple([Value::number(1), Value::number(2)]),
             Value::bool(false),
         ),
         (
-            Value::tuple([Value::number_int(1), Value::number_int(2)]),
-            Value::tuple([Value::number_int(1)]),
+            Value::tuple([Value::number(1), Value::number(2)]),
+            Value::tuple([Value::number(1)]),
             Value::bool(false),
         ),
         (
-            Value::tuple([Value::number_int(1), Value::number_int(2)]),
-            Value::tuple([Value::number_int(1), Value::number_int(2)]),
+            Value::tuple([Value::number(1), Value::number(2)]),
+            Value::tuple([Value::number(1), Value::number(2)]),
             Value::bool(true),
         ),
         (
             Value::tuple([Value::unknown(Type::number())]),
-            Value::tuple([Value::number_int(1)]),
+            Value::tuple([Value::number(1)]),
             unknown_result.clone(),
         ),
         (
@@ -260,37 +243,37 @@ fn value_equals() {
             unknown_result.clone(),
         ),
         (
-            Value::tuple([Value::number_int(1)]),
+            Value::tuple([Value::number(1)]),
             Value::tuple([Value::unknown(Type::number())]),
             unknown_result.clone(),
         ),
         (
-            Value::tuple([Value::number_int(1)]),
+            Value::tuple([Value::number(1)]),
             Value::tuple([Value::dynamic()]),
             unknown_result.clone(),
         ),
         (
             Value::tuple([Value::dynamic()]),
-            Value::tuple([Value::number_int(1)]),
+            Value::tuple([Value::number(1)]),
             unknown_result.clone(),
         ),
         (
-            Value::tuple([Value::number_int(1)]),
+            Value::tuple([Value::number(1)]),
             Value::unknown(Type::tuple([Type::number()])),
             unknown_result.clone(),
         ),
         (
             Value::unknown(Type::tuple([Type::number()])),
-            Value::tuple([Value::number_int(1)]),
+            Value::tuple([Value::number(1)]),
             unknown_result.clone(),
         ),
         (
             Value::dynamic(),
-            Value::tuple([Value::number_int(1)]),
+            Value::tuple([Value::number(1)]),
             unknown_result.clone(),
         ),
         (
-            Value::tuple([Value::number_int(1)]),
+            Value::tuple([Value::number(1)]),
             Value::dynamic(),
             unknown_result.clone(),
         ),
@@ -306,33 +289,33 @@ fn value_equals() {
             Value::bool(false),
         ),
         (
-            Value::list([Value::number_int(1)]),
-            Value::list([Value::number_int(1)]),
+            Value::list([Value::number(1)]),
+            Value::list([Value::number(1)]),
             Value::bool(true),
         ),
         (
-            Value::list([Value::number_int(1)]),
+            Value::list([Value::number(1)]),
             Value::list_empty(Type::string()),
             Value::bool(false),
         ),
         (
-            Value::list([Value::number_int(1), Value::number_int(2)]),
-            Value::list([Value::number_int(1), Value::number_int(2)]),
+            Value::list([Value::number(1), Value::number(2)]),
+            Value::list([Value::number(1), Value::number(2)]),
             Value::bool(true),
         ),
         (
-            Value::list([Value::number_int(1)]),
-            Value::list([Value::number_int(2)]),
+            Value::list([Value::number(1)]),
+            Value::list([Value::number(2)]),
             Value::bool(false),
         ),
         (
-            Value::list([Value::number_int(1), Value::number_int(2)]),
-            Value::list([Value::number_int(1)]),
+            Value::list([Value::number(1), Value::number(2)]),
+            Value::list([Value::number(1)]),
             Value::bool(false),
         ),
         (
-            Value::list([Value::number_int(1)]),
-            Value::list([Value::number_int(1), Value::number_int(2)]),
+            Value::list([Value::number(1)]),
+            Value::list([Value::number(1), Value::number(2)]),
             Value::bool(false),
         ),
         // Maps
@@ -347,66 +330,48 @@ fn value_equals() {
             Value::bool(false),
         ),
         (
-            Value::map([("num", Value::number_int(1))]),
-            Value::map([("num", Value::number_int(1))]),
+            Value::map([("num", Value::number(1))]),
+            Value::map([("num", Value::number(1))]),
             Value::bool(true),
         ),
         (
-            Value::map([("h\u{e9}llo", Value::number_int(1))]), // precombined é
-            Value::map([("he\u{301}llo", Value::number_int(1))]), // e with combining acute accent
+            Value::map([("h\u{e9}llo", Value::number(1))]), // precombined é
+            Value::map([("he\u{301}llo", Value::number(1))]), // e with combining acute accent
             Value::bool(true),
         ),
         (
-            Value::map([("num", Value::number_int(1))]),
+            Value::map([("num", Value::number(1))]),
             Value::map_empty(Type::string()),
             Value::bool(false),
         ),
         (
-            Value::map([
-                ("num1", Value::number_int(1)),
-                ("num2", Value::number_int(2)),
-            ]),
-            Value::map([
-                ("num1", Value::number_int(1)),
-                ("num2", Value::number_int(2)),
-            ]),
+            Value::map([("num1", Value::number(1)), ("num2", Value::number(2))]),
+            Value::map([("num1", Value::number(1)), ("num2", Value::number(2))]),
             Value::bool(true),
         ),
         (
-            Value::map([("num", Value::number_int(1))]),
-            Value::map([("num", Value::number_int(2))]),
+            Value::map([("num", Value::number(1))]),
+            Value::map([("num", Value::number(2))]),
             Value::bool(false),
         ),
         (
-            Value::map([("num", Value::number_int(1))]),
-            Value::map([("othernum", Value::number_int(1))]),
+            Value::map([("num", Value::number(1))]),
+            Value::map([("othernum", Value::number(1))]),
             Value::bool(false),
         ),
         (
-            Value::map([
-                ("num1", Value::number_int(1)),
-                ("num2", Value::number_int(2)),
-            ]),
-            Value::map([("num1", Value::number_int(1))]),
+            Value::map([("num1", Value::number(1)), ("num2", Value::number(2))]),
+            Value::map([("num1", Value::number(1))]),
             Value::bool(false),
         ),
         (
-            Value::map([("num1", Value::number_int(1))]),
-            Value::map([
-                ("num1", Value::number_int(1)),
-                ("num2", Value::number_int(2)),
-            ]),
+            Value::map([("num1", Value::number(1))]),
+            Value::map([("num1", Value::number(1)), ("num2", Value::number(2))]),
             Value::bool(false),
         ),
         (
-            Value::map([
-                ("num1", Value::number_int(1)),
-                ("num2", Value::number_int(2)),
-            ]),
-            Value::map([
-                ("num1", Value::number_int(1)),
-                ("num2", Value::number_int(3)),
-            ]),
+            Value::map([("num1", Value::number(1)), ("num2", Value::number(2))]),
+            Value::map([("num1", Value::number(1)), ("num2", Value::number(3))]),
             Value::bool(false),
         ),
         // Sets
@@ -421,48 +386,48 @@ fn value_equals() {
             Value::bool(false),
         ),
         (
-            Value::set([Value::number_int(1)]),
-            Value::set([Value::number_int(1)]),
+            Value::set([Value::number(1)]),
+            Value::set([Value::number(1)]),
             Value::bool(true),
         ),
         (
-            Value::set([Value::number_int(1)]),
+            Value::set([Value::number(1)]),
             Value::set_empty(Type::string()),
             Value::bool(false),
         ),
         (
-            Value::set([Value::number_int(1), Value::number_int(2)]),
-            Value::set([Value::number_int(2), Value::number_int(1)]),
+            Value::set([Value::number(1), Value::number(2)]),
+            Value::set([Value::number(2), Value::number(1)]),
             Value::bool(true),
         ),
         (
-            Value::set([Value::number_int(1)]),
-            Value::set([Value::number_int(2)]),
+            Value::set([Value::number(1)]),
+            Value::set([Value::number(2)]),
             Value::bool(false),
         ),
         (
-            Value::set([Value::number_int(1), Value::number_int(2)]),
-            Value::set([Value::number_int(1)]),
+            Value::set([Value::number(1), Value::number(2)]),
+            Value::set([Value::number(1)]),
             Value::bool(false),
         ),
         (
-            Value::set([Value::number_int(1)]),
-            Value::set([Value::number_int(1), Value::number_int(2)]),
+            Value::set([Value::number(1)]),
+            Value::set([Value::number(1), Value::number(2)]),
             Value::bool(false),
         ),
         (
-            Value::set([Value::number_int(1)]),
+            Value::set([Value::number(1)]),
             Value::set([Value::unknown(Type::number())]),
             unknown_result.clone(),
         ),
         (
-            Value::set([Value::number_int(1)]),
-            Value::set([Value::number_int(1), Value::unknown(Type::number())]),
+            Value::set([Value::number(1)]),
+            Value::set([Value::number(1), Value::unknown(Type::number())]),
             unknown_result.clone(),
         ),
         (
-            Value::set([Value::number_int(1), Value::unknown(Type::number())]),
-            Value::set([Value::number_int(1)]),
+            Value::set([Value::number(1), Value::unknown(Type::number())]),
+            Value::set([Value::number(1)]),
             unknown_result.clone(),
         ),
         // Capsules
@@ -481,17 +446,13 @@ fn value_equals() {
         ),
         // Unknowns and Dynamics
         (
-            Value::number_int(2),
+            Value::number(2),
             Value::unknown(Type::number()),
             unknown_result.clone(),
         ),
+        (Value::number(1), Value::dynamic(), unknown_result.clone()),
         (
-            Value::number_int(1),
-            Value::dynamic(),
-            unknown_result.clone(),
-        ),
-        (
-            Value::number_int(2),
+            Value::number(2),
             Value::unknown(Type::number())
                 .refine()
                 .number_range_lower_bound(Value::zero(), true)
@@ -499,10 +460,10 @@ fn value_equals() {
             unknown_result.clone(),
         ),
         (
-            Value::number_int(2),
+            Value::number(2),
             Value::unknown(Type::number())
                 .refine()
-                .number_range_lower_bound(Value::number_int(4), true)
+                .number_range_lower_bound(Value::number(4), true)
                 .new_value(),
             Value::bool(false), // deduction from refinement
         ),
@@ -605,7 +566,7 @@ fn value_equals() {
         ),
         (
             Value::unknown(Type::string()),
-            Value::number_int(1),
+            Value::number(1),
             Value::bool(false), // because no string value -- even null -- can be equal to a non-null number
         ),
         (

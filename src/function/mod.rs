@@ -3,18 +3,18 @@
 
 pub mod stdlib;
 
-use crate::error::Error;
+use crate::error::CtyError;
 use crate::refinement::RefinementBuilder;
 use crate::types::Type;
 use crate::value::Value;
 
 /// Decides a function's return type from its (possibly unknown) argument
 /// values (go-cty: `function.TypeFunc`).
-pub type TypeFunc = Box<dyn Fn(&[Value]) -> Result<Type, Error>>;
+pub type TypeFunc = Box<dyn Fn(&[Value]) -> Result<Type, CtyError>>;
 
 /// Implements a function's behavior given argument values and the return type
 /// already decided by the [`TypeFunc`] (go-cty: `function.ImplFunc`).
-pub type ImplFunc = Box<dyn Fn(&[Value], &Type) -> Result<Value, Error>>;
+pub type ImplFunc = Box<dyn Fn(&[Value], &Type) -> Result<Value, CtyError>>;
 
 /// Describes additional refinements that hold for all results of a function
 /// (go-cty: `Spec.RefineResult`).
@@ -96,20 +96,20 @@ impl Function {
 
     /// The return type for arguments of the given types
     /// (go-cty: `Function.ReturnType`).
-    pub fn return_type(&self, arg_types: &[Type]) -> Result<Type, Error> {
+    pub fn return_type(&self, arg_types: &[Type]) -> Result<Type, CtyError> {
         let _ = arg_types;
         todo!()
     }
 
     /// The return type for the given argument values
     /// (go-cty: `Function.ReturnTypeForValues`).
-    pub fn return_type_for_values(&self, args: &[Value]) -> Result<Type, Error> {
+    pub fn return_type_for_values(&self, args: &[Value]) -> Result<Type, CtyError> {
         let _ = args;
         todo!()
     }
 
     /// Calls the function with the given arguments (go-cty: `Function.Call`).
-    pub fn call(&self, args: &[Value]) -> Result<Value, Error> {
+    pub fn call(&self, args: &[Value]) -> Result<Value, CtyError> {
         let _ = args;
         todo!()
     }
@@ -147,7 +147,7 @@ pub fn unpredictable(f: Function) -> Function {
 
 /// Creates an argument error blaming the argument at the given index
 /// (go-cty: `function.NewArgErrorf` / `function.NewArgError`).
-pub fn new_arg_error(index: usize, message: impl Into<String>) -> Error {
+pub fn new_arg_error(index: usize, message: impl Into<String>) -> CtyError {
     let _ = (index, message.into());
     todo!()
 }

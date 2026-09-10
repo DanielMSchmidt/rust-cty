@@ -12,6 +12,11 @@ use cty::{Type, Value};
 #[test]
 #[ignore = "not yet implemented"]
 fn value_go_string() {
+    // NOTE(deviation): cannot pass. Numbers are `f64` (deviation 1 in the
+    // workbench's docs/deviations.md); upstream numbers are arbitrary-precision.
+    // Out of range here: pi to 63 digits below.
+    // Kept as transcribed: the assertions state upstream behavior, which is the
+    // point. Do not trim the table or relax them to make this green.
     let tests: Vec<(Value, &str)> = vec![
         (
             Value::null(Type::dynamic()),
@@ -70,23 +75,22 @@ fn value_go_string() {
         (
             Value::unknown(Type::number())
                 .refine()
-                .number_range_inclusive(Value::zero(), Value::number_int(1))
+                .number_range_inclusive(Value::zero(), Value::number(1))
                 .new_value(),
             r#"cty.UnknownVal(cty.Number).Refine().NumberLowerBound(cty.NumberIntVal(0), true).NumberUpperBound(cty.NumberIntVal(1), true).NewValue()"#,
         ),
         (Value::string(""), r#"cty.StringVal("")"#),
         (Value::string("hello"), r#"cty.StringVal("hello")"#),
         (Value::zero(), r#"cty.NumberIntVal(0)"#),
-        (Value::number_float(1.2), r#"cty.NumberFloatVal(1.2)"#),
+        (Value::number(1.2), r#"cty.NumberFloatVal(1.2)"#),
         (
             // the "float-ness" of the input is lost because its value is a
             // whole number
-            Value::number_float(1.0),
+            Value::number(1.0),
             r#"cty.NumberIntVal(1)"#,
         ),
         (
-            Value::parse_number("3.14159265358979323846264338327950288419716939937510582097494459")
-                .unwrap(),
+            Value::parse_number("3.14159265358979323846264338327950288419716939937510582097494459"),
             r#"cty.MustParseNumberVal("3.14159265358979323846264338327950288419716939937510582097494459")"#,
         ),
         (Value::bool(true), r#"cty.True"#),
@@ -157,6 +161,11 @@ fn value_go_string() {
 #[test]
 #[ignore = "not yet implemented"]
 fn value_display() {
+    // NOTE(deviation): cannot pass. Numbers are `f64` (deviation 1 in the
+    // workbench's docs/deviations.md); upstream numbers are arbitrary-precision.
+    // Out of range here: pi to 63 digits below.
+    // Kept as transcribed: the assertions state upstream behavior, which is the
+    // point. Do not trim the table or relax them to make this green.
     let tests: Vec<(Value, &str)> = vec![
         (Value::null(Type::dynamic()), "Value::null(Type::dynamic())"),
         (Value::null(Type::string()), "Value::null(Type::string())"),
@@ -207,28 +216,27 @@ fn value_display() {
                 .refine()
                 .number_range_inclusive(Value::zero(), Value::unknown(Type::number()))
                 .new_value(),
-            "Value::unknown(Type::number()).refine().number_range_lower_bound(Value::number_int(0), true).new_value()",
+            "Value::unknown(Type::number()).refine().number_range_lower_bound(Value::number(0), true).new_value()",
         ),
         (
             Value::unknown(Type::number())
                 .refine()
-                .number_range_inclusive(Value::zero(), Value::number_int(1))
+                .number_range_inclusive(Value::zero(), Value::number(1))
                 .new_value(),
-            "Value::unknown(Type::number()).refine().number_range_lower_bound(Value::number_int(0), true).number_range_upper_bound(Value::number_int(1), true).new_value()",
+            "Value::unknown(Type::number()).refine().number_range_lower_bound(Value::number(0), true).number_range_upper_bound(Value::number(1), true).new_value()",
         ),
         (Value::string(""), r#"Value::string("")"#),
         (Value::string("hello"), r#"Value::string("hello")"#),
-        (Value::zero(), "Value::number_int(0)"),
-        (Value::number_float(1.2), "Value::number_float(1.2)"),
+        (Value::zero(), "Value::number(0)"),
+        (Value::number(1.2), "Value::number(1.2)"),
         (
             // the "float-ness" of the input is lost because its value is a
             // whole number
-            Value::number_float(1.0),
-            "Value::number_int(1)",
+            Value::number(1.0),
+            "Value::number(1)",
         ),
         (
-            Value::parse_number("3.14159265358979323846264338327950288419716939937510582097494459")
-                .unwrap(),
+            Value::parse_number("3.14159265358979323846264338327950288419716939937510582097494459"),
             r#"Value::parse_number("3.14159265358979323846264338327950288419716939937510582097494459").unwrap()"#,
         ),
         (Value::bool(true), "Value::bool(true)"),

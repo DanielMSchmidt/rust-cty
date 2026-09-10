@@ -6,7 +6,7 @@
 //! `Xxx(...)` a corresponding `xxx(...)` that calls it. Sections mirror the
 //! upstream source files.
 
-use crate::error::Error;
+use crate::error::CtyError;
 use crate::function::Function;
 use crate::types::Type;
 use crate::value::Value;
@@ -29,19 +29,19 @@ pub fn or_func() -> Function {
 }
 
 /// Logical NOT of a bool value (go-cty: `stdlib.Not`).
-pub fn not(val: &Value) -> Result<Value, Error> {
+pub fn not(val: &Value) -> Result<Value, CtyError> {
     let _ = val;
     todo!()
 }
 
 /// Logical AND of two bool values (go-cty: `stdlib.And`).
-pub fn and(a: &Value, b: &Value) -> Result<Value, Error> {
+pub fn and(a: &Value, b: &Value) -> Result<Value, CtyError> {
     let _ = (a, b);
     todo!()
 }
 
 /// Logical OR of two bool values (go-cty: `stdlib.Or`).
-pub fn or(a: &Value, b: &Value) -> Result<Value, Error> {
+pub fn or(a: &Value, b: &Value) -> Result<Value, CtyError> {
     let _ = (a, b);
     todo!()
 }
@@ -71,14 +71,14 @@ pub fn bytes_slice_func() -> Function {
 }
 
 /// The length of a bytes value (go-cty: `stdlib.BytesLen`).
-pub fn bytes_len(buf: &Value) -> Result<Value, Error> {
+pub fn bytes_len(buf: &Value) -> Result<Value, CtyError> {
     let _ = buf;
     todo!()
 }
 
 /// A subrange of a bytes value, sharing the underlying buffer
 /// (go-cty: `stdlib.BytesSlice`).
-pub fn bytes_slice(buf: &Value, offset: &Value, length: &Value) -> Result<Value, Error> {
+pub fn bytes_slice(buf: &Value, offset: &Value, length: &Value) -> Result<Value, CtyError> {
     let _ = (buf, offset, length);
     todo!()
 }
@@ -177,117 +177,117 @@ pub fn zipmap_func() -> Function {
 
 /// Whether the collection has an element at the given key
 /// (go-cty: `stdlib.HasIndex`).
-pub fn has_index(collection: &Value, key: &Value) -> Result<Value, Error> {
+pub fn has_index(collection: &Value, key: &Value) -> Result<Value, CtyError> {
     let _ = (collection, key);
     todo!()
 }
 
 /// The element of the collection at the given key (go-cty: `stdlib.Index`).
-pub fn index(collection: &Value, key: &Value) -> Result<Value, Error> {
+pub fn index(collection: &Value, key: &Value) -> Result<Value, CtyError> {
     let _ = (collection, key);
     todo!()
 }
 
 /// The number of elements of the collection (go-cty: `stdlib.Length`).
-pub fn length(collection: &Value) -> Result<Value, Error> {
+pub fn length(collection: &Value) -> Result<Value, CtyError> {
     let _ = collection;
     todo!()
 }
 
 /// The element of the list at the given index, wrapping around past the end
 /// (go-cty: `stdlib.Element`).
-pub fn element(list: &Value, index: &Value) -> Result<Value, Error> {
+pub fn element(list: &Value, index: &Value) -> Result<Value, CtyError> {
     let _ = (list, index);
     todo!()
 }
 
 /// The first non-empty list argument (go-cty: `stdlib.CoalesceList`).
-pub fn coalesce_list(args: &[Value]) -> Result<Value, Error> {
+pub fn coalesce_list(args: &[Value]) -> Result<Value, CtyError> {
     let _ = args;
     todo!()
 }
 
 /// The list of strings with null and empty entries removed
 /// (go-cty: `stdlib.Compact`).
-pub fn compact(list: &Value) -> Result<Value, Error> {
+pub fn compact(list: &Value) -> Result<Value, CtyError> {
     let _ = list;
     todo!()
 }
 
 /// Whether the list contains the given value (go-cty: `stdlib.Contains`).
-pub fn contains(list: &Value, value: &Value) -> Result<Value, Error> {
+pub fn contains(list: &Value, value: &Value) -> Result<Value, CtyError> {
     let _ = (list, value);
     todo!()
 }
 
 /// The list with duplicate elements removed, keeping first occurrences
 /// (go-cty: `stdlib.Distinct`).
-pub fn distinct(list: &Value) -> Result<Value, Error> {
+pub fn distinct(list: &Value) -> Result<Value, CtyError> {
     let _ = list;
     todo!()
 }
 
 /// The list split into fixed-size chunks (go-cty: `stdlib.Chunklist`).
-pub fn chunklist(list: &Value, size: &Value) -> Result<Value, Error> {
+pub fn chunklist(list: &Value, size: &Value) -> Result<Value, CtyError> {
     let _ = (list, size);
     todo!()
 }
 
 /// The sequence with nested sequences flattened, recursively
 /// (go-cty: `stdlib.Flatten`).
-pub fn flatten(list: &Value) -> Result<Value, Error> {
+pub fn flatten(list: &Value) -> Result<Value, CtyError> {
     let _ = list;
     todo!()
 }
 
 /// The keys of a map or object, sorted (go-cty: `stdlib.Keys`).
-pub fn keys(input_map: &Value) -> Result<Value, Error> {
+pub fn keys(input_map: &Value) -> Result<Value, CtyError> {
     let _ = input_map;
     todo!()
 }
 
 /// The map element at the given key, or the default when absent
 /// (go-cty: `stdlib.Lookup`).
-pub fn lookup(input_map: &Value, key: &Value, default_value: &Value) -> Result<Value, Error> {
+pub fn lookup(input_map: &Value, key: &Value, default_value: &Value) -> Result<Value, CtyError> {
     let _ = (input_map, key, default_value);
     todo!()
 }
 
 /// The maps merged left-to-right, later values overriding earlier
 /// (go-cty: `stdlib.Merge`).
-pub fn merge(maps: &[Value]) -> Result<Value, Error> {
+pub fn merge(maps: &[Value]) -> Result<Value, CtyError> {
     let _ = maps;
     todo!()
 }
 
 /// The list with element order reversed (go-cty: `stdlib.ReverseList`).
-pub fn reverse_list(list: &Value) -> Result<Value, Error> {
+pub fn reverse_list(list: &Value) -> Result<Value, CtyError> {
     let _ = list;
     todo!()
 }
 
 /// The cartesian product of the given sets or lists
 /// (go-cty: `stdlib.SetProduct`).
-pub fn set_product(sets: &[Value]) -> Result<Value, Error> {
+pub fn set_product(sets: &[Value]) -> Result<Value, CtyError> {
     let _ = sets;
     todo!()
 }
 
 /// A subrange of the list (go-cty: `stdlib.Slice`).
-pub fn slice(list: &Value, start: &Value, end: &Value) -> Result<Value, Error> {
+pub fn slice(list: &Value, start: &Value, end: &Value) -> Result<Value, CtyError> {
     let _ = (list, start, end);
     todo!()
 }
 
 /// The values of a map or object, ordered by key (go-cty: `stdlib.Values`).
-pub fn values(input_map: &Value) -> Result<Value, Error> {
+pub fn values(input_map: &Value) -> Result<Value, CtyError> {
     let _ = input_map;
     todo!()
 }
 
 /// A map built by zipping a list of keys with a list of values
 /// (go-cty: `stdlib.Zipmap`).
-pub fn zipmap(keys: &Value, values: &Value) -> Result<Value, Error> {
+pub fn zipmap(keys: &Value, values: &Value) -> Result<Value, CtyError> {
     let _ = (keys, values);
     todo!()
 }
@@ -308,7 +308,7 @@ pub fn assert_not_null_func() -> Function {
 
 /// Returns the value unchanged, or an error if it is null
 /// (go-cty: `stdlib.AssertNotNull`).
-pub fn assert_not_null(val: &Value) -> Result<Value, Error> {
+pub fn assert_not_null(val: &Value) -> Result<Value, CtyError> {
     let _ = val;
     todo!()
 }
@@ -322,7 +322,7 @@ pub fn csv_decode_func() -> Function {
 
 /// Parses a CSV document into a list of objects, one per row
 /// (go-cty: `stdlib.CSVDecode`).
-pub fn csv_decode(str_val: &Value) -> Result<Value, Error> {
+pub fn csv_decode(str_val: &Value) -> Result<Value, CtyError> {
     let _ = str_val;
     todo!()
 }
@@ -341,13 +341,13 @@ pub fn time_add_func() -> Function {
 
 /// Formats an RFC 3339 timestamp per the given format string
 /// (go-cty: `stdlib.FormatDate`).
-pub fn format_date(format: &Value, timestamp: &Value) -> Result<Value, Error> {
+pub fn format_date(format: &Value, timestamp: &Value) -> Result<Value, CtyError> {
     let _ = (format, timestamp);
     todo!()
 }
 
 /// Adds a duration to an RFC 3339 timestamp (go-cty: `stdlib.TimeAdd`).
-pub fn time_add(timestamp: &Value, duration: &Value) -> Result<Value, Error> {
+pub fn time_add(timestamp: &Value, duration: &Value) -> Result<Value, CtyError> {
     let _ = (timestamp, duration);
     todo!()
 }
@@ -366,14 +366,14 @@ pub fn format_list_func() -> Function {
 
 /// Produces a string by formatting values per a printf-like format string
 /// (go-cty: `stdlib.Format`).
-pub fn format(format: &Value, vals: &[Value]) -> Result<Value, Error> {
+pub fn format(format: &Value, vals: &[Value]) -> Result<Value, CtyError> {
     let _ = (format, vals);
     todo!()
 }
 
 /// Like [`format`], but iterating over sequence arguments to produce a list
 /// of strings (go-cty: `stdlib.FormatList`).
-pub fn format_list(format: &Value, vals: &[Value]) -> Result<Value, Error> {
+pub fn format_list(format: &Value, vals: &[Value]) -> Result<Value, CtyError> {
     let _ = (format, vals);
     todo!()
 }
@@ -396,19 +396,19 @@ pub fn coalesce_func() -> Function {
 }
 
 /// Whether the two values are equal (go-cty: `stdlib.Equal`).
-pub fn equal(a: &Value, b: &Value) -> Result<Value, Error> {
+pub fn equal(a: &Value, b: &Value) -> Result<Value, CtyError> {
     let _ = (a, b);
     todo!()
 }
 
 /// Whether the two values are not equal (go-cty: `stdlib.NotEqual`).
-pub fn not_equal(a: &Value, b: &Value) -> Result<Value, Error> {
+pub fn not_equal(a: &Value, b: &Value) -> Result<Value, CtyError> {
     let _ = (a, b);
     todo!()
 }
 
 /// The first non-null argument (go-cty: `stdlib.Coalesce`).
-pub fn coalesce(vals: &[Value]) -> Result<Value, Error> {
+pub fn coalesce(vals: &[Value]) -> Result<Value, CtyError> {
     let _ = vals;
     todo!()
 }
@@ -426,14 +426,14 @@ pub fn json_decode_func() -> Function {
 }
 
 /// Encodes a value as a JSON string (go-cty: `stdlib.JSONEncode`).
-pub fn json_encode(val: &Value) -> Result<Value, Error> {
+pub fn json_encode(val: &Value) -> Result<Value, CtyError> {
     let _ = val;
     todo!()
 }
 
 /// Decodes a JSON string into a value of an implied type
 /// (go-cty: `stdlib.JSONDecode`).
-pub fn json_decode(str_val: &Value) -> Result<Value, Error> {
+pub fn json_decode(str_val: &Value) -> Result<Value, CtyError> {
     let _ = str_val;
     todo!()
 }
@@ -543,126 +543,126 @@ pub fn parse_int_func() -> Function {
 }
 
 /// The absolute value of a number (go-cty: `stdlib.Absolute`).
-pub fn absolute(num: &Value) -> Result<Value, Error> {
+pub fn absolute(num: &Value) -> Result<Value, CtyError> {
     let _ = num;
     todo!()
 }
 
 /// The sum of two numbers (go-cty: `stdlib.Add`).
-pub fn add(a: &Value, b: &Value) -> Result<Value, Error> {
+pub fn add(a: &Value, b: &Value) -> Result<Value, CtyError> {
     let _ = (a, b);
     todo!()
 }
 
 /// The difference of two numbers (go-cty: `stdlib.Subtract`).
-pub fn subtract(a: &Value, b: &Value) -> Result<Value, Error> {
+pub fn subtract(a: &Value, b: &Value) -> Result<Value, CtyError> {
     let _ = (a, b);
     todo!()
 }
 
 /// The product of two numbers (go-cty: `stdlib.Multiply`).
-pub fn multiply(a: &Value, b: &Value) -> Result<Value, Error> {
+pub fn multiply(a: &Value, b: &Value) -> Result<Value, CtyError> {
     let _ = (a, b);
     todo!()
 }
 
 /// The quotient of two numbers (go-cty: `stdlib.Divide`).
-pub fn divide(a: &Value, b: &Value) -> Result<Value, Error> {
+pub fn divide(a: &Value, b: &Value) -> Result<Value, CtyError> {
     let _ = (a, b);
     todo!()
 }
 
 /// The remainder of dividing two numbers (go-cty: `stdlib.Modulo`).
-pub fn modulo(a: &Value, b: &Value) -> Result<Value, Error> {
+pub fn modulo(a: &Value, b: &Value) -> Result<Value, CtyError> {
     let _ = (a, b);
     todo!()
 }
 
 /// The additive inverse of a number (go-cty: `stdlib.Negate`).
-pub fn negate(num: &Value) -> Result<Value, Error> {
+pub fn negate(num: &Value) -> Result<Value, CtyError> {
     let _ = num;
     todo!()
 }
 
 /// Whether `a` is greater than `b` (go-cty: `stdlib.GreaterThan`).
-pub fn greater_than(a: &Value, b: &Value) -> Result<Value, Error> {
+pub fn greater_than(a: &Value, b: &Value) -> Result<Value, CtyError> {
     let _ = (a, b);
     todo!()
 }
 
 /// Whether `a` is greater than or equal to `b`
 /// (go-cty: `stdlib.GreaterThanOrEqualTo`).
-pub fn greater_than_or_equal_to(a: &Value, b: &Value) -> Result<Value, Error> {
+pub fn greater_than_or_equal_to(a: &Value, b: &Value) -> Result<Value, CtyError> {
     let _ = (a, b);
     todo!()
 }
 
 /// Whether `a` is less than `b` (go-cty: `stdlib.LessThan`).
-pub fn less_than(a: &Value, b: &Value) -> Result<Value, Error> {
+pub fn less_than(a: &Value, b: &Value) -> Result<Value, CtyError> {
     let _ = (a, b);
     todo!()
 }
 
 /// Whether `a` is less than or equal to `b`
 /// (go-cty: `stdlib.LessThanOrEqualTo`).
-pub fn less_than_or_equal_to(a: &Value, b: &Value) -> Result<Value, Error> {
+pub fn less_than_or_equal_to(a: &Value, b: &Value) -> Result<Value, CtyError> {
     let _ = (a, b);
     todo!()
 }
 
 /// The smallest of the given numbers (go-cty: `stdlib.Min`).
-pub fn min(numbers: &[Value]) -> Result<Value, Error> {
+pub fn min(numbers: &[Value]) -> Result<Value, CtyError> {
     let _ = numbers;
     todo!()
 }
 
 /// The largest of the given numbers (go-cty: `stdlib.Max`).
-pub fn max(numbers: &[Value]) -> Result<Value, Error> {
+pub fn max(numbers: &[Value]) -> Result<Value, CtyError> {
     let _ = numbers;
     todo!()
 }
 
 /// The integer part of a number, truncating toward zero (go-cty: `stdlib.Int`).
-pub fn int(num: &Value) -> Result<Value, Error> {
+pub fn int(num: &Value) -> Result<Value, CtyError> {
     let _ = num;
     todo!()
 }
 
 /// The smallest integer greater than or equal to the number
 /// (go-cty: `stdlib.Ceil`).
-pub fn ceil(num: &Value) -> Result<Value, Error> {
+pub fn ceil(num: &Value) -> Result<Value, CtyError> {
     let _ = num;
     todo!()
 }
 
 /// The largest integer less than or equal to the number
 /// (go-cty: `stdlib.Floor`).
-pub fn floor(num: &Value) -> Result<Value, Error> {
+pub fn floor(num: &Value) -> Result<Value, CtyError> {
     let _ = num;
     todo!()
 }
 
 /// The logarithm of `num` in base `base` (go-cty: `stdlib.Log`).
-pub fn log(num: &Value, base: &Value) -> Result<Value, Error> {
+pub fn log(num: &Value, base: &Value) -> Result<Value, CtyError> {
     let _ = (num, base);
     todo!()
 }
 
 /// `num` raised to the power `power` (go-cty: `stdlib.Pow`).
-pub fn pow(num: &Value, power: &Value) -> Result<Value, Error> {
+pub fn pow(num: &Value, power: &Value) -> Result<Value, CtyError> {
     let _ = (num, power);
     todo!()
 }
 
 /// The sign of the number as -1, 0, or 1 (go-cty: `stdlib.Signum`).
-pub fn signum(num: &Value) -> Result<Value, Error> {
+pub fn signum(num: &Value) -> Result<Value, CtyError> {
     let _ = num;
     todo!()
 }
 
 /// Parses an integer from a string in the given base
 /// (go-cty: `stdlib.ParseInt`).
-pub fn parse_int(num: &Value, base: &Value) -> Result<Value, Error> {
+pub fn parse_int(num: &Value, base: &Value) -> Result<Value, CtyError> {
     let _ = (num, base);
     todo!()
 }
@@ -681,14 +681,14 @@ pub fn regex_all_func() -> Function {
 
 /// The captures of the first match of the pattern in the string
 /// (go-cty: `stdlib.Regex`).
-pub fn regex(pattern: &Value, str_val: &Value) -> Result<Value, Error> {
+pub fn regex(pattern: &Value, str_val: &Value) -> Result<Value, CtyError> {
     let _ = (pattern, str_val);
     todo!()
 }
 
 /// The captures of all matches of the pattern in the string
 /// (go-cty: `stdlib.RegexAll`).
-pub fn regex_all(pattern: &Value, str_val: &Value) -> Result<Value, Error> {
+pub fn regex_all(pattern: &Value, str_val: &Value) -> Result<Value, CtyError> {
     let _ = (pattern, str_val);
     todo!()
 }
@@ -707,14 +707,14 @@ pub fn range_func() -> Function {
 
 /// The given sequences concatenated into a single tuple or list
 /// (go-cty: `stdlib.Concat`).
-pub fn concat(seqs: &[Value]) -> Result<Value, Error> {
+pub fn concat(seqs: &[Value]) -> Result<Value, CtyError> {
     let _ = seqs;
     todo!()
 }
 
 /// A list of numbers counted from a start to a limit by a step; accepts one,
 /// two, or three arguments (go-cty: `stdlib.Range`).
-pub fn range(params: &[Value]) -> Result<Value, Error> {
+pub fn range(params: &[Value]) -> Result<Value, CtyError> {
     let _ = params;
     todo!()
 }
@@ -750,32 +750,32 @@ pub fn set_symmetric_difference_func() -> Function {
 
 /// Whether the set contains the given element
 /// (go-cty: `stdlib.SetHasElement`).
-pub fn set_has_element(set: &Value, elem: &Value) -> Result<Value, Error> {
+pub fn set_has_element(set: &Value, elem: &Value) -> Result<Value, CtyError> {
     let _ = (set, elem);
     todo!()
 }
 
 /// The union of the given sets (go-cty: `stdlib.SetUnion`).
-pub fn set_union(sets: &[Value]) -> Result<Value, Error> {
+pub fn set_union(sets: &[Value]) -> Result<Value, CtyError> {
     let _ = sets;
     todo!()
 }
 
 /// The intersection of the given sets (go-cty: `stdlib.SetIntersection`).
-pub fn set_intersection(sets: &[Value]) -> Result<Value, Error> {
+pub fn set_intersection(sets: &[Value]) -> Result<Value, CtyError> {
     let _ = sets;
     todo!()
 }
 
 /// The elements of `a` not present in `b` (go-cty: `stdlib.SetSubtract`).
-pub fn set_subtract(a: &Value, b: &Value) -> Result<Value, Error> {
+pub fn set_subtract(a: &Value, b: &Value) -> Result<Value, CtyError> {
     let _ = (a, b);
     todo!()
 }
 
 /// The elements present in exactly one of the given sets
 /// (go-cty: `stdlib.SetSymmetricDifference`).
-pub fn set_symmetric_difference(sets: &[Value]) -> Result<Value, Error> {
+pub fn set_symmetric_difference(sets: &[Value]) -> Result<Value, CtyError> {
     let _ = sets;
     todo!()
 }
@@ -858,99 +858,99 @@ pub fn trim_suffix_func() -> Function {
 }
 
 /// The string converted to uppercase (go-cty: `stdlib.Upper`).
-pub fn upper(str_val: &Value) -> Result<Value, Error> {
+pub fn upper(str_val: &Value) -> Result<Value, CtyError> {
     let _ = str_val;
     todo!()
 }
 
 /// The string converted to lowercase (go-cty: `stdlib.Lower`).
-pub fn lower(str_val: &Value) -> Result<Value, Error> {
+pub fn lower(str_val: &Value) -> Result<Value, CtyError> {
     let _ = str_val;
     todo!()
 }
 
 /// The string with its grapheme clusters in reverse order
 /// (go-cty: `stdlib.Reverse`).
-pub fn reverse(str_val: &Value) -> Result<Value, Error> {
+pub fn reverse(str_val: &Value) -> Result<Value, CtyError> {
     let _ = str_val;
     todo!()
 }
 
 /// The number of grapheme clusters in the string (go-cty: `stdlib.Strlen`).
-pub fn strlen(str_val: &Value) -> Result<Value, Error> {
+pub fn strlen(str_val: &Value) -> Result<Value, CtyError> {
     let _ = str_val;
     todo!()
 }
 
 /// A substring by grapheme-cluster offset and length
 /// (go-cty: `stdlib.Substr`).
-pub fn substr(str_val: &Value, offset: &Value, length: &Value) -> Result<Value, Error> {
+pub fn substr(str_val: &Value, offset: &Value, length: &Value) -> Result<Value, CtyError> {
     let _ = (str_val, offset, length);
     todo!()
 }
 
 /// The list elements joined with a separator (go-cty: `stdlib.Join`).
-pub fn join(separator: &Value, lists: &[Value]) -> Result<Value, Error> {
+pub fn join(separator: &Value, lists: &[Value]) -> Result<Value, CtyError> {
     let _ = (separator, lists);
     todo!()
 }
 
 /// The list of strings sorted lexically (go-cty: `stdlib.Sort`).
-pub fn sort(list: &Value) -> Result<Value, Error> {
+pub fn sort(list: &Value) -> Result<Value, CtyError> {
     let _ = list;
     todo!()
 }
 
 /// The string split on a separator (go-cty: `stdlib.Split`).
-pub fn split(separator: &Value, str_val: &Value) -> Result<Value, Error> {
+pub fn split(separator: &Value, str_val: &Value) -> Result<Value, CtyError> {
     let _ = (separator, str_val);
     todo!()
 }
 
 /// The string with trailing newlines removed (go-cty: `stdlib.Chomp`).
-pub fn chomp(str_val: &Value) -> Result<Value, Error> {
+pub fn chomp(str_val: &Value) -> Result<Value, CtyError> {
     let _ = str_val;
     todo!()
 }
 
 /// The string with each line after the first indented by the given number of
 /// spaces (go-cty: `stdlib.Indent`).
-pub fn indent(spaces: &Value, str_val: &Value) -> Result<Value, Error> {
+pub fn indent(spaces: &Value, str_val: &Value) -> Result<Value, CtyError> {
     let _ = (spaces, str_val);
     todo!()
 }
 
 /// The string with the first letter of each word capitalized
 /// (go-cty: `stdlib.Title`).
-pub fn title(str_val: &Value) -> Result<Value, Error> {
+pub fn title(str_val: &Value) -> Result<Value, CtyError> {
     let _ = str_val;
     todo!()
 }
 
 /// The string with leading and trailing whitespace removed
 /// (go-cty: `stdlib.TrimSpace`).
-pub fn trim_space(str_val: &Value) -> Result<Value, Error> {
+pub fn trim_space(str_val: &Value) -> Result<Value, CtyError> {
     let _ = str_val;
     todo!()
 }
 
 /// The string with leading and trailing characters from the cutset removed
 /// (go-cty: `stdlib.Trim`).
-pub fn trim(str_val: &Value, cutset: &Value) -> Result<Value, Error> {
+pub fn trim(str_val: &Value, cutset: &Value) -> Result<Value, CtyError> {
     let _ = (str_val, cutset);
     todo!()
 }
 
 /// The string with the given prefix removed, if present
 /// (go-cty: `stdlib.TrimPrefix`).
-pub fn trim_prefix(str_val: &Value, prefix: &Value) -> Result<Value, Error> {
+pub fn trim_prefix(str_val: &Value, prefix: &Value) -> Result<Value, CtyError> {
     let _ = (str_val, prefix);
     todo!()
 }
 
 /// The string with the given suffix removed, if present
 /// (go-cty: `stdlib.TrimSuffix`).
-pub fn trim_suffix(str_val: &Value, suffix: &Value) -> Result<Value, Error> {
+pub fn trim_suffix(str_val: &Value, suffix: &Value) -> Result<Value, CtyError> {
     let _ = (str_val, suffix);
     todo!()
 }
@@ -969,14 +969,14 @@ pub fn regex_replace_func() -> Function {
 
 /// The string with all occurrences of a substring replaced
 /// (go-cty: `stdlib.Replace`).
-pub fn replace(str_val: &Value, substr: &Value, replace: &Value) -> Result<Value, Error> {
+pub fn replace(str_val: &Value, substr: &Value, replace: &Value) -> Result<Value, CtyError> {
     let _ = (str_val, substr, replace);
     todo!()
 }
 
 /// The string with all matches of a regular expression pattern replaced
 /// (go-cty: `stdlib.RegexReplace`).
-pub fn regex_replace(str_val: &Value, pattern: &Value, replace: &Value) -> Result<Value, Error> {
+pub fn regex_replace(str_val: &Value, pattern: &Value, replace: &Value) -> Result<Value, CtyError> {
     let _ = (str_val, pattern, replace);
     todo!()
 }

@@ -23,81 +23,68 @@ fn concat_test() {
         ),
         (
             vec![Value::list([
-                Value::number_int(1),
-                Value::number_int(2),
-                Value::number_int(3),
+                Value::number(1),
+                Value::number(2),
+                Value::number(3),
             ])],
+            Value::list([Value::number(1), Value::number(2), Value::number(3)]),
+        ),
+        (
+            vec![
+                Value::list([Value::number(1)]),
+                Value::list([Value::number(2), Value::number(3)]),
+            ],
+            Value::list([Value::number(1), Value::number(2), Value::number(3)]),
+        ),
+        (
+            vec![
+                Value::list([Value::number(1)]),
+                Value::list([Value::number(2), Value::number(3)]).mark("a"),
+            ],
+            Value::list([Value::number(1), Value::number(2), Value::number(3)]).mark("a"),
+        ),
+        (
+            vec![
+                Value::list([Value::number(1)]),
+                Value::list([Value::number(2).mark("b"), Value::number(3)]),
+            ],
             Value::list([
-                Value::number_int(1),
-                Value::number_int(2),
-                Value::number_int(3),
+                Value::number(1),
+                Value::number(2).mark("b"),
+                Value::number(3),
             ]),
         ),
         (
             vec![
-                Value::list([Value::number_int(1)]),
-                Value::list([Value::number_int(2), Value::number_int(3)]),
+                Value::list([Value::number(1)]).mark("a"),
+                Value::list([Value::number(2).mark("b"), Value::number(3)]),
             ],
             Value::list([
-                Value::number_int(1),
-                Value::number_int(2),
-                Value::number_int(3),
-            ]),
-        ),
-        (
-            vec![
-                Value::list([Value::number_int(1)]),
-                Value::list([Value::number_int(2), Value::number_int(3)]).mark("a"),
-            ],
-            Value::list([
-                Value::number_int(1),
-                Value::number_int(2),
-                Value::number_int(3),
-            ])
-            .mark("a"),
-        ),
-        (
-            vec![
-                Value::list([Value::number_int(1)]),
-                Value::list([Value::number_int(2).mark("b"), Value::number_int(3)]),
-            ],
-            Value::list([
-                Value::number_int(1),
-                Value::number_int(2).mark("b"),
-                Value::number_int(3),
-            ]),
-        ),
-        (
-            vec![
-                Value::list([Value::number_int(1)]).mark("a"),
-                Value::list([Value::number_int(2).mark("b"), Value::number_int(3)]),
-            ],
-            Value::list([
-                Value::number_int(1),
-                Value::number_int(2).mark("b"),
-                Value::number_int(3),
+                Value::number(1),
+                Value::number(2).mark("b"),
+                Value::number(3),
             ])
             .mark("a"),
         ),
         (
             vec![
                 Value::list_empty(Type::dynamic()).mark("a"),
-                Value::list([Value::number_int(2).mark("b"), Value::number_int(3)]).mark("c"),
+                Value::list([Value::number(2).mark("b"), Value::number(3)]).mark("c"),
             ],
-            Value::list([Value::number_int(2).mark("b"), Value::number_int(3)])
+            Value::list([Value::number(2).mark("b"), Value::number(3)])
                 .with_marks([ValueMarks::from_marks(["a", "c"])]),
         ),
         (
             vec![
                 Value::list_empty(Type::dynamic()).mark("a"),
-                Value::tuple([Value::number_int(2).mark("b"), Value::number_int(3)]).mark("c"),
+                Value::tuple([Value::number(2).mark("b"), Value::number(3)]).mark("c"),
             ],
-            Value::tuple([Value::number_int(2).mark("b"), Value::number_int(3)])
+            Value::tuple([Value::number(2).mark("b"), Value::number(3)])
                 .with_marks([ValueMarks::from_marks(["a", "c"])]),
         ),
         (
             vec![
-                Value::list([Value::number_int(1)]),
+                Value::list([Value::number(1)]),
                 Value::list([Value::string("foo")]),
                 Value::list([Value::bool(true)]),
             ],
@@ -109,7 +96,7 @@ fn concat_test() {
         ),
         (
             vec![
-                Value::list([Value::number_int(1)]),
+                Value::list([Value::number(1)]),
                 Value::list([Value::string("foo"), Value::string("bar")]),
             ],
             Value::list([
@@ -121,56 +108,40 @@ fn concat_test() {
         (vec![Value::empty_tuple()], Value::empty_tuple()),
         (
             vec![Value::tuple([
-                Value::number_int(1),
+                Value::number(1),
                 Value::bool(true),
-                Value::number_int(3),
+                Value::number(3),
             ])],
-            Value::tuple([
-                Value::number_int(1),
-                Value::bool(true),
-                Value::number_int(3),
-            ]),
+            Value::tuple([Value::number(1), Value::bool(true), Value::number(3)]),
         ),
         (
             vec![
-                Value::tuple([Value::number_int(1)]),
-                Value::tuple([Value::bool(true), Value::number_int(3)]),
+                Value::tuple([Value::number(1)]),
+                Value::tuple([Value::bool(true), Value::number(3)]),
             ],
-            Value::tuple([
-                Value::number_int(1),
-                Value::bool(true),
-                Value::number_int(3),
-            ]),
+            Value::tuple([Value::number(1), Value::bool(true), Value::number(3)]),
         ),
         (
             vec![
-                Value::list([Value::number_int(1)]),
-                Value::tuple([Value::bool(true), Value::number_int(3)]),
+                Value::list([Value::number(1)]),
+                Value::tuple([Value::bool(true), Value::number(3)]),
             ],
-            Value::tuple([
-                Value::number_int(1),
-                Value::bool(true),
-                Value::number_int(3),
-            ]),
+            Value::tuple([Value::number(1), Value::bool(true), Value::number(3)]),
         ),
         (
             vec![
-                Value::tuple([Value::number_int(1), Value::bool(true)]),
-                Value::list([Value::number_int(3)]),
+                Value::tuple([Value::number(1), Value::bool(true)]),
+                Value::list([Value::number(3)]),
             ],
-            Value::tuple([
-                Value::number_int(1),
-                Value::bool(true),
-                Value::number_int(3),
-            ]),
+            Value::tuple([Value::number(1), Value::bool(true), Value::number(3)]),
         ),
         (
             // Two lists with unconvertable element types become a tuple.
             vec![
-                Value::list([Value::number_int(1)]),
+                Value::list([Value::number(1)]),
                 Value::list([Value::list_empty(Type::bool())]),
             ],
-            Value::tuple([Value::number_int(1), Value::list_empty(Type::bool())]),
+            Value::tuple([Value::number(1), Value::list_empty(Type::bool())]),
         ),
     ];
 
@@ -191,154 +162,120 @@ fn range_test() {
     let tests: Vec<(Vec<Value>, Value)> = vec![
         // One argument
         (
-            vec![Value::number_int(5)],
+            vec![Value::number(5)],
             Value::list([
-                Value::number_int(0),
-                Value::number_int(1),
-                Value::number_int(2),
-                Value::number_int(3),
-                Value::number_int(4),
+                Value::number(0),
+                Value::number(1),
+                Value::number(2),
+                Value::number(3),
+                Value::number(4),
             ]),
         ),
         (
-            vec![Value::number_int(-5)],
+            vec![Value::number(-5)],
             Value::list([
-                Value::number_int(0),
-                Value::number_int(-1),
-                Value::number_int(-2),
-                Value::number_int(-3),
-                Value::number_int(-4),
+                Value::number(0),
+                Value::number(-1),
+                Value::number(-2),
+                Value::number(-3),
+                Value::number(-4),
             ]),
         ),
+        (vec![Value::number(1)], Value::list([Value::number(0)])),
+        (vec![Value::number(0)], Value::list_empty(Type::number())),
         (
-            vec![Value::number_int(1)],
-            Value::list([Value::number_int(0)]),
-        ),
-        (
-            vec![Value::number_int(0)],
-            Value::list_empty(Type::number()),
-        ),
-        (
-            vec![Value::parse_number("5.5").unwrap()],
+            vec![Value::parse_number("5.5")],
             Value::list([
-                Value::number_int(0),
-                Value::number_int(1),
-                Value::number_int(2),
-                Value::number_int(3),
-                Value::number_int(4),
-                Value::number_int(5), // because 5 < 5.5
+                Value::number(0),
+                Value::number(1),
+                Value::number(2),
+                Value::number(3),
+                Value::number(4),
+                Value::number(5), // because 5 < 5.5
             ]),
         ),
         // Two arguments
         (
-            vec![Value::number_int(1), Value::number_int(5)],
+            vec![Value::number(1), Value::number(5)],
             Value::list([
-                Value::number_int(1),
-                Value::number_int(2),
-                Value::number_int(3),
-                Value::number_int(4),
+                Value::number(1),
+                Value::number(2),
+                Value::number(3),
+                Value::number(4),
             ]),
         ),
         (
-            vec![Value::number_int(5), Value::number_int(1)],
+            vec![Value::number(5), Value::number(1)],
             Value::list([
-                Value::number_int(5),
-                Value::number_int(4),
-                Value::number_int(3),
-                Value::number_int(2),
+                Value::number(5),
+                Value::number(4),
+                Value::number(3),
+                Value::number(2),
             ]),
         ),
         (
-            vec![Value::number_float(1.5), Value::number_int(5)],
+            vec![Value::number(1.5), Value::number(5)],
             Value::list([
-                Value::number_float(1.5),
-                Value::number_float(2.5),
-                Value::number_float(3.5),
-                Value::number_float(4.5),
+                Value::number(1.5),
+                Value::number(2.5),
+                Value::number(3.5),
+                Value::number(4.5),
             ]),
         ),
         (
-            vec![Value::number_int(1), Value::number_int(2)],
-            Value::list([Value::number_int(1)]),
+            vec![Value::number(1), Value::number(2)],
+            Value::list([Value::number(1)]),
         ),
         (
-            vec![Value::number_int(1), Value::number_int(1)],
+            vec![Value::number(1), Value::number(1)],
             Value::list_empty(Type::number()),
         ),
         // Three arguments
         (
-            vec![
-                Value::number_int(0),
-                Value::number_int(5),
-                Value::number_int(2),
-            ],
+            vec![Value::number(0), Value::number(5), Value::number(2)],
+            Value::list([Value::number(0), Value::number(2), Value::number(4)]),
+        ),
+        (
+            vec![Value::number(0), Value::number(5), Value::number(1)],
             Value::list([
-                Value::number_int(0),
-                Value::number_int(2),
-                Value::number_int(4),
+                Value::number(0),
+                Value::number(1),
+                Value::number(2),
+                Value::number(3),
+                Value::number(4),
             ]),
         ),
         (
-            vec![
-                Value::number_int(0),
-                Value::number_int(5),
-                Value::number_int(1),
-            ],
-            Value::list([
-                Value::number_int(0),
-                Value::number_int(1),
-                Value::number_int(2),
-                Value::number_int(3),
-                Value::number_int(4),
-            ]),
+            vec![Value::number(0), Value::number(1), Value::number(1)],
+            Value::list([Value::number(0)]),
         ),
         (
-            vec![
-                Value::number_int(0),
-                Value::number_int(1),
-                Value::number_int(1),
-            ],
-            Value::list([Value::number_int(0)]),
-        ),
-        (
-            vec![
-                Value::number_int(0),
-                Value::number_int(0),
-                Value::number_int(1),
-            ],
+            vec![Value::number(0), Value::number(0), Value::number(1)],
             Value::list_empty(Type::number()),
         ),
         (
-            vec![
-                Value::number_int(5),
-                Value::number_int(0),
-                Value::number_int(-1),
-            ],
+            vec![Value::number(5), Value::number(0), Value::number(-1)],
             Value::list([
-                Value::number_int(5),
-                Value::number_int(4),
-                Value::number_int(3),
-                Value::number_int(2),
-                Value::number_int(1),
+                Value::number(5),
+                Value::number(4),
+                Value::number(3),
+                Value::number(2),
+                Value::number(1),
             ]),
         ),
         (
-            vec![
-                Value::number_int(0),
-                Value::number_int(5),
-                Value::number_float(0.5),
-            ],
+            vec![Value::number(0), Value::number(5), Value::number(0.5)],
             Value::list([
-                Value::number_int(0),
-                Value::number_float(0.5),
-                Value::number_int(1),
-                Value::number_float(1.5),
-                Value::number_int(2),
-                Value::number_float(2.5),
-                Value::number_int(3),
-                Value::number_float(3.5),
-                Value::number_int(4),
-                Value::number_float(4.5),
+                Value::number(0),
+                Value::number(0.5),
+                Value::number(1),
+                Value::number(1.5),
+                Value::number(2),
+                Value::number(2.5),
+                Value::number(3),
+                Value::number(3.5),
+                Value::number(4),
+                Value::number(4.5),
             ]),
         ),
     ];

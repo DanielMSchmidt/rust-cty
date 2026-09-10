@@ -38,55 +38,55 @@ fn path_apply() {
         },
         Case {
             start: Value::string("hello"),
-            path: Path::new().index(Value::number_int(0)),
+            path: Path::new().index(Value::number(0)),
             want: None,
             want_err: Some(r#"at step 0: not a list type"#),
         },
         Case {
             start: Value::list([Value::string("hello")]),
-            path: Path::new().index(Value::number_int(0)),
+            path: Path::new().index(Value::number(0)),
             want: Some(Value::string("hello")),
             want_err: None,
         },
         Case {
             start: Value::tuple([Value::string("hello")]),
-            path: Path::new().index(Value::number_int(0)),
+            path: Path::new().index(Value::number(0)),
             want: Some(Value::string("hello")),
             want_err: None,
         },
         Case {
             start: Value::list_empty(Type::string()),
-            path: Path::new().index(Value::number_int(0)),
+            path: Path::new().index(Value::number(0)),
             want: None,
             want_err: Some(r#"at step 0: value does not have given index key"#),
         },
         Case {
             start: Value::list([Value::string("hello")]),
-            path: Path::new().index(Value::number_int(1)),
+            path: Path::new().index(Value::number(1)),
             want: None,
             want_err: Some(r#"at step 0: value does not have given index key"#),
         },
         Case {
             start: Value::list([Value::string("hello")]),
-            path: Path::new().index(Value::number_int(0)).attr("foo"),
+            path: Path::new().index(Value::number(0)).attr("foo"),
             want: None,
             want_err: Some(r#"at step 1: not an object type"#),
         },
         Case {
             start: Value::list([Value::empty_object()]),
-            path: Path::new().index(Value::number_int(0)).attr("foo"),
+            path: Path::new().index(Value::number(0)).attr("foo"),
             want: None,
             want_err: Some(r#"at step 1: object has no attribute "foo""#),
         },
         Case {
             start: Value::null(Type::list(Type::string())),
-            path: Path::new().index(Value::number_int(0)),
+            path: Path::new().index(Value::number(0)),
             want: None,
             want_err: Some(r#"at step 0: cannot index a null value"#),
         },
         Case {
             start: Value::null(Type::map(Type::string())),
-            path: Path::new().index(Value::number_int(0)),
+            path: Path::new().index(Value::number(0)),
             want: None,
             want_err: Some(r#"at step 0: cannot index a null value"#),
         },
@@ -98,17 +98,13 @@ fn path_apply() {
         },
         Case {
             start: Value::list([Value::list([Value::string("hello")]).mark(2)]).mark(1),
-            path: Path::new()
-                .index(Value::number_int(0))
-                .index(Value::number_int(0)),
+            path: Path::new().index(Value::number(0)).index(Value::number(0)),
             want: Some(Value::string("hello").mark(1).mark(2)),
             want_err: None,
         },
         Case {
             start: Value::tuple([Value::list([Value::string("hello")]).mark(2)]).mark(1),
-            path: Path::new()
-                .index(Value::number_int(0))
-                .index(Value::number_int(0)),
+            path: Path::new().index(Value::number(0)).index(Value::number(0)),
             want: Some(Value::string("hello").mark(1).mark(2)),
             want_err: None,
         },
@@ -126,13 +122,13 @@ fn path_apply() {
         },
         Case {
             start: Value::list([Value::string("hello").mark(1)]),
-            path: Path::new().index(Value::number_int(0)),
+            path: Path::new().index(Value::number(0)),
             want: Some(Value::string("hello").mark(1)),
             want_err: None,
         },
         Case {
             start: Value::tuple([Value::string("hello").mark(1)]),
-            path: Path::new().index(Value::number_int(0)),
+            path: Path::new().index(Value::number(0)),
             want: Some(Value::string("hello").mark(1)),
             want_err: None,
         },
@@ -375,12 +371,12 @@ fn path_equals() {
         Case {
             a: steps([
                 PathStep::GetAttr("attr".into()),
-                PathStep::Index(Value::number_float(0.0)),
+                PathStep::Index(Value::number(0.0)),
                 PathStep::GetAttr("attr".into()),
             ]),
             b: steps([
                 PathStep::GetAttr("attr".into()),
-                PathStep::Index(Value::number_int(0)),
+                PathStep::Index(Value::number(0)),
                 PathStep::GetAttr("attr".into()),
             ]),
             equal: true,
@@ -389,12 +385,12 @@ fn path_equals() {
         Case {
             a: steps([
                 PathStep::GetAttr("attr".into()),
-                PathStep::Index(Value::number_int(1)),
+                PathStep::Index(Value::number(1)),
                 PathStep::GetAttr("attr".into()),
             ]),
             b: steps([
                 PathStep::GetAttr("attr".into()),
-                PathStep::Index(Value::number_int(0)),
+                PathStep::Index(Value::number(0)),
                 PathStep::GetAttr("attr".into()),
             ]),
             equal: false,
@@ -408,13 +404,13 @@ fn path_equals() {
             prefix: true,
         },
         Case {
-            a: steps([PathStep::Index(Value::number_int(0))]),
-            b: Path::new().index(Value::number_int(0)),
+            a: steps([PathStep::Index(Value::number(0))]),
+            b: Path::new().index(Value::number(0)),
             equal: true,
             prefix: true,
         },
         Case {
-            a: steps([PathStep::Index(Value::number_int(0))]),
+            a: steps([PathStep::Index(Value::number(0))]),
             b: Path::new().index_int(0),
             equal: true,
             prefix: true,
@@ -428,7 +424,7 @@ fn path_equals() {
         Case {
             a: steps([
                 PathStep::GetAttr("attr".into()),
-                PathStep::Index(Value::number_int(0)),
+                PathStep::Index(Value::number(0)),
             ]),
             b: Path::new().attr("attr").index_int(0),
             equal: true,

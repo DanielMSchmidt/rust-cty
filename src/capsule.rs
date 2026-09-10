@@ -5,14 +5,14 @@
 
 use std::any::{Any, TypeId};
 
-use crate::error::Error;
+use crate::error::CtyError;
 use crate::path::Path;
 use crate::types::Type;
 use crate::value::Value;
 
 /// A conversion produced by [`CapsuleOps::conversion_from`], converting an
 /// encapsulated native value to a value of some other cty type.
-pub type CapsuleConversionFromFn = Box<dyn Fn(&dyn Any, &Path) -> Result<Value, Error>>;
+pub type CapsuleConversionFromFn = Box<dyn Fn(&dyn Any, &Path) -> Result<Value, CtyError>>;
 
 /// A hook rendering an encapsulated value as a string, for `go_string`,
 /// `display`, and `hash_key`.
@@ -38,7 +38,7 @@ pub type CapsuleExtensionDataFn = Box<dyn Fn(&str) -> Option<Box<dyn Any>>>;
 
 /// A conversion produced by [`CapsuleOps::conversion_to`], converting a cty
 /// value of some other type into a native value to encapsulate.
-pub type CapsuleConversionToFn = Box<dyn Fn(&Value, &Path) -> Result<Box<dyn Any>, Error>>;
+pub type CapsuleConversionToFn = Box<dyn Fn(&Value, &Path) -> Result<Box<dyn Any>, CtyError>>;
 
 /// Optional custom operations backing a capsule type
 /// (go-cty: `cty.CapsuleOps`). All hooks default to `None`, selecting the

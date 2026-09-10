@@ -7,8 +7,10 @@
 use std::any::Any;
 use std::collections::BTreeMap;
 
-use crate::error::Error;
-use crate::set::ValueSet;
+use unicode_normalization::UnicodeNormalization;
+
+use crate::error::CtyError;
+use crate::set::{ValueRules, ValueSet};
 use crate::types::Type;
 
 /// A cty value: a dynamically-typed value carrying its [`Type`].
@@ -19,8 +21,36 @@ use crate::types::Type;
 /// [`Value::equals`] method implements the user-facing `Equals` operation that
 /// can return unknown.
 #[derive(Debug, Clone)]
-pub struct Value {
-    _priv: (),
+pub enum Value {
+    /// Strings will be stored NFC-normalized
+    String(String),
+
+    /// Boolean value
+    Boolean(bool),
+
+    /// Numbers will be stored as f64
+    Number(f64),
+
+    /// List of items
+    List(Vec<Value>, Type),
+
+    /// Set of items
+    Set(ValueSet, ValueRules),
+
+    /// Tuple of items
+    Tuple(Vec<Value>),
+
+    /// Map of items
+    Map(BTreeMap<String, Value>, Type),
+
+    /// Objects are well-defined key value structures
+    Object(BTreeMap<String, Value>, Type),
+
+    /// Unknown value of a certain type
+    Unknown(Type),
+
+    /// Null value of a certain type
+    Null(Type),
 }
 
 impl Value {
@@ -29,76 +59,65 @@ impl Value {
     /// A known string value (go-cty: `cty.StringVal`). The string is normalized
     /// to Unicode NFC form, as in go-cty.
     pub fn string(v: impl Into<String>) -> Value {
-        let _ = v.into();
-        todo!()
+        Self::String(v.into().nfc().to_string())
     }
 
     /// A known bool value (go-cty: `cty.BoolVal`; `cty.True` / `cty.False` are
     /// `Value::bool(true)` / `Value::bool(false)`).
     pub fn bool(v: bool) -> Value {
-        let _ = v;
-        todo!()
+        Self::Boolean(v)
     }
 
     /// A number value from an `i64` (go-cty: `cty.NumberIntVal`).
-    pub fn number_int(v: i64) -> Value {
-        let _ = v;
-        todo!()
-    }
-
-    /// A number value from a `u64` (go-cty: `cty.NumberUIntVal`).
-    pub fn number_uint(v: u64) -> Value {
-        let _ = v;
-        todo!()
-    }
-
-    /// A number value from an `f64` (go-cty: `cty.NumberFloatVal`).
-    pub fn number_float(v: f64) -> Value {
-        let _ = v;
-        todo!()
+    pub fn number(v: impl Into<f64>) -> Value {
+        Self::Number(v.into())
     }
 
     /// Parses a number value from a decimal string at full cty precision
-    /// (go-cty: `cty.ParseNumberVal`; `cty.MustParseNumberVal` is
-    /// `Value::parse_number(s).unwrap()`).
-    pub fn parse_number(s: &str) -> Result<Value, Error> {
-        let _ = s;
-        todo!()
+    /// (go-cty: `cty.MustParseNumberVal`; `cty.ParseNumberVal` is
+    /// `Value::try_parse_number(s)`).
+    pub fn parse_number(s: &str) -> Value {
+        Self::try_parse_number(s).unwrap()
+    }
+
+    /// Same as parse_number but returns a result instead of panicing
+    pub fn try_parse_number(s: &str) -> Result<Value, CtyError> {
+        // TODO: Deal with invalid values
+        let res = s.parse()?;
+        Ok(Self::Number(res))
     }
 
     /// The number value representing positive infinity (go-cty: `cty.PositiveInfinity`).
     pub fn positive_infinity() -> Value {
-        todo!()
+        Self::Number(f64::INFINITY)
     }
 
     /// The number value representing negative infinity (go-cty: `cty.NegativeInfinity`).
     pub fn negative_infinity() -> Value {
-        todo!()
+        Self::Number(f64::NEG_INFINITY)
     }
 
     /// The number zero (go-cty: `cty.Zero`).
     pub fn zero() -> Value {
-        todo!()
+        Self::Number(0.0)
     }
 
     // --- Null, unknown, dynamic ---
 
     /// The null value of the given type (go-cty: `cty.NullVal`).
     pub fn null(ty: Type) -> Value {
-        let _ = ty;
-        todo!()
+        Self::Null(ty)
     }
 
     /// The unknown value of the given type (go-cty: `cty.UnknownVal`).
     pub fn unknown(ty: Type) -> Value {
-        let _ = ty;
-        todo!()
+        Self::Unknown(ty)
     }
 
     /// The wholly-unknown value of the dynamic pseudo-type
     /// (go-cty: `cty.DynamicVal`).
     pub fn dynamic() -> Value {
-        todo!()
+        Self::unknown(Type::Dynamic)
     }
 
     // --- Collection constructors ---
@@ -112,21 +131,40 @@ impl Value {
     /// # Panics
     /// Panics if `values` is empty or the element types are inconsistent.
     pub fn list(values: impl IntoIterator<Item = Value>) -> Value {
-        let _ = values.into_iter().collect::<Vec<_>>();
-        todo!()
+        Self::try_list(values).unwrap()
+    }
+
+    /// Same as list but does not panic
+    pub fn try_list(values: impl IntoIterator<Item = Value>) -> Result<Value, CtyError> {
+        let items = values.into_iter().collect::<Vec<_>>();
+
+        if let Some(first) = items.first() {
+            let ty = first.ty();
+            if let Some(other_ty) = items
+                .iter()
+                .find_map(|i| if !i.ty().eq(&ty) { Some(i.ty()) } else { None })
+            {
+                Err(CtyError::InconsistentList {
+                    expected: ty,
+                    found: other_ty,
+                })
+            } else {
+                Ok(Value::List(items, ty))
+            }
+        } else {
+            return Err(CtyError::EmptyList);
+        }
     }
 
     /// The empty list of the given element type (go-cty: `cty.ListValEmpty`).
     pub fn list_empty(element_type: Type) -> Value {
-        let _ = element_type;
-        todo!()
+        Self::List(vec![], Type::List(Box::new(element_type)))
     }
 
     /// Whether [`Value::list`] would succeed for the given elements
     /// (go-cty: `cty.CanListVal`).
-    pub fn can_list(values: &[Value]) -> bool {
-        let _ = values;
-        todo!()
+    pub fn can_list(values: impl IntoIterator<Item = Value>) -> bool {
+        Self::try_list(values).is_ok()
     }
 
     /// A set value from the given elements (go-cty: `cty.SetVal`).
@@ -237,7 +275,21 @@ impl Value {
 
     /// The type of this value (go-cty: `Value.Type`).
     pub fn ty(&self) -> Type {
-        todo!()
+        match self {
+            Self::String(_) => Type::String,
+            Self::Number(_) => Type::Number,
+            Self::Boolean(_) => Type::Boolean,
+
+            Self::Null(ty) => ty.clone(),
+            Self::Unknown(ty) => ty.clone(),
+            Self::Object(_, ty) => ty.clone(),
+
+            Self::Map(_, ty) => Type::Map(Box::new(ty.clone())),
+            Self::List(_, ty) => Type::List(Box::new(ty.clone())),
+
+            Self::Set(val, _) => Type::Set(Box::new(val.element_type())),
+            Self::Tuple(val) => Type::Tuple(val.iter().map(|v| v.ty().clone()).collect()),
+        }
     }
 
     /// Whether this value is known (go-cty: `Value.IsKnown`).

@@ -10,14 +10,14 @@
 //! may be accompanied by an error that gets accumulated), and
 //! `Value.WrangleMarksDeep` returns `(Value, error)` where the value is
 //! asserted even when the error is set. The Rust signatures mirror that:
-//! wranglers return `(Option<WrangleAction>, Option<Error>)` and
-//! `wrangle_marks_deep` returns `(Value, Option<Error>)`.
+//! wranglers return `(Option<WrangleAction>, Option<CtyCtyError>)` and
+//! `wrangle_marks_deep` returns `(Value, Option<CtyCtyError>)`.
 
-use cty::{Error, Mark, Path, PathStep, Type, Value, WrangleAction, WrangleFunc};
+use cty::{CtyError, Mark, Path, PathStep, Type, Value, WrangleAction, WrangleFunc};
 
 /// A boxed wrangler callback, so heterogeneous per-case closures can live in
 /// one table.
-type Wrangler = Box<dyn FnMut(&Mark, &Path) -> (Option<WrangleAction>, Option<Error>)>;
+type Wrangler = Box<dyn FnMut(&Mark, &Path) -> (Option<WrangleAction>, Option<CtyError>)>;
 
 /// Go's `%#v` rendering of a `cty.Path`: `cty.Path(nil)` for the nil (empty)
 /// path, otherwise `cty.Path{...}` listing each step's GoString.
@@ -32,12 +32,12 @@ fn path_go_string(path: &Path) -> String {
 
 /// Mirrors the upstream closures' error construction:
 /// `fmt.Errorf("found mark %q at path %#v", mark, path)`.
-fn found_mark_err(mark: &Mark, path: &Path) -> Error {
+fn found_mark_err(mark: &Mark, path: &Path) -> CtyError {
     let mark_str = mark
         .downcast_ref::<String>()
         .map(String::as_str)
         .unwrap_or("<non-string mark>");
-    Error::new(format!(
+    CtyError::new(format!(
         "found mark \"{mark_str}\" at path {}",
         path_go_string(path)
     ))
@@ -45,8 +45,8 @@ fn found_mark_err(mark: &Mark, path: &Path) -> Error {
 
 /// The upstream closures' placeholder error for calls that must not decide the
 /// outcome: `fmt.Errorf("this error should not be observed")`.
-fn unobserved_err() -> Error {
-    Error::new("this error should not be observed")
+fn unobserved_err() -> CtyError {
+    CtyError::new("this error should not be observed")
 }
 
 struct Case {
@@ -307,7 +307,7 @@ fn value_wrangle_marks_deep() {
             name: "object with no marks and inert wrangle func",
             input: Value::object([
                 ("name", Value::string("Bob")),
-                ("age", Value::number_int(84)),
+                ("age", Value::number(84)),
                 (
                     "friends",
                     Value::list([Value::string("Harpreet"), Value::string("Amanda")]),
@@ -316,7 +316,7 @@ fn value_wrangle_marks_deep() {
             funcs: vec![Box::new(|_mark, _path| (None, Some(unobserved_err())))],
             want: Value::object([
                 ("name", Value::string("Bob")),
-                ("age", Value::number_int(84)),
+                ("age", Value::number(84)),
                 (
                     "friends",
                     Value::list([Value::string("Harpreet"), Value::string("Amanda")]),
@@ -328,7 +328,7 @@ fn value_wrangle_marks_deep() {
             name: "object with marks, one of which is dropped",
             input: Value::object([
                 ("name", Value::string("Bob")),
-                ("age", Value::number_int(84).mark("drop").mark("keep")),
+                ("age", Value::number(84).mark("drop").mark("keep")),
                 (
                     "friends",
                     Value::list([
@@ -345,7 +345,7 @@ fn value_wrangle_marks_deep() {
             })],
             want: Value::object([
                 ("name", Value::string("Bob")),
-                ("age", Value::number_int(84).mark("keep")),
+                ("age", Value::number(84).mark("keep")),
                 (
                     "friends",
                     Value::list([
@@ -360,7 +360,7 @@ fn value_wrangle_marks_deep() {
             name: "object with marks, one of which is expanded",
             input: Value::object([
                 ("name", Value::string("Bob")),
-                ("age", Value::number_int(84).mark("keep")),
+                ("age", Value::number(84).mark("keep")),
                 (
                     "friends",
                     Value::list([
@@ -378,7 +378,7 @@ fn value_wrangle_marks_deep() {
             })],
             want: Value::object([
                 ("name", Value::string("Bob")),
-                ("age", Value::number_int(84).mark("keep")),
+                ("age", Value::number(84).mark("keep")),
                 (
                     "friends",
                     Value::list([

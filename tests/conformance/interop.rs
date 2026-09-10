@@ -209,73 +209,73 @@ fn gocty_in() {
         "int(1) into cty.Number",
         1i64,
         Type::number(),
-        Value::number_int(1),
+        Value::number(1),
     );
     assert_in(
         "int8(1) into cty.Number",
         1i8,
         Type::number(),
-        Value::number_int(1),
+        Value::number(1),
     );
     assert_in(
         "int16(1) into cty.Number",
         1i16,
         Type::number(),
-        Value::number_int(1),
+        Value::number(1),
     );
     assert_in(
         "int32(1) into cty.Number",
         1i32,
         Type::number(),
-        Value::number_int(1),
+        Value::number(1),
     );
     assert_in(
         "int64(1) into cty.Number",
         1i64,
         Type::number(),
-        Value::number_int(1),
+        Value::number(1),
     );
     assert_in(
         "uint(1) into cty.Number",
         1u64,
         Type::number(),
-        Value::number_int(1),
+        Value::number(1),
     );
     assert_in(
         "uint8(1) into cty.Number",
         1u8,
         Type::number(),
-        Value::number_int(1),
+        Value::number(1),
     );
     assert_in(
         "uint16(1) into cty.Number",
         1u16,
         Type::number(),
-        Value::number_int(1),
+        Value::number(1),
     );
     assert_in(
         "uint32(1) into cty.Number",
         1u32,
         Type::number(),
-        Value::number_int(1),
+        Value::number(1),
     );
     assert_in(
         "uint64(1) into cty.Number",
         1u64,
         Type::number(),
-        Value::number_int(1),
+        Value::number(1),
     );
     assert_in(
         "float32(1.5) into cty.Number",
         1.5f32,
         Type::number(),
-        Value::number_float(1.5),
+        Value::number(1.5),
     );
     assert_in(
         "float64(1.5) into cty.Number",
         1.5f64,
         Type::number(),
-        Value::number_float(1.5),
+        Value::number(1.5),
     );
     // NOTE(port): upstream converts big.NewFloat(1.5) and big.NewInt(5) into
     // cty.Number. There are no big-number types among the interop impls (a
@@ -299,13 +299,13 @@ fn gocty_in() {
         "[]int{1, 2} into cty.List(cty.Number)",
         vec![1i64, 2],
         Type::list(Type::number()),
-        Value::list([Value::number_int(1), Value::number_int(2)]),
+        Value::list([Value::number(1), Value::number(2)]),
     );
     assert_in(
         "&[]int{1, 2} into cty.List(cty.Number)",
         Some(vec![1i64, 2]),
         Type::list(Type::number()),
-        Value::list([Value::number_int(1), Value::number_int(2)]),
+        Value::list([Value::number(1), Value::number(2)]),
     );
     // NOTE(port): upstream converts `[]int(nil)` (a nil Go slice, a zero
     // value distinct from a nil pointer) into cty.NullVal(cty.List(cty.Number)).
@@ -321,7 +321,7 @@ fn gocty_in() {
         "[2]int{1, 2} into cty.List(cty.Number)",
         [1i64, 2],
         Type::list(Type::number()),
-        Value::list([Value::number_int(1), Value::number_int(2)]),
+        Value::list([Value::number(1), Value::number(2)]),
     );
     assert_in(
         "[0]int{} into cty.List(cty.Number)",
@@ -341,19 +341,19 @@ fn gocty_in() {
         "[]int{1, 2} into cty.Set(cty.Number)",
         vec![1i64, 2],
         Type::set(Type::number()),
-        Value::set([Value::number_int(1), Value::number_int(2)]),
+        Value::set([Value::number(1), Value::number(2)]),
     );
     assert_in(
         "[]int{2, 2} into cty.Set(cty.Number)",
         vec![2i64, 2],
         Type::set(Type::number()),
-        Value::set([Value::number_int(2)]),
+        Value::set([Value::number(2)]),
     );
     assert_in(
         "&[]int{1, 2} into cty.Set(cty.Number)",
         Some(vec![1i64, 2]),
         Type::set(Type::number()),
-        Value::set([Value::number_int(1), Value::number_int(2)]),
+        Value::set([Value::number(1), Value::number(2)]),
     );
     // NOTE(port): `[]int(nil)` into cty.Set(cty.Number) — nil Go slice, no
     // Rust analogue (see the list section above); the nil-pointer analogue
@@ -368,7 +368,7 @@ fn gocty_in() {
         "[2]int{1, 2} into cty.Set(cty.Number)",
         [1i64, 2],
         Type::set(Type::number()),
-        Value::set([Value::number_int(1), Value::number_int(2)]),
+        Value::set([Value::number(1), Value::number(2)]),
     );
     assert_in(
         "[0]int{} into cty.Set(cty.Number)",
@@ -392,7 +392,7 @@ fn gocty_in() {
         r#"map[string]int{"one": 1, "two": 2} into cty.Map(cty.Number)"#,
         BTreeMap::from([("one".to_string(), 1i64), ("two".to_string(), 2i64)]),
         Type::map(Type::number()),
-        Value::map([("one", Value::number_int(1)), ("two", Value::number_int(2))]),
+        Value::map([("one", Value::number(1)), ("two", Value::number(2))]),
     );
 
     // Objects
@@ -423,7 +423,7 @@ fn gocty_in() {
         Type::object([("name", Type::string()), ("number", Type::number())]),
         Value::object([
             ("name", Value::string("Steven")),
-            ("number", Value::number_int(1)),
+            ("number", Value::number(1)),
         ]),
     );
     assert_in(
@@ -439,14 +439,21 @@ fn gocty_in() {
         ]),
     );
     // NOTE(port): the two remaining upstream object cases convert
-    // heterogeneous `map[string]any` values (one with both keys, one where
-    // the missing "name" becomes cty.NullVal(cty.String)); Go interface
-    // reflection has no Rust analogue, so they stay omitted.
+    // heterogeneous `map[string]any` values — one with both keys, one where
+    // the missing "name" becomes cty.NullVal(cty.String). Go interface
+    // reflection has no Rust analogue, but neither case is lost coverage:
+    // upstream reaches the same conversion path from the struct side, and
+    // both behaviors are already pinned above — the tagged-struct case for
+    // the populated object, and the `struct{}{}` / untagged-field cases for
+    // missing-attribute-becomes-null.
 
     // Tuples
-    // NOTE(port): upstream first converts `[]any{}` into cty.EmptyTuple;
-    // heterogeneous `any` slices have no Rust analogue (see the note after
-    // the struct cases below).
+    assert_in(
+        "[]any{} into cty.EmptyTuple",
+        Vec::<i64>::new(),
+        Type::empty_tuple(),
+        Value::empty_tuple(),
+    );
     assert_in(
         "struct{}{} into cty.EmptyTuple",
         EmptyStruct,
@@ -460,45 +467,66 @@ fn gocty_in() {
             number: 23,
         },
         Type::tuple([Type::string(), Type::number()]),
-        Value::tuple([Value::string("Stephen"), Value::number_int(23)]),
+        Value::tuple([Value::string("Stephen"), Value::number(23)]),
     );
-    // NOTE(port): the three remaining upstream tuple cases convert `any`
-    // slices — []any{1, 2, 3}, []any{1, "hello", 3}, and []any(nil) (which
-    // becomes cty.NullVal of the tuple type); Go interface reflection has no
-    // Rust analogue, so they stay omitted.
+    assert_in(
+        "[]any{1, 2, 3} into cty.Tuple([Number, Number, Number])",
+        vec![1i64, 2, 3],
+        Type::tuple([Type::number(), Type::number(), Type::number()]),
+        Value::tuple([Value::number(1), Value::number(2), Value::number(3)]),
+    );
+    // NOTE(port): upstream's `[]any(nil)` is a nil slice; as in the list and
+    // set sections above, the Rust analogue of that absent sequence is
+    // `None::<Vec<i64>>`. Both forms reach the same upstream branch —
+    // gocty/in.go:390 (nil pointer) and gocty/in.go:397 (nil slice) each
+    // yield NullVal of the tuple type.
+    assert_in(
+        "[]any(nil) into cty.Tuple([Number])",
+        None::<Vec<i64>>,
+        Type::tuple([Type::number()]),
+        Value::null(Type::tuple([Type::number()])),
+    );
+    // NOTE(port): the one remaining upstream tuple case converts the
+    // heterogeneous slice `[]any{1, "hello", 3}`. A homogeneous `Vec` cannot
+    // carry mixed element types and `IntoCty` is not implemented for Rust
+    // tuples, so it stays omitted; the heterogeneous positional path it
+    // exercises is covered from the struct side by the testTupleStruct case
+    // above.
 
     // Capsules
     // NOTE(port): upstream converts `capsuleANative` (a *capsuleType1Native
-    // pointer) into a capsule type built with reflect.TypeOf. The interop
-    // impls have no capsule conversion (capsule values are constructed
-    // directly with Value::capsule), so this case is omitted.
+    // pointer) into a capsule type built with reflect.TypeOf; gocty/in.go:473
+    // requires the source to be a pointer or addressable and takes its address,
+    // so a Go capsule always holds a pointer. Decided 2026-08-31 to omit
+    // permanently rather than grow `IntoCty` a capsule case: capsule values are
+    // constructed directly with Value::capsule.
 
     // Dynamic
     assert_in(
         "cty.NumberIntVal(2) into cty.DynamicPseudoType",
-        Value::number_int(2),
+        Value::number(2),
         Type::dynamic(),
-        Value::number_int(2),
+        Value::number(2),
     );
     assert_in(
         "[]cty.Value{cty.NumberIntVal(2)} into cty.List(cty.DynamicPseudoType)",
-        vec![Value::number_int(2)],
+        vec![Value::number(2)],
         Type::list(Type::dynamic()),
-        Value::list([Value::number_int(2)]),
+        Value::list([Value::number(2)]),
     );
     assert_in(
         r#"map[string]cty.Value{"number": cty.NumberIntVal(2)} into cty.Map(cty.DynamicPseudoType)"#,
-        BTreeMap::from([("number".to_string(), Value::number_int(2))]),
+        BTreeMap::from([("number".to_string(), Value::number(2))]),
         Type::map(Type::dynamic()),
-        Value::map([("number", Value::number_int(2))]),
+        Value::map([("number", Value::number(2))]),
     );
 
     // Passthrough
     assert_in(
         "cty.NumberIntVal(2) into cty.Number",
-        Value::number_int(2),
+        Value::number(2),
         Type::number(),
-        Value::number_int(2),
+        Value::number(2),
     );
     assert_in(
         r#"cty.StringVal("hi") into cty.String"#,
@@ -556,36 +584,24 @@ fn gocty_out() {
     );
 
     // Number
-    assert_out("cty.NumberIntVal(5) into int", Value::number_int(5), 5i64);
-    assert_out("cty.NumberIntVal(5) into int8", Value::number_int(5), 5i8);
-    assert_out("cty.NumberIntVal(5) into int16", Value::number_int(5), 5i16);
-    assert_out("cty.NumberIntVal(5) into int32", Value::number_int(5), 5i32);
-    assert_out("cty.NumberIntVal(5) into int64", Value::number_int(5), 5i64);
-    assert_out("cty.NumberIntVal(5) into uint", Value::number_int(5), 5u64);
-    assert_out("cty.NumberIntVal(5) into uint8", Value::number_int(5), 5u8);
-    assert_out(
-        "cty.NumberIntVal(5) into uint16",
-        Value::number_int(5),
-        5u16,
-    );
-    assert_out(
-        "cty.NumberIntVal(5) into uint32",
-        Value::number_int(5),
-        5u32,
-    );
-    assert_out(
-        "cty.NumberIntVal(5) into uint64",
-        Value::number_int(5),
-        5u64,
-    );
+    assert_out("cty.NumberIntVal(5) into int", Value::number(5), 5i64);
+    assert_out("cty.NumberIntVal(5) into int8", Value::number(5), 5i8);
+    assert_out("cty.NumberIntVal(5) into int16", Value::number(5), 5i16);
+    assert_out("cty.NumberIntVal(5) into int32", Value::number(5), 5i32);
+    assert_out("cty.NumberIntVal(5) into int64", Value::number(5), 5i64);
+    assert_out("cty.NumberIntVal(5) into uint", Value::number(5), 5u64);
+    assert_out("cty.NumberIntVal(5) into uint8", Value::number(5), 5u8);
+    assert_out("cty.NumberIntVal(5) into uint16", Value::number(5), 5u16);
+    assert_out("cty.NumberIntVal(5) into uint32", Value::number(5), 5u32);
+    assert_out("cty.NumberIntVal(5) into uint64", Value::number(5), 5u64);
     assert_out(
         "cty.NumberFloatVal(1.5) into float32",
-        Value::number_float(1.5),
+        Value::number(1.5),
         1.5f32,
     );
     assert_out(
         "cty.NumberFloatVal(1.5) into float64",
-        Value::number_float(1.5),
+        Value::number(1.5),
         1.5f64,
     );
     // NOTE(port): upstream also decodes cty.NumberFloatVal(1.5) into
@@ -594,17 +610,17 @@ fn gocty_out() {
     // impls (see docs/api-mapping.md), so those three cases are omitted.
     assert_out(
         "cty.NumberIntVal(5) into intAlias",
-        Value::number_int(5),
+        Value::number(5),
         IntAlias(5),
     );
     assert_out(
         "cty.NumberFloatVal(1.5) into float32Alias",
-        Value::number_float(1.5),
+        Value::number(1.5),
         Float32Alias(1.5),
     );
     assert_out(
         "cty.NumberFloatVal(1.5) into float64Alias",
-        Value::number_float(1.5),
+        Value::number(1.5),
         Float64Alias(1.5),
     );
 
@@ -616,7 +632,7 @@ fn gocty_out() {
     );
     assert_out(
         "cty.ListVal([1, 5]) into []int",
-        Value::list([Value::number_int(1), Value::number_int(5)]),
+        Value::list([Value::number(1), Value::number(5)]),
         vec![1i64, 5],
     );
     // NOTE(port): upstream decodes cty.NullVal(cty.List(cty.Number)) into a
@@ -629,7 +645,7 @@ fn gocty_out() {
     );
     assert_out(
         "cty.ListVal([1, 5]) into [2]int",
-        Value::list([Value::number_int(1), Value::number_int(5)]),
+        Value::list([Value::number(1), Value::number(5)]),
         [1i64, 5],
     );
     assert_out(
@@ -644,7 +660,7 @@ fn gocty_out() {
     );
     assert_out(
         "cty.ListVal([1, 5]) into listIntAlias",
-        Value::list([Value::number_int(1), Value::number_int(5)]),
+        Value::list([Value::number(1), Value::number(5)]),
         ListIntAlias(vec![1, 5]),
     );
 
@@ -656,10 +672,7 @@ fn gocty_out() {
     );
     assert_out(
         r#"cty.MapVal({"one": 1, "five": 5}) into map[string]int"#,
-        Value::map([
-            ("one", Value::number_int(1)),
-            ("five", Value::number_int(5)),
-        ]),
+        Value::map([("one", Value::number(1)), ("five", Value::number(5))]),
         BTreeMap::from([("one".to_string(), 1i64), ("five".to_string(), 5i64)]),
     );
     // NOTE(port): upstream decodes cty.NullVal(cty.Map(cty.Number)) into a
@@ -672,10 +685,7 @@ fn gocty_out() {
     );
     assert_out(
         r#"cty.MapVal({"one": 1, "five": 5}) into mapIntAlias"#,
-        Value::map([
-            ("one", Value::number_int(1)),
-            ("five", Value::number_int(5)),
-        ]),
+        Value::map([("one", Value::number(1)), ("five", Value::number(5))]),
         MapIntAlias(BTreeMap::from([
             ("one".to_string(), 1i64),
             ("five".to_string(), 5i64),
@@ -690,12 +700,12 @@ fn gocty_out() {
     );
     assert_out(
         "cty.SetVal([1, 5]) into []int",
-        Value::set([Value::number_int(1), Value::number_int(5)]),
+        Value::set([Value::number(1), Value::number(5)]),
         vec![1i64, 5],
     );
     assert_out(
         "cty.SetVal([1, 5]) into [2]int",
-        Value::set([Value::number_int(1), Value::number_int(5)]),
+        Value::set([Value::number(1), Value::number(5)]),
         [1i64, 5],
     );
 
@@ -717,7 +727,7 @@ fn gocty_out() {
         r#"cty.ObjectVal({name: "Stephen", number: 12}) into testStruct"#,
         Value::object([
             ("name", Value::string("Stephen")),
-            ("number", Value::number_int(12)),
+            ("number", Value::number(12)),
         ]),
         TestStruct {
             name: "Stephen".to_string(),
@@ -733,7 +743,7 @@ fn gocty_out() {
     );
     assert_out(
         r#"cty.TupleVal(["Stephen", 5]) into testTupleStruct"#,
-        Value::tuple([Value::string("Stephen"), Value::number_int(5)]),
+        Value::tuple([Value::string("Stephen"), Value::number(5)]),
         TestTupleStruct {
             name: "Stephen".to_string(),
             number: 5,
@@ -742,16 +752,20 @@ fn gocty_out() {
 
     // Capsules
     // NOTE(port): the two upstream capsule cases decode a capsule value into
-    // capsuleType1Native (a copy) and into *capsuleType1Native (recovering
-    // the original pointer — Go pointer identity). The interop impls have no
-    // capsule conversion; encapsulated values are reached via
-    // Value::encapsulated_value() instead.
+    // capsuleType1Native (a copy) and into *capsuleType1Native (recovering the
+    // original pointer — gocty/out.go:552-554 preserves the pointer precisely
+    // so the caller gets the original object). Decided 2026-08-31 to omit both
+    // permanently. The identity case is already covered by
+    // Value::encapsulated_value(), whose `&dyn Any` is the faithful analogue of
+    // recovering the pointer; the copy case would need a `Clone` bound that no
+    // other interop impl carries, since a value cannot be moved out of a
+    // borrow.
 
     // Passthrough
     assert_out(
         "cty.NumberIntVal(2) into cty.Value",
-        Value::number_int(2),
-        Value::number_int(2),
+        Value::number(2),
+        Value::number(2),
     );
     assert_out(
         "cty.UnknownVal(cty.Bool) into cty.Value",

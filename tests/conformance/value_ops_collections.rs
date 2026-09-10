@@ -10,7 +10,6 @@ use cty::{Type, Value};
 // Ported from TestValueGetAttr:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_ops_test.go#L2445
 #[test]
-#[ignore = "not yet implemented"]
 fn value_get_attr() {
     let tests: Vec<(Value, &str, Value)> = vec![
         (
@@ -48,17 +47,16 @@ fn value_get_attr() {
 // Ported from TestValueIndex:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_ops_test.go#L2496
 #[test]
-#[ignore = "not yet implemented"]
 fn value_index() {
     let tests: Vec<(Value, Value, Value)> = vec![
         (
             Value::list([Value::string("hello")]),
-            Value::number_int(0),
+            Value::number(0),
             Value::string("hello"),
         ),
         (
             Value::list([Value::string("hello"), Value::string("world")]),
-            Value::number_int(1),
+            Value::number(1),
             Value::string("world"),
         ),
         (
@@ -73,7 +71,7 @@ fn value_index() {
         ),
         (
             Value::unknown(Type::list(Type::string())),
-            Value::number_int(0),
+            Value::number(0),
             Value::unknown(Type::string()),
         ),
         (
@@ -102,40 +100,40 @@ fn value_index() {
             Value::unknown(Type::string()),
         ),
         (Value::dynamic(), Value::string("hello"), Value::dynamic()),
-        (Value::dynamic(), Value::number_int(0), Value::dynamic()),
+        (Value::dynamic(), Value::number(0), Value::dynamic()),
         (
             Value::tuple([Value::string("hello")]),
-            Value::number_int(0),
+            Value::number(0),
             Value::string("hello"),
         ),
         (
-            Value::tuple([Value::string("hello"), Value::number_int(5)]),
-            Value::number_int(0),
+            Value::tuple([Value::string("hello"), Value::number(5)]),
+            Value::number(0),
             Value::string("hello"),
         ),
         (
-            Value::tuple([Value::string("hello"), Value::number_int(5)]),
-            Value::number_int(1),
-            Value::number_int(5),
+            Value::tuple([Value::string("hello"), Value::number(5)]),
+            Value::number(1),
+            Value::number(5),
         ),
         (
             Value::tuple([Value::string("hello"), Value::dynamic()]),
-            Value::number_int(0),
+            Value::number(0),
             Value::string("hello"),
         ),
         (
             Value::tuple([Value::string("hello"), Value::dynamic()]),
-            Value::number_int(1),
+            Value::number(1),
             Value::dynamic(),
         ),
         (
             Value::tuple([Value::string("hello"), Value::unknown(Type::number())]),
-            Value::number_int(0),
+            Value::number(0),
             Value::string("hello"),
         ),
         (
             Value::tuple([Value::string("hello"), Value::unknown(Type::number())]),
-            Value::number_int(1),
+            Value::number(1),
             Value::unknown(Type::number()),
         ),
         (
@@ -145,17 +143,17 @@ fn value_index() {
         ),
         (
             Value::unknown(Type::tuple([Type::string()])),
-            Value::number_int(0),
+            Value::number(0),
             Value::unknown(Type::string()),
         ),
         (
             Value::list([Value::string("hello")]).mark(1),
-            Value::number_int(0),
+            Value::number(0),
             Value::string("hello").mark(1),
         ),
         (
             Value::list([Value::string("hello")]),
-            Value::number_int(0).mark(1),
+            Value::number(0).mark(1),
             Value::string("hello").mark(1),
         ),
     ];
@@ -172,32 +170,31 @@ fn value_index() {
 // Ported from TestValueHasIndex:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_ops_test.go#L2629
 #[test]
-#[ignore = "not yet implemented"]
 fn value_has_index() {
     let tests: Vec<(Value, Value, Value)> = vec![
         (
             Value::list([Value::string("hello")]),
-            Value::number_int(0),
+            Value::number(0),
             Value::bool(true),
         ),
         (
             Value::list([Value::string("hello"), Value::string("world")]),
-            Value::number_int(1),
+            Value::number(1),
             Value::bool(true),
         ),
         (
             Value::list([Value::string("hello"), Value::string("world")]),
-            Value::number_int(2),
+            Value::number(2),
             Value::bool(false),
         ),
         (
             Value::list([Value::string("hello"), Value::string("world")]),
-            Value::number_int(-1),
+            Value::number(-1),
             Value::bool(false),
         ),
         (
             Value::list([Value::string("hello"), Value::string("world")]),
-            Value::number_float(0.5),
+            Value::number(0.5),
             Value::bool(false),
         ),
         (
@@ -222,7 +219,7 @@ fn value_has_index() {
         ),
         (
             Value::unknown(Type::list(Type::string())),
-            Value::number_int(0),
+            Value::number(0),
             Value::unknown(Type::bool()).refine_not_null(),
         ),
         (
@@ -277,32 +274,32 @@ fn value_has_index() {
         ),
         (
             Value::unknown(Type::map(Type::string())),
-            Value::number_int(0),
+            Value::number(0),
             Value::bool(false),
         ),
         (
             Value::tuple([Value::string("hello")]),
-            Value::number_int(0),
+            Value::number(0),
             Value::bool(true),
         ),
         (
             Value::tuple([Value::string("hello"), Value::string("world")]),
-            Value::number_int(1),
+            Value::number(1),
             Value::bool(true),
         ),
         (
             Value::tuple([Value::string("hello"), Value::string("world")]),
-            Value::number_int(2),
+            Value::number(2),
             Value::bool(false),
         ),
         (
             Value::tuple([Value::string("hello"), Value::string("world")]),
-            Value::number_int(-1),
+            Value::number(-1),
             Value::bool(false),
         ),
         (
             Value::tuple([Value::string("hello"), Value::string("world")]),
-            Value::number_float(0.5),
+            Value::number(0.5),
             Value::bool(false),
         ),
         (
@@ -322,7 +319,7 @@ fn value_has_index() {
         ),
         (
             Value::unknown(Type::tuple([Type::string()])),
-            Value::number_int(0),
+            Value::number(0),
             Value::bool(true),
         ),
         (
@@ -337,17 +334,17 @@ fn value_has_index() {
         ),
         (
             Value::dynamic(),
-            Value::number_int(0),
+            Value::number(0),
             Value::unknown(Type::bool()).refine_not_null(),
         ),
         (
             Value::list([Value::string("hello")]).mark(1),
-            Value::number_int(0),
+            Value::number(0),
             Value::bool(true).mark(1),
         ),
         (
             Value::list([Value::string("hello")]),
-            Value::number_int(0).mark(1),
+            Value::number(0).mark(1),
             Value::bool(true).mark(1),
         ),
     ];
@@ -364,7 +361,6 @@ fn value_has_index() {
 // Ported from TestValueForEachElement:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_ops_test.go#L2822
 #[test]
-#[ignore = "not yet implemented"]
 fn value_for_each_element() {
     // Upstream's `type call struct { Key, Element Value }`.
     type Call = (Value, Value);
@@ -372,10 +368,10 @@ fn value_for_each_element() {
     let tests: Vec<(Value, Vec<Call>, bool)> = vec![
         (Value::list_empty(Type::string()), vec![], false),
         (
-            Value::list([Value::number_int(1), Value::number_int(2)]),
+            Value::list([Value::number(1), Value::number(2)]),
             vec![
-                (Value::number_int(0), Value::number_int(1)),
-                (Value::number_int(1), Value::number_int(2)),
+                (Value::number(0), Value::number(1)),
+                (Value::number(1), Value::number(2)),
             ],
             false,
         ),
@@ -386,23 +382,19 @@ fn value_for_each_element() {
                 Value::string("hey"),
             ]),
             vec![
-                (Value::number_int(0), Value::string("hey")),
-                (Value::number_int(1), Value::string("stop")),
+                (Value::number(0), Value::string("hey")),
+                (Value::number(1), Value::string("stop")),
             ],
             true,
         ),
         (Value::set_empty(Type::string()), vec![], false),
         (
-            Value::set([
-                Value::number_int(1),
-                Value::number_int(10),
-                Value::number_int(2),
-            ]),
+            Value::set([Value::number(1), Value::number(10), Value::number(2)]),
             vec![
                 // Numbers in sets are always iterated in numerical order.
-                (Value::number_int(1), Value::number_int(1)),
-                (Value::number_int(2), Value::number_int(2)),
-                (Value::number_int(10), Value::number_int(10)),
+                (Value::number(1), Value::number(1)),
+                (Value::number(2), Value::number(2)),
+                (Value::number(10), Value::number(10)),
             ],
             false,
         ),
@@ -420,13 +412,10 @@ fn value_for_each_element() {
             true,
         ),
         (
-            Value::map([
-                ("second", Value::number_int(2)),
-                ("first", Value::number_int(1)),
-            ]),
+            Value::map([("second", Value::number(2)), ("first", Value::number(1))]),
             vec![
-                (Value::string("first"), Value::number_int(1)),
-                (Value::string("second"), Value::number_int(2)),
+                (Value::string("first"), Value::number(1)),
+                (Value::string("second"), Value::number(2)),
             ],
             false,
         ),
@@ -444,22 +433,18 @@ fn value_for_each_element() {
         ),
         (Value::empty_tuple(), vec![], false),
         (
-            Value::tuple([Value::string("hello"), Value::number_int(2)]),
+            Value::tuple([Value::string("hello"), Value::number(2)]),
             vec![
-                (Value::number_int(0), Value::string("hello")),
-                (Value::number_int(1), Value::number_int(2)),
+                (Value::number(0), Value::string("hello")),
+                (Value::number(1), Value::number(2)),
             ],
             false,
         ),
         (
-            Value::tuple([
-                Value::number_int(5),
-                Value::string("stop"),
-                Value::bool(true),
-            ]),
+            Value::tuple([Value::number(5), Value::string("stop"), Value::bool(true)]),
             vec![
-                (Value::number_int(0), Value::number_int(5)),
-                (Value::number_int(1), Value::string("stop")),
+                (Value::number(0), Value::number(5)),
+                (Value::number(1), Value::string("stop")),
             ],
             true,
         ),
@@ -501,7 +486,6 @@ fn value_for_each_element() {
 // Ported from TestHasElement:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_ops_test.go#L3908
 #[test]
-#[ignore = "not yet implemented"]
 fn has_element() {
     let tests: Vec<(Value, Value, Value)> = vec![
         (
@@ -611,22 +595,21 @@ fn has_element() {
 // NOTE(port): upstream `Elements()` is a Go 1.23 iter.Seq2 range function; the
 // Rust analogue is the std Iterator returned by `element_iterator()`.
 #[test]
-#[ignore = "not yet implemented"]
 fn elements() {
     let tests: Vec<(Value, Vec<(Value, Value)>)> = vec![
         (Value::list_empty(Type::string()), vec![]),
         (
             Value::list([Value::string("hello"), Value::string("world")]),
             vec![
-                (Value::number_int(0), Value::string("hello")),
-                (Value::number_int(1), Value::string("world")),
+                (Value::number(0), Value::string("hello")),
+                (Value::number(1), Value::string("world")),
             ],
         ),
         (
             Value::tuple([Value::string("hello"), Value::string("world")]),
             vec![
-                (Value::number_int(0), Value::string("hello")),
-                (Value::number_int(1), Value::string("world")),
+                (Value::number(0), Value::string("hello")),
+                (Value::number(1), Value::string("world")),
             ],
         ),
         (

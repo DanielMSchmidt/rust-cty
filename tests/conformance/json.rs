@@ -72,7 +72,7 @@ fn type_jsonable() {
 #[ignore = "not yet implemented"]
 fn simple_json_value() {
     let tests: Vec<(Value, &str, Value)> = vec![
-        (Value::number_int(5), r#"5"#, Value::number_int(5)),
+        (Value::number(5), r#"5"#, Value::number(5)),
         (Value::bool(true), r#"true"#, Value::bool(true)),
         (Value::string("hello"), r#""hello""#, Value::string("hello")),
         (
@@ -166,7 +166,7 @@ fn value_jsonable() {
             Value::string("15"),
             Type::number(),
             r#"15"#,
-            Value::number_int(15),
+            Value::number(15),
         ),
         (
             Value::string("true"),
@@ -186,20 +186,15 @@ fn value_jsonable() {
             r#"null"#,
             Value::null(Type::string()),
         ),
+        (Value::number(2), Type::number(), r#"2"#, Value::number(2)),
         (
-            Value::number_int(2),
-            Type::number(),
-            r#"2"#,
-            Value::number_int(2),
-        ),
-        (
-            Value::number_float(2.5),
+            Value::number(2.5),
             Type::number(),
             r#"2.5"#,
-            Value::number_float(2.5),
+            Value::number(2.5),
         ),
         (
-            Value::number_int(5),
+            Value::number(5),
             Type::string(),
             r#""5""#,
             Value::string("5"),
@@ -256,10 +251,10 @@ fn value_jsonable() {
         ),
         // Tuples
         (
-            Value::tuple([Value::bool(true), Value::number_int(5)]),
+            Value::tuple([Value::bool(true), Value::number(5)]),
             Type::tuple([Type::bool(), Type::number()]),
             r#"[true,5]"#,
-            Value::tuple([Value::bool(true), Value::number_int(5)]),
+            Value::tuple([Value::bool(true), Value::number(5)]),
         ),
         (
             Value::empty_tuple(),
@@ -320,10 +315,10 @@ fn value_jsonable() {
             Value::string("hello"),
         ),
         (
-            Value::number_int(5),
+            Value::number(5),
             Type::dynamic(),
             r#"{"value":5,"type":"number"}"#,
-            Value::number_int(5),
+            Value::number(5),
         ),
         (
             Value::list([Value::bool(true), Value::bool(false)]),

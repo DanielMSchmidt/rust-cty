@@ -28,12 +28,8 @@ fn convert_public() {
             Type::string(),
             Ok(Value::string("hello")),
         ),
-        (Value::string("1"), Type::number(), Ok(Value::number_int(1))),
-        (
-            Value::string("1.5"),
-            Type::number(),
-            Ok(Value::number_float(1.5)),
-        ),
+        (Value::string("1"), Type::number(), Ok(Value::number(1))),
+        (Value::string("1.5"), Type::number(), Ok(Value::number(1.5))),
         (
             Value::string("hello"),
             Type::number(),
@@ -48,9 +44,9 @@ fn convert_public() {
             Type::bool(),
             Err("a bool is required"),
         ),
-        (Value::number_int(4), Type::string(), Ok(Value::string("4"))),
+        (Value::number(4), Type::string(), Ok(Value::string("4"))),
         (
-            Value::number_float(3.14159265359),
+            Value::number(3.14159265359),
             Type::string(),
             Ok(Value::string("3.14159265359")),
         ),
@@ -81,29 +77,29 @@ fn convert_public() {
             Ok(Value::string("hello")),
         ),
         (
-            Value::list([Value::number_int(5), Value::number_int(10)]),
+            Value::list([Value::number(5), Value::number(10)]),
             Type::list(Type::string()),
             Ok(Value::list([Value::string("5"), Value::string("10")])),
         ),
         (
-            Value::list([Value::number_int(5), Value::number_int(10)]),
+            Value::list([Value::number(5), Value::number(10)]),
             Type::list(Type::dynamic()),
-            Ok(Value::list([Value::number_int(5), Value::number_int(10)])),
+            Ok(Value::list([Value::number(5), Value::number(10)])),
         ),
         (
             Value::tuple([
                 Value::object([
                     ("type", Value::string("ingress")),
-                    ("from_port", Value::number_int(-1)),
-                    ("to_port", Value::number_int(-1)),
+                    ("from_port", Value::number(-1)),
+                    ("to_port", Value::number(-1)),
                     ("protocol", Value::string("icmp")),
                     ("description", Value::string("ICMP in")),
                     ("cidr", Value::tuple([Value::string("0.0.0.0/0")])),
                 ]),
                 Value::object([
                     ("type", Value::string("ingress")),
-                    ("from_port", Value::number_int(22)),
-                    ("to_port", Value::number_int(22)),
+                    ("from_port", Value::number(22)),
+                    ("to_port", Value::number(22)),
                     ("protocol", Value::string("tcp")),
                     ("description", Value::string("SSH from Bastion")),
                     ("source_sg", Value::string("sg-abc123")),
@@ -116,7 +112,7 @@ fn convert_public() {
             Value::set([Value::string("5"), Value::unknown(Type::string())]),
             Type::set(Type::number()),
             Ok(Value::set([
-                Value::number_int(5),
+                Value::number(5),
                 Value::unknown(Type::number()),
             ])),
         ),
@@ -141,7 +137,7 @@ fn convert_public() {
             ])),
         ),
         (
-            Value::set([Value::number_int(5), Value::number_int(10)]),
+            Value::set([Value::number(5), Value::number(10)]),
             Type::list(Type::string()),
             Ok(Value::list([
                 // NOTE: This results depends on the traversal order of the
@@ -165,36 +161,32 @@ fn convert_public() {
             Ok(Value::list([Value::unknown(Type::string())])),
         ),
         (
-            Value::list([
-                Value::number_int(5),
-                Value::number_int(10),
-                Value::number_int(10),
-            ]),
+            Value::list([Value::number(5), Value::number(10), Value::number(10)]),
             Type::set(Type::string()),
             Ok(Value::set([Value::string("5"), Value::string("10")])),
         ),
         (
-            Value::tuple([Value::number_int(5), Value::string("hello")]),
+            Value::tuple([Value::number(5), Value::string("hello")]),
             Type::list(Type::string()),
             Ok(Value::list([Value::string("5"), Value::string("hello")])),
         ),
         (
-            Value::tuple([Value::number_int(5), Value::string("12")]),
+            Value::tuple([Value::number(5), Value::string("12")]),
             Type::list(Type::number()),
-            Ok(Value::list([Value::number_int(5), Value::number_int(12)])),
+            Ok(Value::list([Value::number(5), Value::number(12)])),
         ),
         (
-            Value::tuple([Value::number_int(5), Value::number_int(10)]),
+            Value::tuple([Value::number(5), Value::number(10)]),
             Type::list(Type::dynamic()),
-            Ok(Value::list([Value::number_int(5), Value::number_int(10)])),
+            Ok(Value::list([Value::number(5), Value::number(10)])),
         ),
         (
-            Value::tuple([Value::number_int(5), Value::string("hello")]),
+            Value::tuple([Value::number(5), Value::string("hello")]),
             Type::list(Type::dynamic()),
             Ok(Value::list([Value::string("5"), Value::string("hello")])),
         ),
         (
-            Value::tuple([Value::number_int(5), Value::string("hello")]),
+            Value::tuple([Value::number(5), Value::string("hello")]),
             Type::set(Type::dynamic()),
             Ok(Value::set([Value::string("5"), Value::string("hello")])),
         ),
@@ -209,10 +201,7 @@ fn convert_public() {
             Ok(Value::list_empty(Type::string())),
         ),
         (
-            Value::object([
-                ("num", Value::number_int(5)),
-                ("str", Value::string("hello")),
-            ]),
+            Value::object([("num", Value::number(5)), ("str", Value::string("hello"))]),
             Type::map(Type::string()),
             Ok(Value::map([
                 ("num", Value::string("5")),
@@ -220,29 +209,23 @@ fn convert_public() {
             ])),
         ),
         (
-            Value::object([("num", Value::number_int(5)), ("str", Value::string("12"))]),
+            Value::object([("num", Value::number(5)), ("str", Value::string("12"))]),
             Type::map(Type::number()),
             Ok(Value::map([
-                ("num", Value::number_int(5)),
-                ("str", Value::number_int(12)),
+                ("num", Value::number(5)),
+                ("str", Value::number(12)),
             ])),
         ),
         (
-            Value::object([
-                ("num1", Value::number_int(5)),
-                ("num2", Value::number_int(10)),
-            ]),
+            Value::object([("num1", Value::number(5)), ("num2", Value::number(10))]),
             Type::map(Type::dynamic()),
             Ok(Value::map([
-                ("num1", Value::number_int(5)),
-                ("num2", Value::number_int(10)),
+                ("num1", Value::number(5)),
+                ("num2", Value::number(10)),
             ])),
         ),
         (
-            Value::object([
-                ("num", Value::number_int(5)),
-                ("str", Value::string("hello")),
-            ]),
+            Value::object([("num", Value::number(5)), ("str", Value::string("hello"))]),
             Type::map(Type::dynamic()),
             Ok(Value::map([
                 ("num", Value::string("5")),
@@ -272,7 +255,7 @@ fn convert_public() {
             ])),
         ),
         (
-            Value::object([("num", Value::number_int(5)), ("bool", Value::bool(true))]),
+            Value::object([("num", Value::number(5)), ("bool", Value::bool(true))]),
             Type::map(Type::dynamic()),
             Err("all map elements must have the same type"),
         ),
@@ -334,7 +317,7 @@ fn convert_public() {
             ])),
         ),
         (
-            Value::map([("a", Value::number_int(2)), ("b", Value::number_int(5))]),
+            Value::map([("a", Value::number(2)), ("b", Value::number(5))]),
             Type::map(Type::string()),
             Ok(Value::map([
                 ("a", Value::string("2")),
@@ -588,7 +571,7 @@ fn convert_public() {
                     "b",
                     Value::object([(
                         "x",
-                        Value::object([("c", Value::number_int(1)), ("d", Value::number_int(2))]),
+                        Value::object([("c", Value::number(1)), ("d", Value::number(2))]),
                     )]),
                 ),
             ]),
@@ -679,7 +662,7 @@ fn convert_public() {
         // https://github.com/hashicorp/terraform/issues/21588:
         (
             Value::tuple([
-                Value::object([("a", Value::empty_object()), ("b", Value::number_int(2))]),
+                Value::object([("a", Value::empty_object()), ("b", Value::number(2))]),
                 Value::object([
                     ("a", Value::object([("var1", Value::string("val1"))])),
                     ("b", Value::string("2")),
@@ -732,7 +715,7 @@ fn convert_public() {
         (
             Value::tuple([
                 Value::string("a"),
-                Value::number_int(9),
+                Value::number(9),
                 Value::null(Type::dynamic()),
             ]),
             Type::set(Type::dynamic()),
@@ -745,7 +728,7 @@ fn convert_public() {
         (
             Value::tuple([
                 Value::string("a"),
-                Value::number_int(9),
+                Value::number(9),
                 Value::null(Type::dynamic()),
             ]),
             Type::list(Type::dynamic()),
@@ -853,14 +836,14 @@ fn convert_public() {
         (
             Value::tuple([
                 Value::object([
-                    ("d", Value::number_float(10.0)),
+                    ("d", Value::number(10.0)),
                     (
                         "c",
                         Value::object([("a", Value::string("foo")), ("b", Value::bool(true))]),
                     ),
                 ]),
                 Value::object([
-                    ("d", Value::number_float(5.0)),
+                    ("d", Value::number(5.0)),
                     (
                         "c",
                         Value::null(Type::object_with_optional_attrs(
@@ -885,14 +868,14 @@ fn convert_public() {
             )),
             Ok(Value::set([
                 Value::object([
-                    ("d", Value::number_float(10.0)),
+                    ("d", Value::number(10.0)),
                     (
                         "c",
                         Value::object([("a", Value::string("foo")), ("b", Value::bool(true))]),
                     ),
                 ]),
                 Value::object([
-                    ("d", Value::number_float(5.0)),
+                    ("d", Value::number(5.0)),
                     (
                         "c",
                         Value::null(Type::object([("a", Type::string()), ("b", Type::bool())])),
@@ -903,13 +886,13 @@ fn convert_public() {
         (
             Value::tuple([
                 Value::object([
-                    ("d", Value::number_float(10.0)),
+                    ("d", Value::number(10.0)),
                     (
                         "c",
                         Value::object([("a", Value::string("foo")), ("b", Value::bool(true))]),
                     ),
                 ]),
-                Value::object([("d", Value::number_float(5.0))]),
+                Value::object([("d", Value::number(5.0))]),
             ]),
             Type::set(Type::object_with_optional_attrs(
                 [
@@ -926,14 +909,14 @@ fn convert_public() {
             )),
             Ok(Value::set([
                 Value::object([
-                    ("d", Value::number_float(10.0)),
+                    ("d", Value::number(10.0)),
                     (
                         "c",
                         Value::object([("a", Value::string("foo")), ("b", Value::bool(true))]),
                     ),
                 ]),
                 Value::object([
-                    ("d", Value::number_float(5.0)),
+                    ("d", Value::number(5.0)),
                     (
                         "c",
                         Value::null(Type::object([("a", Type::string()), ("b", Type::bool())])),
@@ -961,7 +944,7 @@ fn convert_public() {
             Value::list([
                 Value::object([(
                     "xs",
-                    Value::list([Value::object([("x", Value::number_float(1234.0))])]),
+                    Value::list([Value::object([("x", Value::number(1234.0))])]),
                 )]),
                 Value::object([(
                     "xs",
@@ -978,7 +961,7 @@ fn convert_public() {
             Ok(Value::list([
                 Value::object([(
                     "xs",
-                    Value::list([Value::object([("x", Value::number_float(1234.0))])]),
+                    Value::list([Value::object([("x", Value::number(1234.0))])]),
                 )]),
                 Value::object([(
                     "xs",
@@ -990,7 +973,7 @@ fn convert_public() {
             Value::set([
                 Value::object([(
                     "xs",
-                    Value::set([Value::object([("x", Value::number_float(1234.0))])]),
+                    Value::set([Value::object([("x", Value::number(1234.0))])]),
                 )]),
                 Value::object([(
                     "xs",
@@ -1007,7 +990,7 @@ fn convert_public() {
             Ok(Value::set([
                 Value::object([(
                     "xs",
-                    Value::set([Value::object([("x", Value::number_float(1234.0))])]),
+                    Value::set([Value::object([("x", Value::number(1234.0))])]),
                 )]),
                 Value::object([(
                     "xs",
@@ -1021,10 +1004,7 @@ fn convert_public() {
                     "foo",
                     Value::object([(
                         "xs",
-                        Value::map([(
-                            "nested_foo",
-                            Value::object([("x", Value::number_float(1234.0))]),
-                        )]),
+                        Value::map([("nested_foo", Value::object([("x", Value::number(1234.0))]))]),
                     )]),
                 ),
                 (
@@ -1047,10 +1027,7 @@ fn convert_public() {
                     "foo",
                     Value::object([(
                         "xs",
-                        Value::map([(
-                            "nested_foo",
-                            Value::object([("x", Value::number_float(1234.0))]),
-                        )]),
+                        Value::map([("nested_foo", Value::object([("x", Value::number(1234.0))]))]),
                     )]),
                 ),
                 (

@@ -4,18 +4,34 @@
 //! (several upstream tests assert on exact message strings). The conformance tests
 //! therefore compare `Error`'s `Display` output against the upstream literals.
 
-use crate::path::Path;
+use std::num::ParseFloatError;
 
-/// An error produced by any fallible cty operation.
-///
-/// The `Display` implementation yields the user-facing message, which for ported
-/// behavior must match the corresponding go-cty error string exactly.
-#[derive(Debug, Clone)]
-pub struct Error {
-    _priv: (),
+use crate::path::Path;
+use thiserror::Error;
+
+/// CtyError is the error type for the cty library
+#[derive(Error, Debug)]
+pub enum CtyError {
+    /// ParseFloat is thrown if the value could not be parsed as a float
+    #[error("could not parse value as float")]
+    ParseFloat(#[from] ParseFloatError),
+    /// InconsistentList is thrown if the list has differently typed values
+    #[error("expected all elements of the list to be of type {expected:?}, but found {found:?}")]
+    InconsistentList {
+        /// The first type we find sets the expectation
+        expected: crate::Type,
+        /// The type that differed from the expectation
+        found: crate::Type,
+    },
+    /// EmptyList is thrown if a list is being constructed without an element
+    #[error("got an empty list, expected at least one element")]
+    EmptyList,
+    /// Unknown error
+    #[error("unknown error")]
+    Unknown,
 }
 
-impl Error {
+impl CtyError {
     /// Creates a new error with the given message.
     pub fn new(message: impl Into<String>) -> Self {
         let _ = message.into();
@@ -40,12 +56,3 @@ impl Error {
         todo!()
     }
 }
-
-impl std::fmt::Display for Error {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let _ = f;
-        todo!()
-    }
-}
-
-impl std::error::Error for Error {}

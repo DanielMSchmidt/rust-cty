@@ -12,7 +12,7 @@ conformance tests compile against. Pinned upstream:
 - **Panics vs. errors.** Mirrors upstream: operations that panic on misuse in
   Go (wrong operand type, missing attribute, `ListVal` with mixed element
   types) panic in Rust; APIs that return `error` in Go return
-  `Result<_, cty::Error>`. Tests assert panics with
+  `Result<_, cty::CtyError>`. Tests assert panics with
   `std::panic::catch_unwind`.
 - **Error messages** are observable behavior: `Error`'s `Display` must match
   the upstream `err.Error()` string wherever an upstream test asserts on it.
@@ -54,7 +54,7 @@ conformance tests compile against. Pinned upstream:
 | `cty.NullVal(ty)/UnknownVal(ty)` | `Value::null(ty)/unknown(ty)` |
 | `val.Type()` | `val.ty()` |
 | `val.True()/False()` | `val.is_true()/is_false()` |
-| `val.AsBigFloat()` | `val.as_f64()` (lossy; a dedicated big-number type is an open implementation decision) |
+| `val.AsBigFloat()` | `val.as_f64()`. Upstream numbers are arbitrary-precision; ours are `f64` — a deliberate deviation, see `docs/deviations.md` entry 1 in the workbench |
 | `cty.Path{}` / `cty.GetAttrPath("a").Index(v)` | `Path::new()` / `Path::new().attr("a").index(v)` |
 | `cty.IndexIntPath(0)` / `cty.IndexStringPath("k")` | `Path::new().index_int(0)` / `Path::new().index_string("k")` |
 | marks (`val.Mark("x")`, mark values are `any`) | `val.mark("x")`; a mark is `Mark` (`From<&str>/String/i64/bool`, `Mark::of` for other types) |
@@ -74,6 +74,15 @@ conformance tests compile against. Pinned upstream:
 | `convert.Conversion` (a func; nil = none/identity) | `convert::Conversion` struct with `.apply()`; absence is `Option` |
 | unexported `compareTypes`/`sortTypes` | `convert::internals::{compare_types, sort_types}` (conformance-only) |
 | unexported set hash bytes | `internals::set_hash_bytes` (conformance-only) |
+| `set.Set[T]` + `set.Rules[T]` (an interface) | `set::Set<T, R>` where `R: set::Rules<T>` — the rules are a **type parameter**, not `Rc<dyn Rules<T>>`; see "Set rules" below |
+| `set.NewSet(rules)` / `set.NewSetFromSlice(rules, vals)` | `Set::new(rules)` / `Set::from_slice(rules, vals)`, both taking `R` by value |
+| `Rules.SameRules(other Rules)` (a type assertion) | `Rules::same_rules(&self, other: &Self)` — the type check is the compiler's, so the body only compares data |
+| `set.OrderedRules` (a runtime type assertion in `Values()`) | `set::OrderedRules<T>: Rules<T>`, a supertrait; opting in is implementing it |
+| `OrderedRules.Less` | `OrderedRules::less(&self, a, b) -> bool`, same partial-order contract as upstream |
+| `Set.Values()` (ordered or not, depending on the rules) | split in two: `values()` for any rules, `ordered_values()` only where `R: OrderedRules<T>`; both return `Vec<&T>`, since Go's slice of elements shares storage and Rust's would otherwise force `T: Clone` on every read |
+| `Set.Rules()` / `Set.HasRules(r)` | `set.rules() -> &R` / `set.has_rules(&R)` |
+| unexported `setRules` (cty element rules) | `set::ValueRules`, constructed by `ValueRules::new(element_type)` and re-exposed as `internals::set_rules(element_type)` (conformance-only) |
+| `cty.ValueSet` | `ValueSet`, a wrapper over the cty element rules (upstream's `setRules`) |
 | `function.New(&Spec{...})` | `Function::new(Spec { ... })` |
 | `Spec.Type` / `Spec.Impl` | `Spec::type_fn` / `Spec::impl_fn` (boxed closures) |
 | `Parameter.Type` | `Parameter::ty` (`Option<Type>`; `None` only for `Parameter::default()` in construction) |
@@ -87,6 +96,42 @@ conformance tests compile against. Pinned upstream:
 | `gocty.ToCtyValue/FromCtyValue/ImpliedType` | `interop::{to_cty_value, from_cty_value, implied_type}` via `IntoCty`/`FromCty`/`CtyTyped` traits |
 | Go pointers in gocty | `Option<T>` (`None` ↔ null) |
 | Go structs with `cty:"…"` tags in gocty | `#[derive(IntoCty, FromCty, CtyTyped)]` from the `cty-derive` crate (see below) |
+
+## Set rules
+
+go-cty models set behavior as a `set.Rules[T]` interface and stores it in the
+set as an interface value. The Rust port makes it a **type parameter**:
+`Set<T, R: Rules<T>>`.
+
+Why the deviation: `Rules.SameRules(other Rules)` is a Go type assertion
+(`other.(setRules)`), and a Rust trait object cannot do that without an `Any`
+bound plus `downcast_ref`. Upstream has exactly two implementations — the cty
+element rules in `cty/set_internals.go` and `pathSetRules` in
+`cty/path_set.go` — so the generality of a trait object buys nothing and costs
+a downcast. With a type parameter, `same_rules` takes `&Self`, the compiler
+performs the type check that Go does at runtime, and there is no `Rc`, no
+`dyn`, and no allocation for a rules value that is usually zero-sized.
+
+Consequences the conformance tests encode:
+
+- Two sets can only be combined (`union`, `intersection`, `subtract`,
+  `symmetric_difference`) when they have the *same* `R`; mismatched rules are
+  a compile error rather than the upstream runtime panic. The panic case
+  therefore has no test.
+- `same_rules` still exists and is still called, because two values of the
+  same `R` can disagree — the cty element rules compare their element types.
+- `Rules` is no longer object-safe, which is fine: nothing stores a rules
+  value behind a pointer.
+- Ordering is a separate trait, as upstream, but the dispatch cannot be: Go
+  asks `s.rules.(OrderedRules[T])` at runtime inside `Values()`, and Rust
+  cannot ask that of a type parameter (specialization is unstable, and two
+  inherent `values()` methods differing only in their bound are `E0592`).
+  So the branch moves to the method name: `values()` is always available and
+  unordered, `ordered_values()` exists only in the `R: OrderedRules<T>` impl.
+  `ValueSet` always calls the latter; `PathSet` cannot call it at all.
+- The cty element rules need a name (`set::ValueRules`) rather than hiding
+  behind `impl Rules<Value>`: `ValueSet` has to name the type it wraps, and an
+  RPIT return type cannot be inferred from a `todo!()` body.
 
 ## Conformance test conventions
 

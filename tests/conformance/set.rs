@@ -6,8 +6,6 @@
 //! Expected values are literals from the upstream tables; see
 //! docs/api-mapping.md for the Go→Rust API correspondence.
 
-use std::rc::Rc;
-
 use cty::set::{Rules, Set};
 
 // Ported from testRules:
@@ -17,12 +15,13 @@ use cty::set::{Rules, Set};
 // accepts ints as values, and it has a hash function that just returns the
 // given value modulo 16 so that we can easily and dependably test the
 // situation where two non-equivalent values have the same hash value.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 struct TestRules;
 
 // Ported from newTestRules:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/set/rules_test.go#L9
-fn new_test_rules() -> Rc<dyn Rules<i64>> {
-    Rc::new(TestRules)
+fn new_test_rules() -> TestRules {
+    TestRules
 }
 
 impl Rules<i64> for TestRules {
@@ -34,20 +33,22 @@ impl Rules<i64> for TestRules {
         val1 == val2
     }
 
-    fn same_rules(&self, _other: &dyn Rules<i64>) -> bool {
+    fn same_rules(&self, _other: &Self) -> bool {
         // NOTE(port): upstream type-asserts `other.(testRules)` ("All
-        // testRules values are equal, so type-checking is enough"). A Rust
-        // trait object cannot be downcast without an `Any` bound, and every
-        // rules instance in these tests is a TestRules, so unconditionally
-        // returning true is behaviorally equivalent here.
+        // testRules values are equal, so type-checking is enough"). With rules
+        // as a type parameter the compiler has already done that check, so
+        // every reachable call here compares two TestRules and is true.
         true
     }
 }
 
 /// The set's values sorted ascending, as upstream does with
 /// `sort.Ints` after collecting via `EachValue`.
-fn sorted_values(s: &Set<i64>) -> Vec<i64> {
-    let mut vals = s.values();
+///
+/// NOTE(port): `Set::values` hands back borrowed elements, so this copies them
+/// out to keep the expected values below as plain literals.
+fn sorted_values(s: &Set<i64, TestRules>) -> Vec<i64> {
+    let mut vals: Vec<i64> = s.values().into_iter().copied().collect();
     vals.sort_unstable();
     vals
 }
@@ -65,7 +66,6 @@ fn sorted_values(s: &Set<i64>) -> Vec<i64> {
 // expose its internal buckets, so each of those checks is expressed as the
 // sorted list of values that the expected bucket contents would produce.
 #[test]
-#[ignore = "not yet implemented"]
 fn basic_set_ops() {
     let mut s = Set::new(new_test_rules());
     assert_eq!(
@@ -143,9 +143,8 @@ fn basic_set_ops() {
 // Ported from TestUnion:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/set/ops_test.go#L96
 #[test]
-#[ignore = "not yet implemented"]
 fn union() {
-    let tests: Vec<(Set<i64>, Set<i64>, Vec<i64>)> = vec![
+    let tests: Vec<(Set<i64, TestRules>, Set<i64, TestRules>, Vec<i64>)> = vec![
         (
             Set::new(new_test_rules()),
             Set::new(new_test_rules()),
@@ -180,8 +179,7 @@ fn union() {
 
     for (i, (s1, s2, want_values)) in tests.iter().enumerate() {
         let got = s1.union(s2);
-        let mut got_values = got.values();
-        got_values.sort_unstable();
+        let got_values = sorted_values(&got);
         let mut want_values = want_values.clone();
         want_values.sort_unstable();
         assert_eq!(
@@ -197,9 +195,8 @@ fn union() {
 // Ported from TestIntersection:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/set/ops_test.go#L158
 #[test]
-#[ignore = "not yet implemented"]
 fn intersection() {
-    let tests: Vec<(Set<i64>, Set<i64>, Vec<i64>)> = vec![
+    let tests: Vec<(Set<i64, TestRules>, Set<i64, TestRules>, Vec<i64>)> = vec![
         (
             Set::new(new_test_rules()),
             Set::new(new_test_rules()),
@@ -244,8 +241,7 @@ fn intersection() {
 
     for (i, (s1, s2, want_values)) in tests.iter().enumerate() {
         let got = s1.intersection(s2);
-        let mut got_values = got.values();
-        got_values.sort_unstable();
+        let got_values = sorted_values(&got);
         let mut want_values = want_values.clone();
         want_values.sort_unstable();
         assert_eq!(
@@ -261,9 +257,8 @@ fn intersection() {
 // Ported from TestSubtract:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/set/ops_test.go#L230
 #[test]
-#[ignore = "not yet implemented"]
 fn subtract() {
-    let tests: Vec<(Set<i64>, Set<i64>, Vec<i64>)> = vec![
+    let tests: Vec<(Set<i64, TestRules>, Set<i64, TestRules>, Vec<i64>)> = vec![
         (
             Set::new(new_test_rules()),
             Set::new(new_test_rules()),
@@ -308,8 +303,7 @@ fn subtract() {
 
     for (i, (s1, s2, want_values)) in tests.iter().enumerate() {
         let got = s1.subtract(s2);
-        let mut got_values = got.values();
-        got_values.sort_unstable();
+        let got_values = sorted_values(&got);
         let mut want_values = want_values.clone();
         want_values.sort_unstable();
         assert_eq!(
@@ -325,9 +319,8 @@ fn subtract() {
 // Ported from TestSymmetricDifference:
 // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/set/ops_test.go#L302
 #[test]
-#[ignore = "not yet implemented"]
 fn symmetric_difference() {
-    let tests: Vec<(Set<i64>, Set<i64>, Vec<i64>)> = vec![
+    let tests: Vec<(Set<i64, TestRules>, Set<i64, TestRules>, Vec<i64>)> = vec![
         (
             Set::new(new_test_rules()),
             Set::new(new_test_rules()),
@@ -372,8 +365,7 @@ fn symmetric_difference() {
 
     for (i, (s1, s2, want_values)) in tests.iter().enumerate() {
         let got = s1.symmetric_difference(s2);
-        let mut got_values = got.values();
-        got_values.sort_unstable();
+        let got_values = sorted_values(&got);
         let mut want_values = want_values.clone();
         want_values.sort_unstable();
         assert_eq!(

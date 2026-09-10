@@ -547,7 +547,7 @@ fn convert_capsule_type() {
         match want_err {
             None => {
                 let got = result.unwrap_or_else(|err| {
-                    panic!("case {i}: wrong error\nwant: <no error>\ngot:  {err}")
+                    panic!("case {i}: wrong error\nwant: <no CtyError>\ngot:  {err}")
                 });
                 let want = want.as_ref().unwrap();
                 assert!(
@@ -557,7 +557,7 @@ fn convert_capsule_type() {
             }
             Some(want_err) => {
                 let err = match result {
-                    Ok(_) => panic!("case {i}: wrong error\nwant: {want_err}\ngot:  <no error>"),
+                    Ok(_) => panic!("case {i}: wrong error\nwant: {want_err}\ngot:  <no CtyError>"),
                     Err(err) => err,
                 };
                 assert_eq!(err.to_string(), *want_err, "case {i}: wrong error message");

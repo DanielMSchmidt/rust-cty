@@ -14,12 +14,17 @@ use cty::{Type, Value, convert};
 #[test]
 #[ignore = "not yet implemented"]
 fn round_trip() {
+    // NOTE(deviation): cannot pass. Numbers are `f64` (deviation 1 in the
+    // workbench's docs/deviations.md); upstream numbers are arbitrary-precision.
+    // Out of range here: the 100-digit integer below, and 9223372036854775807/…808/…809 and
+    // 18446744073709551616, which this table requires to stay distinct.
+    // Kept as transcribed: the assertions state upstream behavior, which is the
+    // point. Do not trim the table or relax them to make this green.
     let big_number_val = Value::parse_number(
         "9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999",
-    )
-    .unwrap();
+    );
     // awkward because it can't be represented exactly in binary
-    let awkward_fraction_val = Value::parse_number("0.8").unwrap();
+    let awkward_fraction_val = Value::parse_number("0.8");
 
     let tests: Vec<(Value, Type)> = vec![
         (Value::string("hello"), Type::string()),
@@ -50,25 +55,13 @@ fn round_trip() {
         (Value::null(Type::bool()), Type::bool()),
         (Value::unknown(Type::bool()), Type::bool()),
         (Value::unknown(Type::bool()).refine_not_null(), Type::bool()),
-        (Value::number_int(1), Type::number()),
-        (Value::number_float(1.5), Type::number()),
+        (Value::number(1), Type::number()),
+        (Value::number(1.5), Type::number()),
         (big_number_val, Type::number()),
-        (
-            Value::parse_number("9223372036854775807").unwrap(),
-            Type::number(),
-        ),
-        (
-            Value::parse_number("9223372036854775808").unwrap(),
-            Type::number(),
-        ),
-        (
-            Value::parse_number("9223372036854775809").unwrap(),
-            Type::number(),
-        ),
-        (
-            Value::parse_number("18446744073709551616").unwrap(),
-            Type::number(),
-        ),
+        (Value::parse_number("9223372036854775807"), Type::number()),
+        (Value::parse_number("9223372036854775808"), Type::number()),
+        (Value::parse_number("9223372036854775809"), Type::number()),
+        (Value::parse_number("18446744073709551616"), Type::number()),
         (awkward_fraction_val, Type::number()),
         (Value::positive_infinity(), Type::number()),
         (Value::negative_infinity(), Type::number()),
@@ -108,7 +101,7 @@ fn round_trip() {
         (
             Value::unknown(Type::number())
                 .refine()
-                .number_range_inclusive(Value::zero(), Value::number_int(1))
+                .number_range_inclusive(Value::zero(), Value::number(1))
                 .new_value(),
             Type::number(),
         ),
