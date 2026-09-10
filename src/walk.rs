@@ -62,3 +62,6 @@ pub fn unknown_as_null(value: &Value) -> Value {
     let _ = value;
     todo!()
 }
+
+#[cfg(test)]
+mod conformance;

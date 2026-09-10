@@ -28,6 +28,10 @@
 //! - **Strings.** cty strings are NFC-normalized and grapheme-cluster oriented, which is a
 //!   different unit than Rust's `char`.
 
+// The interop derives emit `::cty::…` paths. The conformance suite that
+// exercises them now lives inside this crate, so `cty` has to name itself.
+extern crate self as cty;
+
 pub mod capsule;
 pub mod convert;
 mod error;

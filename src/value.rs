@@ -402,3 +402,6 @@ impl PartialEq for Value {
         self.raw_equals(other)
     }
 }
+
+#[cfg(test)]
+mod conformance;

@@ -583,3 +583,6 @@ impl std::fmt::Display for Type {
         }
     }
 }
+
+#[cfg(test)]
+mod conformance;

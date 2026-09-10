@@ -14,3 +14,6 @@ pub fn safe_known_prefix(prefix: &str) -> String {
     let _ = prefix;
     todo!()
 }
+
+#[cfg(test)]
+mod conformance;

@@ -30,3 +30,6 @@ pub fn set_rules(element_type: Type) -> ValueRules {
     let _ = element_type;
     todo!()
 }
+
+#[cfg(test)]
+mod conformance;

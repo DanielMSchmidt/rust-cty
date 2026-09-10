@@ -26,3 +26,6 @@ pub fn implied_type(bytes: &[u8]) -> Result<Type, CtyError> {
     let _ = bytes;
     todo!()
 }
+
+#[cfg(test)]
+mod conformance;

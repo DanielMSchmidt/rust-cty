@@ -151,3 +151,6 @@ pub fn new_arg_error(index: usize, message: impl Into<String>) -> CtyError {
     let _ = (index, message.into());
     todo!()
 }
+
+#[cfg(test)]
+mod conformance;

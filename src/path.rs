@@ -257,3 +257,6 @@ impl PartialEq for PathSet {
 }
 
 impl Eq for PathSet {}
+
+#[cfg(test)]
+mod conformance;

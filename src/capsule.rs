@@ -94,3 +94,6 @@ impl std::fmt::Debug for CapsuleOps {
         f.debug_struct("CapsuleOps").finish_non_exhaustive()
     }
 }
+
+#[cfg(test)]
+mod conformance;
