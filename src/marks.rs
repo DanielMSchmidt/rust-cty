@@ -9,24 +9,29 @@ use std::any::Any;
 use std::fmt::Debug;
 use std::hash::Hash;
 
+use dyn_clone::DynClone;
+use dyn_eq::DynEq;
+use dyn_hash::DynHash;
+
 use crate::error::CtyError;
 use crate::path::Path;
 use crate::value::Value;
+
+pub trait MarkableValue: Any + DynEq + DynHash + DynClone + Send + Sync + Debug {}
 
 /// A single mark: a type-erased, comparable, hashable annotation value.
 ///
 /// Two marks are equal when they wrap values of the same type that compare
 /// equal, mirroring Go's interface equality.
-#[derive(Debug, Clone)]
 pub struct Mark {
-    _priv: (),
+    content: Box<dyn MarkableValue>,
 }
 
 impl Mark {
     /// Wraps an arbitrary native value as a mark.
     pub fn of<T>(value: T) -> Mark
     where
-        T: Any + Eq + Hash + Debug + Clone + Send + Sync,
+        T: MarkableValue,
     {
         let _ = value;
         todo!()
@@ -54,26 +59,8 @@ impl Hash for Mark {
     }
 }
 
-impl From<&str> for Mark {
-    fn from(v: &str) -> Mark {
-        Mark::of(v.to_string())
-    }
-}
-
-impl From<String> for Mark {
-    fn from(v: String) -> Mark {
-        Mark::of(v)
-    }
-}
-
-impl From<i64> for Mark {
-    fn from(v: i64) -> Mark {
-        Mark::of(v)
-    }
-}
-
-impl From<bool> for Mark {
-    fn from(v: bool) -> Mark {
+impl<T> From<T> for Mark {
+    fn from(v: T) -> Mark {
         Mark::of(v)
     }
 }
@@ -167,8 +154,8 @@ pub enum WrangleAction {
     /// Move the mark from a collection onto each of its elements
     /// (go-cty: `ctymarks.WrangleExpand`).
     Expand,
-    /// Replace the mark with another mark (go-cty: `ctymarks.WrangleReplace`).
-    Replace(Mark),
+    // /// Replace the mark with another mark (go-cty: `ctymarks.WrangleReplace`).
+    // Replace(Mark),
 }
 
 /// A callback deciding what to do with each mark encountered by
@@ -364,7 +351,6 @@ mod conformance {
         // Ported from TestIsMarked:
         // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/marks_test.go#L72
         #[test]
-        #[ignore = "not yet implemented"]
         fn is_marked() {
             let test_cases: Vec<(Value, bool)> = vec![
                 (Value::string("a"), false),
@@ -562,7 +548,6 @@ mod conformance {
         // Ported from TestMarks:
         // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/marks_test.go#L238
         #[test]
-        #[ignore = "not yet implemented"]
         fn marks() {
             fn want_marks(marks: &ValueMarks, expected: &[&str]) {
                 assert_eq!(marks.len(), expected.len(), "wrong marks: {marks:?}");
