@@ -457,7 +457,7 @@ mod conformance {
         {
             let (got, _) = deep_marked.unmark();
             let want = Value::set([Value::bool(true)]);
-            assert_eq!(got, want, "wrong unmarked value for deepMarked");
+            assert_eq!(*got, want, "wrong unmarked value for deepMarked");
         }
     }
 

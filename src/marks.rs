@@ -131,6 +131,18 @@ impl ValueMarks {
         ValueMarks { marks: hash_set }
     }
 
+    /// from_value_marks takes an iterator of ValueMarks and returns a combined ValueMarks
+    pub fn from_value_marks(marks: impl IntoIterator<Item = ValueMarks>) -> ValueMarks {
+        let marks: Vec<_> = marks.into_iter().collect();
+        let mut val_marks = ValueMarks::new();
+
+        for vm in marks {
+            val_marks.insert(vm.into_iter());
+        }
+
+        val_marks
+    }
+
     /// Whether the set contains the given mark (go-cty: `ValueMarks.Has`).
     pub fn has(&self, mark: impl Into<Mark>) -> bool {
         let m = mark.into();
@@ -160,6 +172,10 @@ impl ValueMarks {
     /// Iterates over the marks in the set, in unspecified order.
     pub fn iter(&self) -> impl Iterator<Item = &Mark> {
         self.marks.iter()
+    }
+
+    pub fn into_iter(self) -> impl IntoIterator<Item = Mark> {
+        self.marks.into_iter()
     }
 
     /// The Go-syntax representation, identical to go-cty's `ValueMarks.GoString`,
@@ -315,13 +331,22 @@ impl Value {
 
     /// A copy of this value with the given mark added (go-cty: `Value.Mark`).
     pub fn mark(&self, mark: impl Into<Mark>) -> Value {
-        let _ = mark.into();
-        todo!()
+        if let Value::Marked(val, vm) = self {
+            let mut new_vm = vm.clone();
+            new_vm.insert(vec![mark]);
+            Value::Marked(Box::new(*val.clone()), new_vm)
+        } else {
+            Value::Marked(Box::new(self.clone()), ValueMarks::from_marks(vec![mark]))
+        }
     }
 
     /// The direct marks of this value (go-cty: `Value.Marks`).
     pub fn marks(&self) -> ValueMarks {
-        todo!()
+        if let Self::Marked(_, marks) = self {
+            marks.clone()
+        } else {
+            ValueMarks::new()
+        }
     }
 
     /// A copy with marks applied at the given paths within the value
@@ -333,8 +358,8 @@ impl Value {
 
     /// A copy with all of the given mark sets added (go-cty: `Value.WithMarks`).
     pub fn with_marks(&self, marks: impl IntoIterator<Item = ValueMarks>) -> Value {
-        let _ = marks.into_iter().collect::<Vec<_>>();
-        todo!()
+        let vm = ValueMarks::from_value_marks(marks);
+        Self::Marked(Box::new(self.clone()), vm)
     }
 
     /// A copy carrying the same direct marks as all of the given source values
@@ -345,8 +370,12 @@ impl Value {
     }
 
     /// Removes and returns this value's direct marks (go-cty: `Value.Unmark`).
-    pub fn unmark(&self) -> (Value, ValueMarks) {
-        todo!()
+    pub fn unmark(&self) -> (&Value, ValueMarks) {
+        if let Self::Marked(val, marks) = self {
+            (val, marks.clone())
+        } else {
+            (&self, ValueMarks::new())
+        }
     }
 
     /// Removes marks from this value and all nested values, returning the
@@ -534,7 +563,7 @@ mod conformance {
                 ValueMarks::from_marks([1i64, 2, 3, 4]),
                 "wrong marks1234"
             );
-            assert_eq!(v, Value::bool(false), "wrong v after unmarking");
+            assert_eq!(*v, Value::bool(false), "wrong v after unmarking");
 
             // One more test for a more interesting/realistic situation involving
             // a number of different operations.
@@ -662,7 +691,11 @@ mod conformance {
         #[test]
         fn marks() {
             fn want_marks(marks: &ValueMarks, expected: &[&str]) {
-                assert_eq!(marks.len(), expected.len(), "wrong marks: {marks:?}");
+                assert_eq!(
+                    marks.len(),
+                    expected.len(),
+                    "wrong marks: {marks:?}, exected marks: {expected:?}"
+                );
                 for mark in expected {
                     assert!(marks.has(*mark), "missing mark {mark:?}: {marks:?}");
                 }
