@@ -51,6 +51,10 @@ pub enum Value {
 
     /// Null value of a certain type
     Null(Type),
+
+    /// Marked value is a value that contains marks
+    /// In go this is something different from a cty-value, we think it should be a variant
+    Marked(Box<Value>, crate::marks::ValueMarks),
 }
 
 impl Value {
@@ -289,6 +293,8 @@ impl Value {
 
             Self::Set(val, _) => Type::Set(Box::new(val.element_type())),
             Self::Tuple(val) => Type::Tuple(val.iter().map(|v| v.ty().clone()).collect()),
+
+            Self::Marked(val, _) => val.ty(),
         }
     }
 

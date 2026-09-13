@@ -6,8 +6,9 @@
 //! or the `From` conversions for common cases like `&str`.
 
 use std::any::Any;
+use std::collections::HashSet;
 use std::fmt::Debug;
-use std::hash::Hash;
+use std::hash::{Hash, Hasher};
 
 use dyn_clone::DynClone;
 use dyn_eq::DynEq;
@@ -17,7 +18,12 @@ use crate::error::CtyError;
 use crate::path::Path;
 use crate::value::Value;
 
+/// MarkableValue makes every value that fits the requirement be a potential mark
 pub trait MarkableValue: Any + DynEq + DynHash + DynClone + Send + Sync + Debug {}
+impl<T> MarkableValue for T where T: Any + DynEq + DynHash + DynClone + Send + Sync + Debug {}
+dyn_clone::clone_trait_object!(MarkableValue);
+dyn_eq::eq_trait_object!(MarkableValue);
+dyn_hash::hash_trait_object!(MarkableValue);
 
 /// A single mark: a type-erased, comparable, hashable annotation value.
 ///
@@ -33,42 +39,76 @@ impl Mark {
     where
         T: MarkableValue,
     {
-        let _ = value;
-        todo!()
+        Mark {
+            content: Box::new(value),
+        }
     }
 
     /// Downcasts to the wrapped native value, if it has type `T`.
     pub fn downcast_ref<T: Any>(&self) -> Option<&T> {
-        todo!()
+        DynEq::as_any(&*self.content).downcast_ref::<T>()
+    }
+}
+
+macro_rules! mark_from {
+    ($($t:ty),* $(,)?) => {
+        $( impl From<$t> for Mark { fn from(v: $t) -> Mark { Mark::of(v) } } )*
+    };
+}
+mark_from!(
+    String, bool, char, i8, i16, i32, i64, i128, isize, u8, u16, u32, u64, u128, usize
+);
+
+impl From<&str> for Mark {
+    fn from(v: &str) -> Mark {
+        Mark::of(v.to_string())
+    }
+}
+
+impl Clone for Mark {
+    fn clone(&self) -> Mark {
+        Mark {
+            content: dyn_clone::clone_box(&*self.content),
+        }
     }
 }
 
 impl PartialEq for Mark {
     fn eq(&self, other: &Self) -> bool {
-        let _ = other;
-        todo!()
+        *self.content == *other.content
     }
 }
-
 impl Eq for Mark {}
-
 impl Hash for Mark {
-    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        let _ = state;
-        todo!()
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        Hash::hash(&*self.content, state)
     }
 }
 
-impl<T> From<T> for Mark {
-    fn from(v: T) -> Mark {
-        Mark::of(v)
+/// Structural, matching the derived `Debug` on [`Value`] and [`Type`]:
+/// `Mark { content: "a" }`. Hand-written only because a `Box<dyn Trait>` field
+/// cannot be derived through.
+impl Debug for Mark {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("Mark")
+            .field("content", &self.content)
+            .finish()
+    }
+}
+
+/// Renders the mark as the Rust expression that constructs it, e.g.
+/// `Mark::of("a")` — the Rust analogue of the `%#v` rendering Go uses for each
+/// mark inside [`ValueMarks::go_string`].
+impl std::fmt::Display for Mark {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "Mark::of({:?})", self.content)
     }
 }
 
 /// A set of marks associated with a value (go-cty: `cty.ValueMarks`).
 #[derive(Debug, Clone)]
 pub struct ValueMarks {
-    _priv: (),
+    marks: HashSet<Mark>,
 }
 
 impl Default for ValueMarks {
@@ -80,58 +120,97 @@ impl Default for ValueMarks {
 impl ValueMarks {
     /// The empty mark set.
     pub fn new() -> ValueMarks {
-        todo!()
+        ValueMarks {
+            marks: HashSet::new(),
+        }
     }
 
     /// A mark set containing the given marks (go-cty: `cty.NewValueMarks`).
     pub fn from_marks<M: Into<Mark>>(marks: impl IntoIterator<Item = M>) -> ValueMarks {
-        let _ = marks.into_iter().map(Into::into).collect::<Vec<_>>();
-        todo!()
+        let hash_set = marks.into_iter().map(Into::into).collect::<HashSet<_>>();
+        ValueMarks { marks: hash_set }
     }
 
     /// Whether the set contains the given mark (go-cty: `ValueMarks.Has`).
     pub fn has(&self, mark: impl Into<Mark>) -> bool {
-        let _ = mark.into();
-        todo!()
+        let m = mark.into();
+        self._has(&m)
+    }
+
+    pub(crate) fn _has(&self, mark: &Mark) -> bool {
+        self.marks.contains(mark)
     }
 
     /// Adds all of the given marks to the set (go-cty: `ValueMarks.Insert`).
     pub fn insert<M: Into<Mark>>(&mut self, marks: impl IntoIterator<Item = M>) {
-        let _ = marks.into_iter().map(Into::into).collect::<Vec<_>>();
-        todo!()
+        let hash_set = marks.into_iter().map(Into::into).collect::<HashSet<_>>();
+        self.marks.extend(hash_set);
     }
 
     /// The number of marks in the set.
     pub fn len(&self) -> usize {
-        todo!()
+        self.marks.len()
     }
 
     /// Whether the set is empty.
     pub fn is_empty(&self) -> bool {
-        todo!()
+        self.marks.is_empty()
     }
 
     /// Iterates over the marks in the set, in unspecified order.
     pub fn iter(&self) -> impl Iterator<Item = &Mark> {
-        std::iter::empty::<&Mark>()
+        self.marks.iter()
     }
 
     /// The Go-syntax representation, identical to go-cty's `ValueMarks.GoString`,
     /// e.g. `cty.NewValueMarks("a")`.
     pub fn go_string(&self) -> String {
-        todo!()
+        let mut rendered: Vec<String> = self.marks.iter().map(|m| format!("{m:?}")).collect();
+        rendered.sort();
+        format!("cty.NewValueMarks({})", rendered.join(", "))
+    }
+
+    /// Removes a mark from the set, if present. Only mark wrangling needs this,
+    /// so it stays private.
+    pub fn remove(&mut self, mark: &Mark) {
+        self.marks.remove(mark);
+    }
+
+    /// Each mark's native value rendered the way Go's `%#v` renders it, sorted.
+    /// Upstream iterates a Go map, so its order is arbitrary; sorting keeps
+    /// both this and `Display` reproducible.
+    fn rendered_marks(&self) -> Vec<String> {
+        let mut rendered: Vec<String> = self
+            .marks
+            .iter()
+            .map(|m| format!("{:?}", m.content))
+            .collect();
+        rendered.sort();
+        rendered
     }
 }
 
 /// Equality of mark sets (go-cty: `ValueMarks.Equal`).
 impl PartialEq for ValueMarks {
     fn eq(&self, other: &Self) -> bool {
-        let _ = other;
-        todo!()
+        self.marks.eq(&other.marks)
     }
 }
 
 impl Eq for ValueMarks {}
+
+/// Renders the mark set as the Rust expression that constructs it, e.g.
+/// `ValueMarks::from_marks(["a"])` — the Rust analogue of
+/// [`ValueMarks::go_string`].
+impl std::fmt::Display for ValueMarks {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "ValueMarks::from_marks([{}])",
+            self.rendered_marks().join(", ")
+        )
+    }
+}
 
 /// A set of marks associated with a path inside a value, used to attach and
 /// recover marks on nested values (go-cty: `cty.PathValueMarks`).
@@ -154,8 +233,8 @@ pub enum WrangleAction {
     /// Move the mark from a collection onto each of its elements
     /// (go-cty: `ctymarks.WrangleExpand`).
     Expand,
-    // /// Replace the mark with another mark (go-cty: `ctymarks.WrangleReplace`).
-    // Replace(Mark),
+    /// Replace the mark with another mark (go-cty: `ctymarks.WrangleReplace`).
+    Replace(Mark),
 }
 
 /// A callback deciding what to do with each mark encountered by
@@ -171,27 +250,60 @@ pub type WrangleFunc<'a> =
 impl Value {
     /// Whether this value is directly marked (go-cty: `Value.IsMarked`).
     pub fn is_marked(&self) -> bool {
-        todo!()
+        match self {
+            Self::Marked(_, _) => true,
+            _ => false,
+        }
     }
 
     /// Whether this value or any nested value is marked
     /// (go-cty: `Value.ContainsMarked`).
     pub fn contains_marked(&self) -> bool {
-        todo!()
+        match self {
+            Self::Marked(_, _) => true,
+
+            // Every type that contains a type must be inspected
+            Self::List(vals, _) => vals.iter().any(Self::contains_marked),
+            Self::Set(vals, _) => vals.iter().any(Self::contains_marked),
+            Self::Map(vals, _) | Self::Object(vals, _) => {
+                vals.iter().any(|(_, v)| v.contains_marked())
+            }
+            Self::Tuple(vals) => vals.iter().any(Self::contains_marked),
+
+            _ => false,
+        }
     }
 
     /// Whether this value is directly marked with the given mark
     /// (go-cty: `Value.HasMark`).
     pub fn has_mark(&self, mark: impl Into<Mark>) -> bool {
-        let _ = mark.into();
-        todo!()
+        let m: Mark = mark.into();
+        self._has_mark(&m)
+    }
+
+    // Private implememntation with a concrete borrowed type
+    fn _has_mark(&self, mark: &Mark) -> bool {
+        match self {
+            Self::Marked(_, marks) => marks._has(mark),
+            _ => false,
+        }
     }
 
     /// Whether this value or any nested value carries the given mark
     /// (go-cty: `Value.HasMarkDeep`).
-    pub fn has_mark_deep(&self, mark: impl Into<Mark>) -> bool {
-        let _ = mark.into();
-        todo!()
+    pub fn has_mark_deep(&self, into_mark: impl Into<Mark>) -> bool {
+        let mark: Mark = into_mark.into();
+        match self {
+            // Every type that contains a type must be inspected
+            Self::List(vals, _) => vals.iter().any(|item| item._has_mark(&mark)),
+            Self::Set(vals, _) => vals.iter().any(|item| item._has_mark(&mark)),
+            Self::Map(vals, _) | Self::Object(vals, _) => {
+                vals.iter().any(|(_, v)| v._has_mark(&mark))
+            }
+            Self::Tuple(vals) => vals.iter().any(|item| item._has_mark(&mark)),
+
+            _ => self._has_mark(&mark),
+        }
     }
 
     /// Whether this value has exactly the same direct marks as `other`

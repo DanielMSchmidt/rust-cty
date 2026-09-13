@@ -373,6 +373,76 @@ impl ValueSet {
     }
 }
 
+pub struct IntoIter {
+    outer: <BTreeMap<i64, Vec<Value>> as IntoIterator>::IntoIter,
+    inner: std::vec::IntoIter<Value>,
+}
+
+impl Iterator for IntoIter {
+    type Item = Value;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        loop {
+            if let Some(value) = self.inner.next() {
+                return Some(value);
+            }
+            // Advance to the next non-exhausted bucket, skipping empty Vecs.
+            let (_, values) = self.outer.next()?;
+            self.inner = values.into_iter();
+        }
+    }
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        (self.inner.len(), None)
+    }
+}
+
+impl IntoIterator for ValueSet {
+    type Item = Value;
+    type IntoIter = IntoIter;
+
+    fn into_iter(self) -> Self::IntoIter {
+        IntoIter {
+            outer: self.val.into_iter(),
+            inner: Vec::new().into_iter(),
+        }
+    }
+}
+
+pub struct Iter<'a> {
+    outer: std::collections::btree_map::Iter<'a, i64, Vec<Value>>,
+    inner: std::slice::Iter<'a, Value>,
+}
+
+impl<'a> Iterator for Iter<'a> {
+    type Item = &'a Value;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        loop {
+            if let Some(value) = self.inner.next() {
+                return Some(value);
+            }
+            let (_, values) = self.outer.next()?;
+            self.inner = values.iter();
+        }
+    }
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        (self.inner.len(), None)
+    }
+}
+
+impl ValueSet {
+    /// Iterate over the values stored in the set
+    pub fn iter(&self) -> Iter<'_> {
+        const EMPTY: &[Value] = &[];
+        Iter {
+            outer: self.val.iter(),
+            inner: EMPTY.iter(),
+        }
+    }
+}
+
 #[cfg(test)]
 mod conformance {
     //! Conformance tests transcribed from go-cty
