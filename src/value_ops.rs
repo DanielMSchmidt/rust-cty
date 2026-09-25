@@ -37,14 +37,19 @@ use crate::value::Value;
 ///
 /// For lists and tuples the key is the number index; for maps and objects it
 /// is the string key or attribute name; for sets the key is the element itself.
-#[derive(Debug)]
-pub struct ElementIterator {
-    _priv: (),
+pub struct ElementIterator<'a> {
+    inner: Box<dyn Iterator<Item = (Value, Value)> + 'a>,
 }
-impl Iterator for ElementIterator {
+impl<'a> Iterator for ElementIterator<'a> {
     type Item = (Value, Value);
     fn next(&mut self) -> Option<Self::Item> {
-        todo!()
+        self.inner.next()
+    }
+}
+
+impl<'a> ElementIterator<'a> {
+    pub fn new(inner: Box<dyn Iterator<Item = (Value, Value)> + 'a>) -> ElementIterator<'a> {
+        ElementIterator { inner }
     }
 }
 

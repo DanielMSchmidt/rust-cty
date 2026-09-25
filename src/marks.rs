@@ -437,7 +437,6 @@ mod conformance {
         // Ported from TestContainsMarked:
         // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/marks_test.go#L11
         #[test]
-        #[ignore = "not yet implemented"]
         fn contains_marked() {
             let test_cases: Vec<(Value, bool)> = vec![
                 (Value::string("a"), false),
@@ -463,10 +462,11 @@ mod conformance {
                     Value::tuple([Value::number(1).mark("a"), Value::string("y").mark("z")]),
                     true,
                 ),
-                (
-                    Value::set([Value::number(1).mark("a"), Value::number(2).mark("z")]),
-                    true,
-                ),
+                // TODO: Reenable when sets are implemented
+                // (
+                //     Value::set([Value::number(1).mark("a"), Value::number(2).mark("z")]),
+                //     true,
+                // ),
                 (
                     Value::object([
                         (
@@ -599,7 +599,6 @@ mod conformance {
         // Ported from TestValueMarksInsert:
         // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/marks_test.go#L179
         #[test]
-        #[ignore = "not yet implemented"]
         fn value_marks_insert() {
             let mut marks = ValueMarks::from_marks([0i64]);
             marks.insert([2i64, 1i64]);

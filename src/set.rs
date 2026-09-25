@@ -267,8 +267,7 @@ impl ValueRules {
 
 impl Rules<Value> for ValueRules {
     fn hash(&self, value: &Value) -> u64 {
-        let _ = value;
-        todo!()
+        value.hash_code()
     }
 
     fn equivalent(&self, a: &Value, b: &Value) -> bool {

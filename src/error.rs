@@ -26,6 +26,19 @@ pub enum CtyError {
     /// EmptyList is thrown if a list is being constructed without an element
     #[error("got an empty list, expected at least one element")]
     EmptyList,
+
+    /// InconsistentMap is thrown if the map has differently typed values
+    #[error("expected all elements of the map to be of type {expected:?}, but found {found:?}")]
+    InconsistentMap {
+        /// The first type we find sets the expectation
+        expected: crate::Type,
+        /// The type that differed from the expectation
+        found: crate::Type,
+    },
+    /// EmptyMap is thrown if a list is being constructed without an element
+    #[error("got an empty map, expected at least one element. Use Value::empty_map instead.")]
+    EmptyMap,
+
     /// Unknown error
     #[error("unknown error")]
     Unknown,

@@ -10,7 +10,21 @@ impl Value {
     /// # Panics
     /// Panics if [`Value::can_iterate_elements`] would return `false`.
     pub fn element_iterator(&self) -> ElementIterator {
-        todo!()
+        match self {
+            Self::Tuple(vals) | Self::List(vals, _) => ElementIterator::new(Box::new(
+                vals.iter()
+                    .enumerate()
+                    .map(|(index, val)| (Self::Number(index as f64), val.clone())),
+            )),
+            Self::Set(_, _) => todo!(),
+
+            Self::Map(vals, _) | Self::Object(vals, _) => ElementIterator::new(Box::new(
+                vals.iter()
+                    .map(|(key, value)| (Self::String(key.clone()), value.clone())),
+            )),
+
+            _ => panic!("Can not create a collection out of the given type"),
+        }
     }
 }
 

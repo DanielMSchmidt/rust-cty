@@ -4,6 +4,8 @@
 //! observable (set element ordering, hash formats) and covered by upstream
 //! tests. Not part of the supported API.
 
+use std::fmt::Write;
+
 use crate::marks::ValueMarks;
 use crate::set::ValueRules;
 use crate::types::Type;
@@ -16,8 +18,90 @@ use crate::value::Value;
 /// The format (e.g. `string("hello");`) is pinned by upstream tests because it
 /// determines set element ordering.
 pub fn set_hash_bytes(value: &Value) -> (String, ValueMarks) {
-    // let mut str = String::new();
-    todo!()
+    let mut str = String::new();
+    let mut marks = ValueMarks::new();
+    append_set_hash_bytes(value, &mut str, &mut marks);
+    (str, marks)
+}
+
+fn append_set_hash_bytes(val: &Value, str: &mut String, marks: &mut ValueMarks) {
+    // Exactly what bytes we generate here don't matter as long as the following
+    // constraints hold:
+    // - Unknown and null values all generate distinct strings from
+    //   each other and from any normal value of the given type.
+    // - The delimiter used to separate items in a compound structure can
+    //   never appear literally in any of its elements.
+    // Since we don't support hetrogenous lists we don't need to worry about
+    // collisions between values of different types, apart from
+    // PseudoTypeDynamic.
+    // If in practice we *do* get a collision then it's not a big deal because
+    // the Equivalent function will still distinguish values, but set
+    // performance will be best if we are able to produce a distinct string
+    // for each distinct value, unknown values notwithstanding.
+
+    // Marks aren't considered part of a value for equality-testing purposes,
+    // so we'll unmark our value before we work with it but we'll remember
+    // the marks in case the caller needs to re-apply them to a derived
+    // value.
+    let (val, val_marks) = val.unmark();
+    marks.insert(val_marks.into_iter());
+
+    if !val.is_known() {
+        str.write_char('?').expect("Could not write character");
+        return;
+    }
+    if val.is_null() {
+        str.write_char('~').expect("Could not write character");
+        return;
+    }
+
+    match val {
+        Value::Number(num) => str
+            .write_str(&num.to_string())
+            .expect("Could not write string"),
+        Value::Boolean(v) => str
+            .write_char(if *v { 'T' } else { 'F' })
+            .expect("Could not write character"),
+        Value::String(val) => str
+            .write_str(format!("\"{val}\"").as_str())
+            .expect("Could not write string"),
+        Value::Map(_, _) => {
+            str.write_char('{').expect("Could not write character");
+            val.element_iterator().for_each(|(k, v)| {
+                append_set_hash_bytes(&k, str, marks);
+                str.write_char(':').expect("Could not write character");
+                append_set_hash_bytes(&v, str, marks);
+                str.write_char(';').expect("Could not write character");
+            });
+            str.write_char('}').expect("Could not write character");
+        }
+        Value::List(_, _) | Value::Set(_, _) => {
+            str.write_char('[').expect("Could not write character");
+            val.element_iterator().for_each(|(_, v)| {
+                append_set_hash_bytes(&v, str, marks);
+                str.write_char(';').expect("Could not write character");
+            });
+            str.write_char(']').expect("Could not write character");
+        }
+
+        Value::Object(_, _) => {
+            str.write_char('<').expect("Could not write character");
+            val.element_iterator().for_each(|(_, v)| {
+                append_set_hash_bytes(&v, str, marks);
+                str.write_char(';').expect("Could not write character");
+            });
+            str.write_char('>').expect("Could not write character");
+        }
+        Value::Tuple(items) => {
+            str.write_char('<').expect("Could not write character");
+            items.iter().for_each(|v| {
+                append_set_hash_bytes(v, str, marks);
+                str.write_char(';').expect("Could not write character");
+            });
+            str.write_char('>').expect("Could not write character");
+        }
+        _ => panic!("unsupported type in set hash"),
+    }
 }
 
 /// The element rules used by set values whose element type is the given type,
@@ -43,40 +127,32 @@ mod conformance {
     use crate::set::{OrderedRules, Rules};
     use crate::{CapsuleOps, Type, Value, ValueMarks};
 
+    // Shared assertion loop for the TestSetHashBytes cases below. Builds no
+    // expected values: every `want` is a literal from the upstream table.
+    fn check_hash_bytes(tests: &[(Value, &str, ValueMarks)]) {
+        for (i, (value, want, want_marks)) in tests.iter().enumerate() {
+            let (got, got_marks) = super::set_hash_bytes(value);
+            assert_eq!(
+                got, *want,
+                "case {i}: wrong result for {value:?}\ngot:  {got}\nwant: {want}"
+            );
+            assert_eq!(
+                &got_marks, want_marks,
+                "case {i}: wrong result marks for {value:?}\ngot:  {got_marks:?}\nwant: {want_marks:?}"
+            );
+        }
+    }
+
     // Ported from TestSetHashBytes:
     // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/set_internals_test.go#L12
+    //
+    // NOTE(port): upstream's single table is split across three #[test]s here,
+    // because its set and capsule cases cannot be constructed until
+    // `Value::set` and `Type::capsule_with_ops` exist. Those two live in
+    // `set_hash_bytes_set` and `set_hash_bytes_capsule` below and stay
+    // #[ignore]d; no case was dropped.
     #[test]
-    #[ignore = "not yet implemented"]
     fn set_hash_bytes() {
-        #[derive(Debug)]
-        struct Encapsulated {
-            name: String,
-        }
-
-        let type_with_hash = Type::capsule_with_ops::<Encapsulated>(
-            "with hash function",
-            CapsuleOps {
-                raw_equals: Some(Box::new(|a, b| {
-                    a.downcast_ref::<Encapsulated>().unwrap().name
-                        == b.downcast_ref::<Encapsulated>().unwrap().name
-                })),
-                hash_key: Some(Box::new(|v| {
-                    v.downcast_ref::<Encapsulated>().unwrap().name.clone()
-                })),
-                ..Default::default()
-            },
-        );
-        let type_without_hash = Type::capsule_with_ops::<Encapsulated>(
-            "without hash function",
-            CapsuleOps {
-                raw_equals: Some(Box::new(|a, b| {
-                    a.downcast_ref::<Encapsulated>().unwrap().name
-                        == b.downcast_ref::<Encapsulated>().unwrap().name
-                })),
-                ..Default::default()
-            },
-        );
-
         let tests: Vec<(Value, &str, ValueMarks)> = vec![
             (Value::unknown(Type::number()), "?", ValueMarks::new()),
             (Value::unknown(Type::string()), "?", ValueMarks::new()),
@@ -120,17 +196,6 @@ mod conformance {
                 r#"{"dynamic":?;"true":T;"unknown":?;}"#,
                 ValueMarks::new(),
             ),
-            (Value::set_empty(Type::bool()), "[]", ValueMarks::new()),
-            (
-                Value::set([Value::bool(true), Value::bool(true), Value::bool(false)]),
-                "[F;T;]",
-                ValueMarks::new(),
-            ),
-            (
-                Value::set([Value::unknown(Type::bool()), Value::unknown(Type::bool())]),
-                "[?;?;]", // unknowns are never equal, so we can have multiple of them
-                ValueMarks::new(),
-            ),
             (Value::empty_object(), "<>", ValueMarks::new()),
             (
                 Value::object([
@@ -160,7 +225,67 @@ mod conformance {
                 r#"<54;"ermintrude";>"#,
                 ValueMarks::from_marks([1i64, 2i64]),
             ),
-            // Encapsulated values
+        ];
+
+        check_hash_bytes(&tests);
+    }
+
+    // The set cases of TestSetHashBytes; see the note on `set_hash_bytes`.
+    #[test]
+    #[ignore = "not yet implemented: Value::set / Value::set_empty"]
+    fn set_hash_bytes_set() {
+        let tests: Vec<(Value, &str, ValueMarks)> = vec![
+            (Value::set_empty(Type::bool()), "[]", ValueMarks::new()),
+            (
+                Value::set([Value::bool(true), Value::bool(true), Value::bool(false)]),
+                "[F;T;]",
+                ValueMarks::new(),
+            ),
+            (
+                Value::set([Value::unknown(Type::bool()), Value::unknown(Type::bool())]),
+                "[?;?;]", // unknowns are never equal, so we can have multiple of them
+                ValueMarks::new(),
+            ),
+        ];
+
+        check_hash_bytes(&tests);
+    }
+
+    // The encapsulated-value cases of TestSetHashBytes; see the note on
+    // `set_hash_bytes`.
+    #[test]
+    #[ignore = "not yet implemented: Type::capsule_with_ops"]
+    fn set_hash_bytes_capsule() {
+        #[derive(Debug)]
+        struct Encapsulated {
+            name: String,
+        }
+
+        let type_with_hash = Type::capsule_with_ops::<Encapsulated>(
+            "with hash function",
+            CapsuleOps {
+                raw_equals: Some(Box::new(|a, b| {
+                    a.downcast_ref::<Encapsulated>().unwrap().name
+                        == b.downcast_ref::<Encapsulated>().unwrap().name
+                })),
+                hash_key: Some(Box::new(|v| {
+                    v.downcast_ref::<Encapsulated>().unwrap().name.clone()
+                })),
+                ..Default::default()
+            },
+        );
+        let type_without_hash = Type::capsule_with_ops::<Encapsulated>(
+            "without hash function",
+            CapsuleOps {
+                raw_equals: Some(Box::new(|a, b| {
+                    a.downcast_ref::<Encapsulated>().unwrap().name
+                        == b.downcast_ref::<Encapsulated>().unwrap().name
+                })),
+                ..Default::default()
+            },
+        );
+
+        let tests: Vec<(Value, &str, ValueMarks)> = vec![
             (
                 Value::capsule(
                     type_with_hash.clone(),
@@ -183,17 +308,7 @@ mod conformance {
             ),
         ];
 
-        for (i, (value, want, want_marks)) in tests.iter().enumerate() {
-            let (got, got_marks) = super::set_hash_bytes(value);
-            assert_eq!(
-                got, *want,
-                "case {i}: wrong result for {value:?}\ngot:  {got}\nwant: {want}"
-            );
-            assert_eq!(
-                &got_marks, want_marks,
-                "case {i}: wrong result marks for {value:?}\ngot:  {got_marks:?}\nwant: {want_marks:?}"
-            );
-        }
+        check_hash_bytes(&tests);
     }
 
     // Ported from TestSetOrder:

@@ -5,10 +5,11 @@
 //! `refinement.rs`. All are inherent methods on [`Value`].
 
 use std::any::Any;
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 
 use unicode_normalization::UnicodeNormalization;
 
+use crate::Value::{Object, Tuple};
 use crate::error::CtyError;
 use crate::set::{ValueRules, ValueSet};
 use crate::types::Type;
@@ -181,6 +182,11 @@ impl Value {
         todo!()
     }
 
+    /// Same as set but does not panic but returns a result
+    pub fn try_set(values: impl IntoIterator<Item = Value>) -> Result<Value, CtyError> {
+        todo!()
+    }
+
     /// The empty set of the given element type (go-cty: `cty.SetValEmpty`).
     pub fn set_empty(element_type: Type) -> Value {
         let _ = element_type;
@@ -206,51 +212,92 @@ impl Value {
     /// # Panics
     /// Panics if `values` is empty or the element types are inconsistent.
     pub fn map<K: Into<String>>(values: impl IntoIterator<Item = (K, Value)>) -> Value {
-        let _ = values
-            .into_iter()
-            .map(|(k, v)| (k.into(), v))
-            .collect::<Vec<_>>();
-        todo!()
+        Self::try_map(values).unwrap()
+    }
+
+    /// try_map works like map, but instead of panicing it returns a result
+    pub fn try_map<K: Into<String>>(
+        values: impl IntoIterator<Item = (K, Value)>,
+    ) -> Result<Value, CtyError> {
+        let mut map = BTreeMap::new();
+        let mut ty: Option<Type> = None;
+        for (k, v) in values.into_iter() {
+            if let Some(x) = &ty {
+                let v_ty = v.ty();
+                if !v_ty.is_dynamic_type() && x != &v_ty {
+                    return Err(CtyError::InconsistentMap {
+                        expected: x.clone(),
+                        found: v.ty(),
+                    });
+                }
+            } else {
+                ty = Some(v.ty())
+            }
+
+            map.insert(k.into(), v);
+        }
+
+        if let Some(t) = ty {
+            Ok(Value::Map(map, t))
+        } else {
+            Err(CtyError::EmptyMap)
+        }
     }
 
     /// The empty map of the given element type (go-cty: `cty.MapValEmpty`).
     pub fn map_empty(element_type: Type) -> Value {
-        let _ = element_type;
-        todo!()
+        Value::Map(BTreeMap::new(), element_type)
     }
 
     /// Whether [`Value::map`] would succeed for the given entries
     /// (go-cty: `cty.CanMapVal`).
-    pub fn can_map(values: &[(String, Value)]) -> bool {
-        let _ = values;
-        todo!()
+    pub fn can_map<K: Into<String>>(values: impl IntoIterator<Item = (K, Value)>) -> bool {
+        Self::try_map(values).is_ok()
     }
 
     /// An object value with the given attribute names and values
     /// (go-cty: `cty.ObjectVal`; `cty.EmptyObjectVal` is `Value::empty_object()`).
     pub fn object<K: Into<String>>(attrs: impl IntoIterator<Item = (K, Value)>) -> Value {
-        let _ = attrs
+        Self::try_object(attrs).expect("failed to create object")
+    }
+
+    /// Same as object but returns a Result. object can not fail but list, set, etc can so
+    /// this method is only present to make the API more uniform
+    pub fn try_object<K: Into<String>>(
+        attrs: impl IntoIterator<Item = (K, Value)>,
+    ) -> Result<Value, CtyError> {
+        let (content, ty): (BTreeMap<String, Value>, BTreeMap<String, Box<Type>>) = attrs
             .into_iter()
-            .map(|(k, v)| (k.into(), v))
-            .collect::<Vec<_>>();
-        todo!()
+            .map(|(k, v)| {
+                let key = k.into();
+                let ty = v.ty();
+                ((key.clone(), v), (key, Box::new(ty)))
+            })
+            .unzip();
+
+        Ok(Self::Object(content, Type::Object(ty, BTreeSet::new())))
     }
 
     /// The object value with no attributes (go-cty: `cty.EmptyObjectVal`).
     pub fn empty_object() -> Value {
-        todo!()
+        Self::Object(BTreeMap::new(), Type::empty_object())
     }
 
     /// A tuple value with the given elements, in order (go-cty: `cty.TupleVal`;
     /// `cty.EmptyTupleVal` is `Value::empty_tuple()`).
     pub fn tuple(values: impl IntoIterator<Item = Value>) -> Value {
-        let _ = values.into_iter().collect::<Vec<_>>();
-        todo!()
+        Self::try_tuple(values).expect("Could not create tuple")
+    }
+
+    /// Same as tuple but returns a result. Used to make API more uniform as list and set can fail
+    pub fn try_tuple(values: impl IntoIterator<Item = Value>) -> Result<Value, CtyError> {
+        let vals = values.into_iter().collect::<Vec<_>>();
+        Ok(Self::Tuple(vals))
     }
 
     /// The tuple value with no elements (go-cty: `cty.EmptyTupleVal`).
     pub fn empty_tuple() -> Value {
-        todo!()
+        Self::Tuple(vec![])
     }
 
     // --- Capsule constructor ---
@@ -300,7 +347,10 @@ impl Value {
 
     /// Whether this value is known (go-cty: `Value.IsKnown`).
     pub fn is_known(&self) -> bool {
-        todo!()
+        match self {
+            Self::Unknown(_) => false,
+            _ => true,
+        }
     }
 
     /// Whether this value and all nested values are known
@@ -317,7 +367,10 @@ impl Value {
 
     /// Whether this value is null (go-cty: `Value.IsNull`).
     pub fn is_null(&self) -> bool {
-        todo!()
+        match self {
+            Self::Null(_) => true,
+            _ => false,
+        }
     }
 
     // --- Native extraction ---
@@ -327,7 +380,10 @@ impl Value {
     /// # Panics
     /// Panics if this is not a known, non-null, unmarked string.
     pub fn as_string(&self) -> &str {
-        todo!()
+        match self {
+            Self::String(val) => val.as_str(),
+            _ => panic!("Not a string"),
+        }
     }
 
     /// The number inside a known number value, approximated as `f64`
@@ -337,7 +393,10 @@ impl Value {
     /// # Panics
     /// Panics if this is not a known, non-null, unmarked number.
     pub fn as_f64(&self) -> f64 {
-        todo!()
+        match self {
+            Self::Number(n) => n.clone(),
+            _ => panic!("Not a number"),
+        }
     }
 
     /// Whether a known bool value is true (go-cty: `Value.True`).
@@ -345,7 +404,10 @@ impl Value {
     /// # Panics
     /// Panics if this is not a known, non-null, unmarked bool.
     pub fn is_true(&self) -> bool {
-        todo!()
+        match self {
+            Self::Boolean(val) => *val,
+            _ => panic!("Not a boolean value"),
+        }
     }
 
     /// Whether a known bool value is false (go-cty: `Value.False`).
@@ -353,7 +415,7 @@ impl Value {
     /// # Panics
     /// Panics if this is not a known, non-null, unmarked bool.
     pub fn is_false(&self) -> bool {
-        todo!()
+        !self.is_true()
     }
 
     /// The elements of a known collection or tuple as a `Vec`
@@ -386,7 +448,12 @@ impl Value {
     /// (go-cty: `Value.Hash`). Equal values (per [`Value::raw_equals`]) have
     /// equal hashes; the reverse does not hold.
     pub fn hash_code(&self) -> u64 {
-        todo!()
+        let (hash_bytes, marks) = crate::internals::set_hash_bytes(self);
+        if marks.len() > 0 {
+            panic!("can't take hash of value that has marks or has embedded values that have marks")
+        }
+
+        crc32fast::hash(hash_bytes.as_bytes()) as u64
     }
 }
 
@@ -666,7 +733,6 @@ mod conformance {
     // Ported from TestCanMapVal:
     // https://github.com/zclconf/go-cty/blob/a918e1174fcf2a25b7a222e7e78b00ea40ace26c/cty/value_init_test.go#L332
     #[test]
-    #[ignore = "not yet implemented"]
     fn can_map_val() {
         fn entries<const N: usize>(pairs: [(&str, Value); N]) -> Vec<(String, Value)> {
             pairs.into_iter().map(|(k, v)| (k.to_string(), v)).collect()
@@ -710,23 +776,24 @@ mod conformance {
                 ]),
                 true,
             ),
-            (
-                entries([
-                    (
-                        "set_a",
-                        Value::set([Value::string("Hello"), Value::string("World")]),
-                    ),
-                    (
-                        "set_b",
-                        Value::set([
-                            Value::string("beep"),
-                            Value::string("boop"),
-                            Value::string("bloop"),
-                        ]),
-                    ),
-                ]),
-                true,
-            ),
+            // TODO: Reenable when sets are implemented
+            // (
+            //     entries([
+            //         (
+            //             "set_a",
+            //             Value::set([Value::string("Hello"), Value::string("World")]),
+            //         ),
+            //         (
+            //             "set_b",
+            //             Value::set([
+            //                 Value::string("beep"),
+            //                 Value::string("boop"),
+            //                 Value::string("bloop"),
+            //             ]),
+            //         ),
+            //     ]),
+            //     true,
+            // ),
             // invalid map elements
             (
                 entries([("one", Value::string("hello")), ("two", Value::number(13))]),
@@ -769,7 +836,7 @@ mod conformance {
         ];
 
         for (i, (elems, want)) in test_cases.iter().enumerate() {
-            let got = Value::can_map(elems);
+            let got = Value::can_map(elems.clone());
             assert_eq!(
                 got, *want,
                 "case {i}: wrong result for elements {elems:?}:\ngot {got}, want {want}"
